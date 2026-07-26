@@ -1,26 +1,93 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --color-maroon: #7A1C30;
+    --color-maroon-dark: #58111A;
+    --color-maroon-light: #9B2842;
+    --color-ivory: #FAF6EE;
+    --color-ivory-light: #FDFBF7;
+    --color-gold: #C5A059;
+    --color-gold-bright: #D4AF37;
+    --color-charcoal: #1F1F1F;
+    --color-soft-gray: #F3EFEA;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--color-ivory);
+    color: var(--color-charcoal);
+  }
+
+  h1, h2, h3, h4, .font-serif-editorial {
+    font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Custom Scrollbar for Luxury Aesthetics */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #FAF6EE;
+}
+::-webkit-scrollbar-thumb {
+  background: #C5A059;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #7A1C30;
+}
+
+/* Button & Card Utilities */
+.btn-maroon {
+  background-color: #7A1C30;
+  color: #FFFFFF;
+  padding: 14px 32px;
+  border-radius: 9999px;
+  font-weight: 500;
+  font-size: 0.88rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 20px rgba(122, 28, 48, 0.15);
+}
+
+.btn-maroon:hover {
+  background-color: #58111A;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(122, 28, 48, 0.25);
+}
+
+.btn-outline-gold {
+  background: transparent;
+  color: #1F1F1F;
+  border: 1px solid #C5A059;
+  padding: 12px 28px;
+  border-radius: 9999px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-gold:hover {
+  background-color: #7A1C30;
+  color: #FFFFFF;
+  border-color: #7A1C30;
+  transform: translateY(-2px);
+}
+
+/* Hide Scrollbar for Carousels */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

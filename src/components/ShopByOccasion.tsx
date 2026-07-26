@@ -1,0 +1,88 @@
+'use client';
+
+import React from 'react';
+
+interface OccasionTile {
+  title: string;
+  subtitle: string;
+  image: string;
+  gridSpan: string;
+}
+
+const OCCASIONS: OccasionTile[] = [
+  {
+    title: 'Wedding Celebrations',
+    subtitle: 'Royal weaves & embroidered grandeur',
+    image: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=1000&auto=format&fit=crop',
+    gridSpan: 'md:col-span-2 md:row-span-2',
+  },
+  {
+    title: 'Festive Rituals',
+    subtitle: 'Silk drapes & vibrant hues',
+    image: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=80&w=800&auto=format&fit=crop',
+    gridSpan: 'md:col-span-1 md:row-span-1',
+  },
+  {
+    title: 'Evening Galas',
+    subtitle: 'Backless velvet & satin slips',
+    image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=800&auto=format&fit=crop',
+    gridSpan: 'md:col-span-1 md:row-span-1',
+  },
+  {
+    title: 'Executive Wear',
+    subtitle: 'Structured linen & tailored formals',
+    image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=800&auto=format&fit=crop',
+    gridSpan: 'md:col-span-1 md:row-span-1',
+  },
+  {
+    title: 'Casual Luxury',
+    subtitle: 'Hand-printed cottons & easy coordinates',
+    image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop',
+    gridSpan: 'md:col-span-1 md:row-span-1',
+  },
+];
+
+export const ShopByOccasion: React.FC = () => {
+  return (
+    <section id="occasions" className="py-24 px-6 md:px-12 max-w-7xl mx-auto">
+      {/* Header */}
+      <div className="text-center max-w-xl mx-auto mb-16">
+        <span className="text-[0.72rem] tracking-[0.3em] uppercase text-[#C5A059] font-medium block mb-2">
+          Tailored Moments
+        </span>
+        <h3 className="font-serif-editorial text-3xl md:text-4xl text-[#7A1C30] font-normal tracking-wide">
+          Shop by Occasion
+        </h3>
+        <div className="w-12 h-[1px] bg-[#C5A059] mx-auto mt-4" />
+      </div>
+
+      {/* Grid Layout of Visual Tiles */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[280px]">
+        {OCCASIONS.map((occ, idx) => (
+          <div
+            key={idx}
+            className={`group relative overflow-hidden rounded-2xl border border-[#EAE5D9] cursor-pointer ${occ.gridSpan}`}
+          >
+            <img
+              src={occ.image}
+              alt={occ.title}
+              className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+            />
+            {/* Dark Vignette Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent transition-opacity duration-300 group-hover:opacity-90" />
+
+            {/* Title & Subtitle Container */}
+            <div className="absolute bottom-6 left-6 right-6 z-10 text-white">
+              <h4 className="font-serif-editorial text-2xl md:text-3xl font-medium tracking-wide mb-1">
+                {occ.title}
+              </h4>
+              <p className="text-xs font-light text-[#FAF6EE]/80 font-sans">
+                {occ.subtitle}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+};
