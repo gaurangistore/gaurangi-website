@@ -9,13 +9,14 @@ export const HeroSection: React.FC = () => {
     <section className="relative w-full h-[92vh] min-h-[640px] flex items-center justify-center overflow-hidden">
       {/* Background Photography (Editorial Style) */}
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 ease-out scale-105"
+        className="absolute inset-0 bg-cover bg-no-repeat transition-transform duration-1000 ease-out"
         style={{
           backgroundImage: `url('${DUMMY_IMAGE}')`,
+          backgroundPosition: 'center 12%',
         }}
       >
-        {/* Soft Dark Vignette Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/40" />
+        {/* Soft Vignette & Text Readability Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0C0C0E]/90 via-[#0C0C0E]/40 to-[#0C0C0E]/30" />
       </div>
 
       {/* Hero Cover Magazine Content */}
