@@ -28,7 +28,7 @@ export const Lookbook: React.FC = () => {
           <img
             src={DUMMY_IMAGE}
             alt="Lookbook Editorial Main"
-            className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
+            className="w-full h-full object-cover object-top transition-transform duration-1000 ease-out group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
           <div className="absolute bottom-8 left-8 text-white">
@@ -45,7 +45,7 @@ export const Lookbook: React.FC = () => {
             <img
               src={DUMMY_IMAGE}
               alt="Lookbook Editorial Detail"
-              className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+              className="w-full h-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
             <div className="absolute bottom-6 left-6 text-white">

@@ -118,7 +118,7 @@ export const NewArrivals: React.FC = () => {
                 <img
                   src={item.image}
                   alt={item.name}
-                  className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                  className="w-full h-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-105"
                 />
 
                 {/* Subtle Hover Action Pill */}

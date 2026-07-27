@@ -86,7 +86,7 @@ export const TrendingCategories: React.FC = () => {
             <img
               src={activeCategory.image}
               alt={activeCategory.name}
-              className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+              className="w-full h-full object-cover object-top transition-transform duration-700 hover:scale-105"
             />
           </div>
 

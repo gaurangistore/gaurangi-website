@@ -49,7 +49,7 @@ export const InstagramGallery: React.FC = () => {
             <img
               src={img.url}
               alt={`Instagram Gallery ${idx}`}
-              className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+              className="w-full h-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center text-white">
               <span className="text-xs font-medium tracking-widest uppercase bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/30">

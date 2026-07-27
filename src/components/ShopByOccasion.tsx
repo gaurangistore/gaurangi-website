@@ -67,7 +67,7 @@ export const ShopByOccasion: React.FC = () => {
             <img
               src={occ.image}
               alt={occ.title}
-              className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+              className="w-full h-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
             />
             {/* Dark Vignette Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent transition-opacity duration-300 group-hover:opacity-90" />
