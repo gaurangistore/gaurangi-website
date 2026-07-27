@@ -9,6 +9,8 @@ export const NewArrivals: React.FC = () => {
   const products = data.products && data.products.length > 0 ? data.products : [];
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  if (products.length === 0) return null;
+
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
       const { scrollLeft, clientWidth } = scrollRef.current;
@@ -90,17 +92,25 @@ export const NewArrivals: React.FC = () => {
 
               {/* Minimal Product Meta */}
               <div className="p-5 flex flex-col gap-1.5">
-                <span className="text-[0.68rem] tracking-widest uppercase text-[#C5A059] font-medium">
-                  {item.category}
-                </span>
-                <h4 className="font-serif-editorial text-lg text-[#1F1F1F] font-medium leading-snug line-clamp-1">
-                  {item.name}
-                </h4>
-                <p className="text-xs text-gray-500 font-light">{item.fabric}</p>
-                <div className="mt-3 pt-3 border-t border-[#EAE5D9] flex items-center justify-between">
-                  <span className="font-serif-editorial text-base font-semibold text-[#7A1C30]">
-                    {item.price}
+                {item.category && (
+                  <span className="text-[0.68rem] tracking-widest uppercase text-[#C5A059] font-medium">
+                    {item.category}
                   </span>
+                )}
+                {item.name && (
+                  <h4 className="font-serif-editorial text-lg text-[#1F1F1F] font-medium leading-snug line-clamp-1">
+                    {item.name}
+                  </h4>
+                )}
+                {item.fabric && (
+                  <p className="text-xs text-gray-500 font-light">{item.fabric}</p>
+                )}
+                <div className="mt-3 pt-3 border-t border-[#EAE5D9] flex items-center justify-between">
+                  {item.price ? (
+                    <span className="font-serif-editorial text-base font-semibold text-[#7A1C30]">
+                      {item.price}
+                    </span>
+                  ) : <div />}
                   <button className="text-xs tracking-wider uppercase font-medium text-[#7A1C30] hover:underline flex items-center gap-1">
                     <ShoppingBag size={13} /> Add
                   </button>

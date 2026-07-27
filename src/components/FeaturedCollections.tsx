@@ -8,6 +8,8 @@ export const FeaturedCollections: React.FC = () => {
   const { data } = useContent();
   const collections = data.collections && data.collections.length > 0 ? data.collections : [];
 
+  if (collections.length === 0) return null;
+
   return (
     <section id="collections" className="py-24 px-6 md:px-12 max-w-7xl mx-auto">
       {/* Section Header */}
@@ -39,21 +41,27 @@ export const FeaturedCollections: React.FC = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
               {/* Top Tag */}
-              <div className="absolute top-6 left-6 z-10">
-                <span className="px-3.5 py-1 rounded-full bg-white/80 backdrop-blur-md text-[0.68rem] tracking-widest uppercase font-semibold text-[#7A1C30] border border-[#C5A059]/30">
-                  {item.tag}
-                </span>
-              </div>
+              {item.tag && (
+                <div className="absolute top-6 left-6 z-10">
+                  <span className="px-3.5 py-1 rounded-full bg-white/80 backdrop-blur-md text-[0.68rem] tracking-widest uppercase font-semibold text-[#7A1C30] border border-[#C5A059]/30">
+                    {item.tag}
+                  </span>
+                </div>
+              )}
 
               {/* Bottom Editorial Text */}
               <div className="absolute bottom-8 left-6 right-6 z-10 text-white flex items-end justify-between">
                 <div>
-                  <h4 className="font-serif-editorial text-2xl md:text-3xl font-medium tracking-wide mb-1">
-                    {item.title}
-                  </h4>
-                  <p className="text-xs md:text-sm font-light text-[#FAF6EE]/80 max-w-sm">
-                    {item.subtitle}
-                  </p>
+                  {item.title && (
+                    <h4 className="font-serif-editorial text-2xl md:text-3xl font-medium tracking-wide mb-1">
+                      {item.title}
+                    </h4>
+                  )}
+                  {item.subtitle && (
+                    <p className="text-xs md:text-sm font-light text-[#FAF6EE]/80 max-w-sm">
+                      {item.subtitle}
+                    </p>
+                  )}
                 </div>
                 <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-white transition-all duration-300 group-hover:bg-[#7A1C30] group-hover:border-[#7A1C30]">
                   <ArrowUpRight className="w-5 h-5" />

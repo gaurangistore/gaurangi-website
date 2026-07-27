@@ -7,6 +7,8 @@ export const ShopByOccasion: React.FC = () => {
   const { data } = useContent();
   const occasions = data.occasions && data.occasions.length > 0 ? data.occasions : [];
 
+  if (occasions.length === 0) return null;
+
   return (
     <section id="occasions" className="py-24 px-6 md:px-12 max-w-7xl mx-auto">
       {/* Header */}
@@ -25,11 +27,11 @@ export const ShopByOccasion: React.FC = () => {
         {occasions.map((occ, idx) => (
           <div
             key={idx}
-            className={`group relative overflow-hidden rounded-2xl border border-[#EAE5D9] cursor-pointer ${occ.gridSpan}`}
+            className={`group relative overflow-hidden rounded-2xl border border-[#EAE5D9] cursor-pointer ${occ.gridSpan || ''}`}
           >
             <img
               src={occ.image}
-              alt={occ.title}
+              alt={occ.title || 'Occasion'}
               className="w-full h-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
             />
             {/* Dark Vignette Overlay */}
@@ -37,12 +39,16 @@ export const ShopByOccasion: React.FC = () => {
 
             {/* Title & Subtitle Container */}
             <div className="absolute bottom-6 left-6 right-6 z-10 text-white">
-              <h4 className="font-serif-editorial text-2xl md:text-3xl font-medium tracking-wide mb-1">
-                {occ.title}
-              </h4>
-              <p className="text-xs font-light text-[#FAF6EE]/80 font-sans">
-                {occ.subtitle}
-              </p>
+              {occ.title && (
+                <h4 className="font-serif-editorial text-2xl md:text-3xl font-medium tracking-wide mb-1">
+                  {occ.title}
+                </h4>
+              )}
+              {occ.subtitle && (
+                <p className="text-xs font-light text-[#FAF6EE]/80 font-sans">
+                  {occ.subtitle}
+                </p>
+              )}
             </div>
           </div>
         ))}

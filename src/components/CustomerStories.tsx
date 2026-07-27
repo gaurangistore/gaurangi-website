@@ -8,6 +8,8 @@ export const CustomerStories: React.FC = () => {
   const { data } = useContent();
   const stories = data.customerStories && data.customerStories.length > 0 ? data.customerStories : [];
 
+  if (stories.length === 0) return null;
+
   return (
     <section className="py-24 bg-[#F3EFEA] border-y border-[#EAE5D9]">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
@@ -31,24 +33,32 @@ export const CustomerStories: React.FC = () => {
             >
               <div>
                 <Quote className="w-8 h-8 text-[#C5A059] opacity-60 mb-4" />
-                <p className="font-serif-editorial text-lg text-[#1F1F1F] font-normal leading-relaxed italic mb-6">
-                  "{story.quote}"
-                </p>
+                {story.quote && (
+                  <p className="font-serif-editorial text-lg text-[#1F1F1F] font-normal leading-relaxed italic mb-6">
+                    "{story.quote}"
+                  </p>
+                )}
               </div>
 
               <div className="flex items-center gap-4 pt-4 border-t border-[#EAE5D9]">
-                <img
-                  src={story.image}
-                  alt={story.name}
-                  className="w-12 h-12 rounded-full object-cover border border-[#C5A059]"
-                />
+                {story.image && (
+                  <img
+                    src={story.image}
+                    alt={story.name || 'Client'}
+                    className="w-12 h-12 rounded-full object-cover border border-[#C5A059]"
+                  />
+                )}
                 <div>
-                  <h4 className="font-serif-editorial text-base text-[#7A1C30] font-medium">
-                    {story.name}
-                  </h4>
-                  <span className="text-[0.72rem] text-gray-500 font-sans block">
-                    {story.location} • {story.occasion}
-                  </span>
+                  {story.name && (
+                    <h4 className="font-serif-editorial text-base text-[#7A1C30] font-medium">
+                      {story.name}
+                    </h4>
+                  )}
+                  {(story.location || story.occasion) && (
+                    <span className="text-[0.72rem] text-gray-500 font-sans block">
+                      {story.location} {story.location && story.occasion ? '• ' : ''}{story.occasion}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
