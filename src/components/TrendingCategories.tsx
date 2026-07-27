@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { ArrowRight } from 'lucide-react';
+import { DUMMY_IMAGE } from '@/lib/constants';
 
 interface CategoryTab {
   id: string;
@@ -16,28 +17,28 @@ const CATEGORIES: CategoryTab[] = [
     id: 'dress-materials',
     name: 'Dress Materials',
     count: '34 Curated Edits',
-    image: 'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?q=80&w=1000&auto=format&fit=crop',
+    image: DUMMY_IMAGE,
     description: 'Unstitched pure silks, hand-embroidered organza & linen coordinates ready for bespoke tailoring.',
   },
   {
     id: 'heritage-sarees',
     name: 'Heritage Sarees',
     count: '42 Masterpieces',
-    image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=1000&auto=format&fit=crop',
+    image: DUMMY_IMAGE,
     description: 'Kanjivarams, Banarasis, Chanderis & Tussars woven by master handloom weavers.',
   },
   {
     id: 'tailored-formals',
     name: 'Contemporary Wear',
     count: '28 Styles',
-    image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1000&auto=format&fit=crop',
+    image: DUMMY_IMAGE,
     description: 'Structured linen resort shirts, fluid wide-leg trousers & unisex minimal blazers.',
   },
   {
     id: 'artisan-accessories',
     name: 'Artisan Accessories',
     count: '19 Fine Pieces',
-    image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=1000&auto=format&fit=crop',
+    image: DUMMY_IMAGE,
     description: 'Handcrafted gold vermeil jewelry, leather footwear, and silk drapes.',
   },
 ];

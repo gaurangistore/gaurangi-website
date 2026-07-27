@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Quote } from 'lucide-react';
+import { DUMMY_IMAGE } from '@/lib/constants';
 
 interface CustomerStory {
   id: string;
@@ -19,7 +20,7 @@ const STORIES: CustomerStory[] = [
     location: 'New Delhi',
     quote:
       'The Chanderi silk weave felt completely weightless during my sister’s sangeet. The drape is so soft and regal.',
-    image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop',
+    image: DUMMY_IMAGE,
     occasion: 'Sister’s Sangeet Ceremony',
   },
   {
@@ -28,7 +29,7 @@ const STORIES: CustomerStory[] = [
     location: 'Mumbai',
     quote:
       'We wanted matching heritage outfits that didn’t feel over-dramatic. Gaurangi delivered pure timeless luxury.',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=600&auto=format&fit=crop',
+    image: DUMMY_IMAGE,
     occasion: 'Anniversary Celebration',
   },
   {
@@ -37,7 +38,7 @@ const STORIES: CustomerStory[] = [
     location: 'Bengaluru',
     quote:
       'Finding linen coordinates that look structured for medical conferences yet feel comfortable in heat is rare. Truly impressive.',
-    image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=600&auto=format&fit=crop',
+    image: DUMMY_IMAGE,
     occasion: 'Executive Conference',
   },
 ];

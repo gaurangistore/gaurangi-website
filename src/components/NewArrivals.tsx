@@ -2,6 +2,7 @@
 
 import React, { useRef } from 'react';
 import { ChevronLeft, ChevronRight, Heart, Eye, ShoppingBag } from 'lucide-react';
+import { DUMMY_IMAGE } from '@/lib/constants';
 
 interface ArrivalItem {
   id: string;
@@ -18,7 +19,7 @@ const NEW_ARRIVALS: ArrivalItem[] = [
     name: 'Chanderi Zari Silk Ensemble',
     fabric: 'Handloom Chanderi Silk',
     price: '₹ 14,500',
-    image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=800&auto=format&fit=crop',
+    image: DUMMY_IMAGE,
     category: 'Festive Wear',
   },
   {
@@ -26,7 +27,7 @@ const NEW_ARRIVALS: ArrivalItem[] = [
     name: 'Organza Floral Embroidered Saree',
     fabric: 'Pure Organza & Metallic Thread',
     price: '₹ 18,900',
-    image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=800&auto=format&fit=crop',
+    image: DUMMY_IMAGE,
     category: 'Luxury Handcraft',
   },
   {
@@ -34,7 +35,7 @@ const NEW_ARRIVALS: ArrivalItem[] = [
     name: 'Tussar Raw Silk Dress Material',
     fabric: 'Unstitched Pure Silk & Dupatta',
     price: '₹ 12,200',
-    image: 'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?q=80&w=800&auto=format&fit=crop',
+    image: DUMMY_IMAGE,
     category: 'Dress Materials',
   },
   {
@@ -42,7 +43,7 @@ const NEW_ARRIVALS: ArrivalItem[] = [
     name: 'Ivory Zardosi Velvet Jacket',
     fabric: 'Hand-embroidered Micro Velvet',
     price: '₹ 22,000',
-    image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=800&auto=format&fit=crop',
+    image: DUMMY_IMAGE,
     category: 'Haute Outerwear',
   },
   {
@@ -50,7 +51,7 @@ const NEW_ARRIVALS: ArrivalItem[] = [
     name: 'Royal Kanjivaram Brocade Saree',
     fabric: 'Mulberry Silk & Real Silver Zari',
     price: '₹ 34,000',
-    image: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=800&auto=format&fit=crop',
+    image: DUMMY_IMAGE,
     category: 'Heritage Weaves',
   },
 ];

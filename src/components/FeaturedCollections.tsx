@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { ArrowUpRight } from 'lucide-react';
+import { DUMMY_IMAGE } from '@/lib/constants';
 
 interface CollectionCard {
   id: string;
@@ -16,28 +17,28 @@ const COLLECTIONS: CollectionCard[] = [
     id: 'col-1',
     title: 'Wedding Collection',
     subtitle: 'Woven for grand celebrations and sacred vows.',
-    image: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=1000&auto=format&fit=crop',
+    image: DUMMY_IMAGE,
     tag: 'Haute Couture',
   },
   {
     id: 'col-2',
     title: 'Festive Splendor',
     subtitle: 'Vibrant silk weaves & intricate hand-embroidery.',
-    image: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=80&w=1000&auto=format&fit=crop',
+    image: DUMMY_IMAGE,
     tag: 'Artisanal Edit',
   },
   {
     id: 'col-3',
     title: 'Daily Elegance',
     subtitle: 'Breathable linen & lightweight organic cottons.',
-    image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1000&auto=format&fit=crop',
+    image: DUMMY_IMAGE,
     tag: 'Everyday Chic',
   },
   {
     id: 'col-4',
     title: 'Contemporary Formals',
     subtitle: 'Structured silhouettes for modern executive grace.',
-    image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1000&auto=format&fit=crop',
+    image: DUMMY_IMAGE,
     tag: 'Modern Tailoring',
   },
 ];

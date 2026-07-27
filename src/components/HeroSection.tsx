@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { ArrowRight, Sparkles } from 'lucide-react';
+import { DUMMY_IMAGE } from '@/lib/constants';
 
 export const HeroSection: React.FC = () => {
   return (
@@ -10,8 +11,7 @@ export const HeroSection: React.FC = () => {
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 ease-out scale-105"
         style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=2000&auto=format&fit=crop')",
+          backgroundImage: `url('${DUMMY_IMAGE}')`,
         }}
       >
         {/* Soft Dark Vignette Overlay */}

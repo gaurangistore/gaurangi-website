@@ -2,22 +2,23 @@
 
 import React from 'react';
 import { Camera } from 'lucide-react';
+import { DUMMY_IMAGE } from '@/lib/constants';
 
 const INSTA_IMAGES = [
   {
-    url: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=600&auto=format&fit=crop',
+    url: DUMMY_IMAGE,
     tag: '#GaurangiWomen',
   },
   {
-    url: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=600&auto=format&fit=crop',
+    url: DUMMY_IMAGE,
     tag: '#HandloomSilk',
   },
   {
-    url: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=80&w=600&auto=format&fit=crop',
+    url: DUMMY_IMAGE,
     tag: '#FestiveGaurangi',
   },
   {
-    url: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=600&auto=format&fit=crop',
+    url: DUMMY_IMAGE,
     tag: '#SilkSareeStory',
   },
 ];

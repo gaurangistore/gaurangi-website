@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { DUMMY_IMAGE } from '@/lib/constants';
 
 interface OccasionTile {
   title: string;
@@ -13,31 +14,31 @@ const OCCASIONS: OccasionTile[] = [
   {
     title: 'Wedding Celebrations',
     subtitle: 'Royal weaves & embroidered grandeur',
-    image: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=1000&auto=format&fit=crop',
+    image: DUMMY_IMAGE,
     gridSpan: 'md:col-span-2 md:row-span-2',
   },
   {
     title: 'Festive Rituals',
     subtitle: 'Silk drapes & vibrant hues',
-    image: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=80&w=800&auto=format&fit=crop',
+    image: DUMMY_IMAGE,
     gridSpan: 'md:col-span-1 md:row-span-1',
   },
   {
     title: 'Evening Galas',
     subtitle: 'Backless velvet & satin slips',
-    image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=800&auto=format&fit=crop',
+    image: DUMMY_IMAGE,
     gridSpan: 'md:col-span-1 md:row-span-1',
   },
   {
     title: 'Executive Wear',
     subtitle: 'Structured linen & tailored formals',
-    image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=800&auto=format&fit=crop',
+    image: DUMMY_IMAGE,
     gridSpan: 'md:col-span-1 md:row-span-1',
   },
   {
     title: 'Casual Luxury',
     subtitle: 'Hand-printed cottons & easy coordinates',
-    image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop',
+    image: DUMMY_IMAGE,
     gridSpan: 'md:col-span-1 md:row-span-1',
   },
 ];
