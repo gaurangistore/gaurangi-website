@@ -2,61 +2,11 @@
 
 import React, { useRef } from 'react';
 import { ChevronLeft, ChevronRight, Heart, Eye, ShoppingBag } from 'lucide-react';
-import { DUMMY_IMAGE } from '@/lib/constants';
-
-interface ArrivalItem {
-  id: string;
-  name: string;
-  fabric: string;
-  price: string;
-  image: string;
-  category: string;
-}
-
-const NEW_ARRIVALS: ArrivalItem[] = [
-  {
-    id: 'arr-1',
-    name: 'Chanderi Zari Silk Ensemble',
-    fabric: 'Handloom Chanderi Silk',
-    price: '₹ 14,500',
-    image: DUMMY_IMAGE,
-    category: 'Festive Wear',
-  },
-  {
-    id: 'arr-2',
-    name: 'Organza Floral Embroidered Saree',
-    fabric: 'Pure Organza & Metallic Thread',
-    price: '₹ 18,900',
-    image: DUMMY_IMAGE,
-    category: 'Luxury Handcraft',
-  },
-  {
-    id: 'arr-3',
-    name: 'Tussar Raw Silk Dress Material',
-    fabric: 'Unstitched Pure Silk & Dupatta',
-    price: '₹ 12,200',
-    image: DUMMY_IMAGE,
-    category: 'Dress Materials',
-  },
-  {
-    id: 'arr-4',
-    name: 'Ivory Zardosi Velvet Jacket',
-    fabric: 'Hand-embroidered Micro Velvet',
-    price: '₹ 22,000',
-    image: DUMMY_IMAGE,
-    category: 'Haute Outerwear',
-  },
-  {
-    id: 'arr-5',
-    name: 'Royal Kanjivaram Brocade Saree',
-    fabric: 'Mulberry Silk & Real Silver Zari',
-    price: '₹ 34,000',
-    image: DUMMY_IMAGE,
-    category: 'Heritage Weaves',
-  },
-];
+import { useContent } from '@/context/ContentContext';
 
 export const NewArrivals: React.FC = () => {
+  const { data } = useContent();
+  const products = data.products && data.products.length > 0 ? data.products : [];
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const scroll = (direction: 'left' | 'right') => {
@@ -108,7 +58,7 @@ export const NewArrivals: React.FC = () => {
           ref={scrollRef}
           className="flex gap-6 overflow-x-auto no-scrollbar scroll-smooth pb-4"
         >
-          {NEW_ARRIVALS.map((item) => (
+          {products.map((item) => (
             <div
               key={item.id}
               className="flex-shrink-0 w-[280px] md:w-[320px] group bg-[#FAF6EE] rounded-xl overflow-hidden border border-[#EAE5D9] transition-all duration-300 hover:shadow-lg"

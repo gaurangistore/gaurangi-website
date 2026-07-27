@@ -2,48 +2,12 @@
 
 import React from 'react';
 import { ArrowUpRight } from 'lucide-react';
-import { DUMMY_IMAGE } from '@/lib/constants';
-
-interface CollectionCard {
-  id: string;
-  title: string;
-  subtitle: string;
-  image: string;
-  tag: string;
-}
-
-const COLLECTIONS: CollectionCard[] = [
-  {
-    id: 'col-1',
-    title: 'Wedding Collection',
-    subtitle: 'Woven for grand celebrations and sacred vows.',
-    image: DUMMY_IMAGE,
-    tag: 'Haute Couture',
-  },
-  {
-    id: 'col-2',
-    title: 'Festive Splendor',
-    subtitle: 'Vibrant silk weaves & intricate hand-embroidery.',
-    image: DUMMY_IMAGE,
-    tag: 'Artisanal Edit',
-  },
-  {
-    id: 'col-3',
-    title: 'Daily Elegance',
-    subtitle: 'Breathable linen & lightweight organic cottons.',
-    image: DUMMY_IMAGE,
-    tag: 'Everyday Chic',
-  },
-  {
-    id: 'col-4',
-    title: 'Contemporary Formals',
-    subtitle: 'Structured silhouettes for modern executive grace.',
-    image: DUMMY_IMAGE,
-    tag: 'Modern Tailoring',
-  },
-];
+import { useContent } from '@/context/ContentContext';
 
 export const FeaturedCollections: React.FC = () => {
+  const { data } = useContent();
+  const collections = data.collections && data.collections.length > 0 ? data.collections : [];
+
   return (
     <section id="collections" className="py-24 px-6 md:px-12 max-w-7xl mx-auto">
       {/* Section Header */}
@@ -59,7 +23,7 @@ export const FeaturedCollections: React.FC = () => {
 
       {/* Grid of Large Editorial Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-        {COLLECTIONS.map((item) => (
+        {collections.map((item) => (
           <div
             key={item.id}
             className="group relative overflow-hidden rounded-2xl bg-[#F3EFEA] border border-[#EAE5D9] transition-all duration-500 hover:shadow-2xl"

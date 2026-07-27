@@ -2,48 +2,12 @@
 
 import React from 'react';
 import { Quote } from 'lucide-react';
-import { DUMMY_IMAGE } from '@/lib/constants';
-
-interface CustomerStory {
-  id: string;
-  name: string;
-  location: string;
-  quote: string;
-  image: string;
-  occasion: string;
-}
-
-const STORIES: CustomerStory[] = [
-  {
-    id: 's1',
-    name: 'Ananya Sharma',
-    location: 'New Delhi',
-    quote:
-      'The Chanderi silk weave felt completely weightless during my sister’s sangeet. The drape is so soft and regal.',
-    image: DUMMY_IMAGE,
-    occasion: 'Sister’s Sangeet Ceremony',
-  },
-  {
-    id: 's2',
-    name: 'Rohan & Meera Merchant',
-    location: 'Mumbai',
-    quote:
-      'We wanted matching heritage outfits that didn’t feel over-dramatic. Gaurangi delivered pure timeless luxury.',
-    image: DUMMY_IMAGE,
-    occasion: 'Anniversary Celebration',
-  },
-  {
-    id: 's3',
-    name: 'Dr. Priya Varma',
-    location: 'Bengaluru',
-    quote:
-      'Finding linen coordinates that look structured for medical conferences yet feel comfortable in heat is rare. Truly impressive.',
-    image: DUMMY_IMAGE,
-    occasion: 'Executive Conference',
-  },
-];
+import { useContent } from '@/context/ContentContext';
 
 export const CustomerStories: React.FC = () => {
+  const { data } = useContent();
+  const stories = data.customerStories && data.customerStories.length > 0 ? data.customerStories : [];
+
   return (
     <section className="py-24 bg-[#F3EFEA] border-y border-[#EAE5D9]">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
@@ -60,7 +24,7 @@ export const CustomerStories: React.FC = () => {
 
         {/* Stories Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {STORIES.map((story) => (
+          {stories.map((story) => (
             <div
               key={story.id}
               className="bg-[#FAF6EE] p-8 rounded-2xl border border-[#EAE5D9] flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow"

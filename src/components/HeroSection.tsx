@@ -2,76 +2,31 @@
 
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
-import { DUMMY_IMAGE } from '@/lib/constants';
-
-interface SlideData {
-  id: number;
-  badge: string;
-  title: string;
-  italicTitle: string;
-  tagline: string;
-  weave: string;
-  craft: string;
-  occasion: string;
-  image: string;
-}
-
-const HERO_SLIDES: SlideData[] = [
-  {
-    id: 1,
-    badge: 'Editorial Selection • 2026',
-    title: 'Autumn',
-    italicTitle: 'Heritage',
-    tagline: 'Crafted for celebrations. Designed for timeless elegance. Discover handloom silk weaves, real zari embroidery, and bespoke luxury tailoring.',
-    weave: 'Banarasi Silk',
-    craft: 'Zari Work',
-    occasion: 'Festive Edit',
-    image: DUMMY_IMAGE,
-  },
-  {
-    id: 2,
-    badge: 'Artisanal Handcraft • 2026',
-    title: 'Festive',
-    italicTitle: 'Splendor',
-    tagline: 'Vibrant silk weaves & intricate hand-embroidery woven by master artisans for grand royal celebrations.',
-    weave: 'Organza Silk',
-    craft: 'Floral Zardosi',
-    occasion: 'Bridal Sangeet',
-    image: DUMMY_IMAGE,
-  },
-  {
-    id: 3,
-    badge: 'Royal Weaves • 2026',
-    title: 'Kanjivaram',
-    italicTitle: 'Grace',
-    tagline: 'Pure mulberry silk with authentic gold & silver zari borders crafted for unforgettable wedding moments.',
-    weave: 'Kanjivaram Silk',
-    craft: 'Gold Threading',
-    occasion: 'Grand Wedding',
-    image: DUMMY_IMAGE,
-  },
-];
+import { useContent } from '@/context/ContentContext';
 
 export const HeroSection: React.FC = () => {
+  const { data } = useContent();
+  const slides = data.heroSlides && data.heroSlides.length > 0 ? data.heroSlides : [];
   const [currentSlide, setCurrentSlide] = useState(0);
 
   // Auto-play slider every 5 seconds
   useEffect(() => {
+    if (slides.length <= 1) return;
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [slides.length]);
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length);
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
   };
 
-  const active = HERO_SLIDES[currentSlide];
+  const active = slides[currentSlide] || slides[0];
 
   return (
     <section className="relative w-full bg-[#FAF6EE] text-[#1F1F1F] overflow-hidden py-12 md:py-16 border-b border-[#EAE5D9]">
@@ -148,7 +103,7 @@ export const HeroSection: React.FC = () => {
 
           {/* Slide Indicator Dots */}
           <div className="flex items-center gap-3 pt-2">
-            {HERO_SLIDES.map((slide, index) => (
+            {slides.map((slide, index) => (
               <button
                 key={slide.id}
                 onClick={() => setCurrentSlide(index)}

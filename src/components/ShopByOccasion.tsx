@@ -1,49 +1,12 @@
 'use client';
 
 import React from 'react';
-import { DUMMY_IMAGE } from '@/lib/constants';
-
-interface OccasionTile {
-  title: string;
-  subtitle: string;
-  image: string;
-  gridSpan: string;
-}
-
-const OCCASIONS: OccasionTile[] = [
-  {
-    title: 'Wedding Celebrations',
-    subtitle: 'Royal weaves & embroidered grandeur',
-    image: DUMMY_IMAGE,
-    gridSpan: 'md:col-span-2 md:row-span-2',
-  },
-  {
-    title: 'Festive Rituals',
-    subtitle: 'Silk drapes & vibrant hues',
-    image: DUMMY_IMAGE,
-    gridSpan: 'md:col-span-1 md:row-span-1',
-  },
-  {
-    title: 'Evening Galas',
-    subtitle: 'Backless velvet & satin slips',
-    image: DUMMY_IMAGE,
-    gridSpan: 'md:col-span-1 md:row-span-1',
-  },
-  {
-    title: 'Executive Wear',
-    subtitle: 'Structured linen & tailored formals',
-    image: DUMMY_IMAGE,
-    gridSpan: 'md:col-span-1 md:row-span-1',
-  },
-  {
-    title: 'Casual Luxury',
-    subtitle: 'Hand-printed cottons & easy coordinates',
-    image: DUMMY_IMAGE,
-    gridSpan: 'md:col-span-1 md:row-span-1',
-  },
-];
+import { useContent } from '@/context/ContentContext';
 
 export const ShopByOccasion: React.FC = () => {
+  const { data } = useContent();
+  const occasions = data.occasions && data.occasions.length > 0 ? data.occasions : [];
+
   return (
     <section id="occasions" className="py-24 px-6 md:px-12 max-w-7xl mx-auto">
       {/* Header */}
@@ -59,7 +22,7 @@ export const ShopByOccasion: React.FC = () => {
 
       {/* Grid Layout of Visual Tiles */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[280px]">
-        {OCCASIONS.map((occ, idx) => (
+        {occasions.map((occ, idx) => (
           <div
             key={idx}
             className={`group relative overflow-hidden rounded-2xl border border-[#EAE5D9] cursor-pointer ${occ.gridSpan}`}

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { ContentProvider } from '@/context/ContentContext';
 
 export const metadata: Metadata = {
   title: 'Gaurangi Fashions | Luxury Modern Ethnic Boutique',
@@ -23,7 +24,7 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-[#FAF6EE] text-[#1F1F1F] font-sans antialiased selection:bg-[#7A1C30] selection:text-white">
-        {children}
+        <ContentProvider>{children}</ContentProvider>
       </body>
     </html>
   );

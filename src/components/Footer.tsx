@@ -2,8 +2,16 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useContent } from '@/context/ContentContext';
 
 export const Footer: React.FC = () => {
+  const { data } = useContent();
+  const contact = data.contactInfo || {
+    storeName: 'Gaurangi Fashions',
+    tagline: 'A premium digital fashion boutique where every collection tells a story.',
+    email: 'gaurangi.store@gmail.com',
+  };
+
   return (
     <footer className="bg-[#1F1F1F] text-white pt-20 pb-12 border-t border-[#333333]">
       <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
@@ -18,7 +26,7 @@ export const Footer: React.FC = () => {
             </span>
           </Link>
           <p className="text-xs text-gray-400 font-light leading-relaxed max-w-sm mt-2 font-sans">
-            "A premium digital fashion boutique where every collection tells a story." Designed with passion, curated by artisans, and woven from natural luxury fabrics.
+            "{contact.tagline}" Designed with passion, curated by artisans, and woven from natural luxury fabrics.
           </p>
           <div className="flex items-center gap-4 text-xs text-[#C5A059] mt-2">
             <span>New Delhi</span> • <span>Mumbai</span> • <span>Bengaluru</span>
@@ -52,8 +60,8 @@ export const Footer: React.FC = () => {
           </ul>
           <div className="text-xs text-gray-400">
             <span>Client Care: </span>
-            <a href="mailto:gaurangi.store@gmail.com" className="text-[#C5A059] underline hover:text-white">
-              gaurangi.store@gmail.com
+            <a href={`mailto:${contact.email}`} className="text-[#C5A059] underline hover:text-white">
+              {contact.email}
             </a>
           </div>
         </div>
