@@ -6,16 +6,16 @@ import { DUMMY_IMAGE } from '@/lib/constants';
 
 export const HeroSection: React.FC = () => {
   return (
-    <section className="relative w-full min-h-screen bg-[#141213] text-[#FAF6EE] overflow-hidden -mt-20 pt-24 pb-12 flex items-center border-b border-[#C5A059]/20">
+    <section className="relative w-full min-h-screen bg-[#0C0C0E] text-[#FAF6EE] overflow-hidden -mt-20 pt-28 pb-16 flex items-center border-b border-[#C5A059]/30">
       
       {/* Background Soft Glow Accents */}
-      <div className="absolute top-10 left-10 w-[500px] h-[500px] bg-[#7A1C30]/25 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-10 right-10 w-[400px] h-[400px] bg-[#C5A059]/15 rounded-full blur-[130px] pointer-events-none" />
+      <div className="absolute top-1/4 right-1/4 w-[600px] h-[600px] bg-[#7A1C30]/20 rounded-full blur-[160px] pointer-events-none" />
+      <div className="absolute bottom-10 left-10 w-[500px] h-[500px] bg-[#C5A059]/15 rounded-full blur-[140px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-6 md:px-12 w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10 my-auto">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center relative z-10 my-auto">
         
         {/* Left Column: Storytelling & Typography */}
-        <div className="lg:col-span-6 flex flex-col items-start text-left space-y-6 pt-6">
+        <div className="lg:col-span-6 flex flex-col items-start text-left space-y-6">
           
           {/* Editorial Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-[#C5A059]/40 shadow-sm">
@@ -33,11 +33,11 @@ export const HeroSection: React.FC = () => {
 
           {/* Tagline */}
           <p className="text-base md:text-lg font-light text-[#FAF6EE]/85 max-w-lg font-sans leading-relaxed">
-            Crafted for celebrations. Designed for timeless elegance. Discover handloom silk weaves and intricate bridal embroidery.
+            Crafted for celebrations. Designed for timeless elegance. Discover handloom silk weaves, real zari embroidery, and bespoke luxury tailoring.
           </p>
 
           {/* Highlights */}
-          <div className="grid grid-cols-3 gap-4 py-4 border-y border-[#C5A059]/20 w-full max-w-lg">
+          <div className="grid grid-cols-3 gap-4 py-4 border-y border-[#C5A059]/25 w-full max-w-lg">
             <div>
               <span className="block text-[0.65rem] uppercase tracking-widest text-[#C5A059]">Weave</span>
               <span className="font-serif-editorial text-sm md:text-base text-white">Banarasi Silk</span>
@@ -64,24 +64,27 @@ export const HeroSection: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Column: Full Uncropped Portrait Model Photo */}
+        {/* Right Column: Golden Arch Model Portrait Frame */}
         <div className="lg:col-span-6 flex justify-center lg:justify-end items-center">
-          <div className="relative w-full max-w-[480px] h-[72vh] max-h-[660px] min-h-[480px] rounded-2xl overflow-hidden border border-[#C5A059]/40 shadow-2xl shadow-black/80 bg-[#1A1718] flex items-center justify-center p-2 group">
+          <div className="relative w-full max-w-[440px] aspect-[3/4] rounded-t-[140px] rounded-b-2xl overflow-hidden border-2 border-[#C5A059]/60 shadow-[0_0_50px_rgba(197,160,89,0.2)] bg-[#141213] group">
             
-            {/* Full Model Photo displaying 100% without any cropping */}
+            {/* Model Image framed inside Golden Arch */}
             <img
               src={DUMMY_IMAGE}
               alt="Gaurangi Fashions Saree Model"
-              className="w-full h-full object-contain object-center rounded-xl transition-transform duration-700 ease-out group-hover:scale-102"
+              className="w-full h-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
             />
 
-            {/* Bottom Caption Overlay */}
-            <div className="absolute bottom-5 left-5 right-5 z-10 flex items-center justify-between p-3.5 rounded-xl bg-[#141213]/85 backdrop-blur-md border border-[#C5A059]/30">
+            {/* Ambient Lighting Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0C0C0E]/90 via-transparent to-transparent pointer-events-none" />
+
+            {/* Bottom Caption Overlay Pill */}
+            <div className="absolute bottom-5 left-5 right-5 z-10 flex items-center justify-between p-3.5 rounded-xl bg-[#0C0C0E]/85 backdrop-blur-md border border-[#C5A059]/40">
               <div>
                 <span className="text-[0.62rem] tracking-widest uppercase text-[#C5A059] block">Featured Drape</span>
                 <span className="font-serif-editorial text-sm md:text-base text-white font-medium">Rose Gold Banarasi Saree</span>
               </div>
-              <span className="text-[0.7rem] px-3 py-1 rounded-full bg-[#7A1C30] text-white font-medium tracking-wide">
+              <span className="text-[0.7rem] px-3 py-1 rounded-full bg-[#7A1C30] text-white font-medium tracking-wide shadow-md">
                 Bestseller
               </span>
             </div>
