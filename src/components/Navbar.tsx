@@ -28,7 +28,7 @@ export const Navbar: React.FC = () => {
         className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
           isScrolled
             ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-[#EAE5D9] py-4'
-            : 'bg-gradient-to-b from-black/60 via-black/20 to-transparent text-white py-6'
+            : 'bg-[#FAF6EE]/80 backdrop-blur-md border-b border-[#EAE5D9]/60 text-[#1F1F1F] py-5'
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
@@ -49,41 +49,31 @@ export const Navbar: React.FC = () => {
           <nav className="hidden lg:flex items-center gap-8 text-[0.88rem] tracking-widest uppercase font-medium">
             <Link
               href="#collections"
-              className={`transition-colors hover:text-[#C5A059] ${
-                isScrolled ? 'text-[#1F1F1F]' : 'text-white'
-              }`}
+              className="transition-colors text-[#1F1F1F] hover:text-[#7A1C30]"
             >
               Collections
             </Link>
             <Link
               href="#occasions"
-              className={`transition-colors hover:text-[#C5A059] ${
-                isScrolled ? 'text-[#1F1F1F]' : 'text-white'
-              }`}
+              className="transition-colors text-[#1F1F1F] hover:text-[#7A1C30]"
             >
               Occasions
             </Link>
             <Link
               href="#new-arrivals"
-              className={`transition-colors hover:text-[#C5A059] ${
-                isScrolled ? 'text-[#1F1F1F]' : 'text-white'
-              }`}
+              className="transition-colors text-[#1F1F1F] hover:text-[#7A1C30]"
             >
               New Arrivals
             </Link>
             <Link
               href="#stories"
-              className={`transition-colors hover:text-[#C5A059] ${
-                isScrolled ? 'text-[#1F1F1F]' : 'text-white'
-              }`}
+              className="transition-colors text-[#1F1F1F] hover:text-[#7A1C30]"
             >
               Stories
             </Link>
             <Link
               href="#about"
-              className={`transition-colors hover:text-[#C5A059] ${
-                isScrolled ? 'text-[#1F1F1F]' : 'text-white'
-              }`}
+              className="transition-colors text-[#1F1F1F] hover:text-[#7A1C30]"
             >
               About
             </Link>
@@ -91,18 +81,10 @@ export const Navbar: React.FC = () => {
 
           {/* Center Brand Logo */}
           <Link href="/" className="text-center group">
-            <h1
-              className={`font-serif-editorial text-2xl md:text-3xl tracking-[0.2em] font-medium uppercase transition-colors ${
-                isScrolled ? 'text-[#7A1C30]' : 'text-white'
-              }`}
-            >
+            <h1 className="font-serif-editorial text-2xl md:text-3xl tracking-[0.2em] font-medium uppercase text-[#7A1C30]">
               GAURANGI
             </h1>
-            <span
-              className={`block text-[0.62rem] tracking-[0.35em] uppercase font-sans mt-[2px] transition-colors ${
-                isScrolled ? 'text-[#C5A059]' : 'text-[#FAF6EE]/80'
-              }`}
-            >
+            <span className="block text-[0.62rem] tracking-[0.35em] uppercase font-sans mt-[2px] text-[#C5A059]">
               Fashions • Boutique
             </span>
           </Link>
@@ -111,9 +93,7 @@ export const Navbar: React.FC = () => {
           <div className="flex items-center gap-5 md:gap-6">
             <button
               onClick={() => setSearchOpen(!searchOpen)}
-              className={`p-2 rounded-full transition-transform hover:scale-105 ${
-                isScrolled ? 'text-[#1F1F1F] hover:text-[#7A1C30]' : 'text-white hover:text-[#C5A059]'
-              }`}
+              className="p-2 rounded-full transition-transform hover:scale-105 text-[#1F1F1F] hover:text-[#7A1C30]"
               title="Search"
             >
               <Search size={20} strokeWidth={1.5} />
@@ -121,29 +101,21 @@ export const Navbar: React.FC = () => {
 
             <Link
               href="#wishlist"
-              className={`p-2 rounded-full transition-transform hover:scale-105 ${
-                isScrolled ? 'text-[#1F1F1F] hover:text-[#7A1C30]' : 'text-white hover:text-[#C5A059]'
-              }`}
+              className="p-2 rounded-full transition-transform hover:scale-105 text-[#1F1F1F] hover:text-[#7A1C30]"
               title="Wishlist"
             >
               <Heart size={20} strokeWidth={1.5} />
             </Link>
 
             <button
-              className={`p-2 rounded-full transition-transform hover:scale-105 ${
-                isScrolled ? 'text-[#1F1F1F] hover:text-[#7A1C30]' : 'text-white hover:text-[#C5A059]'
-              }`}
+              className="p-2 rounded-full transition-transform hover:scale-105 text-[#1F1F1F] hover:text-[#7A1C30]"
               title="Account"
             >
               <User size={20} strokeWidth={1.5} />
             </button>
 
             <button
-              className={`relative p-2.5 rounded-full transition-transform hover:scale-105 ${
-                isScrolled
-                  ? 'bg-[#7A1C30] text-white shadow-md'
-                  : 'bg-white/20 backdrop-blur-md text-white border border-white/30'
-              }`}
+              className="relative p-2.5 rounded-full transition-transform hover:scale-105 bg-[#7A1C30] text-white shadow-md"
               title="Wardrobe Cart"
             >
               <ShoppingBag size={18} strokeWidth={1.8} />
