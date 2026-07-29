@@ -100,12 +100,16 @@ export default function DressMaterialsPage() {
           <span className="text-[0.72rem] tracking-[0.3em] uppercase text-[#C5A059] font-medium block">
             Boutique Unstitched Collection
           </span>
-          <h1 className="font-serif-editorial text-4xl md:text-5xl text-[#7A1C30] font-light tracking-wide">
-            Premium Dress Materials
-          </h1>
-          <p className="text-sm font-light text-[#1F1F1F]/80 font-sans leading-relaxed max-w-xl mx-auto">
-            Discover unstitched pure silks, hand-embroidered organzas, Banarasi weaves, and breathable linens ready for bespoke tailoring.
-          </p>
+          { (data.dressMaterialsPageContent?.bannerTitle || 'Premium Dress Materials') && (
+            <h1 className="font-serif-editorial text-4xl md:text-5xl text-[#7A1C30] font-light tracking-wide">
+              {data.dressMaterialsPageContent?.bannerTitle || 'Premium Dress Materials'}
+            </h1>
+          )}
+          { (data.dressMaterialsPageContent?.bannerSubtitle) && (
+            <p className="text-sm font-light text-[#1F1F1F]/80 font-sans leading-relaxed max-w-xl mx-auto">
+              {data.dressMaterialsPageContent.bannerSubtitle}
+            </p>
+          )}
         </div>
       </section>
 

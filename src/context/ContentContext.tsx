@@ -79,6 +79,28 @@ export interface SectionVisibility {
   newsletter?: boolean;
 }
 
+export interface DressMaterialsPageContent {
+  bannerTitle: string;
+  bannerSubtitle: string;
+  fabrics: string[];
+}
+
+export interface ProductPageSettings {
+  defaultTopMetres: string;
+  defaultBottomMetres: string;
+  defaultDupattaMetres: string;
+  defaultWashCare: string;
+  shippingPolicyText: string;
+  returnPolicyText: string;
+  whatsAppNumber: string;
+}
+
+export interface AboutPageContent {
+  ethosTitle: string;
+  ethosSubtitle: string;
+  heritageNarrative: string;
+}
+
 export interface HomepageData {
   hiddenSections?: SectionVisibility;
   heroSlides: HeroSlide[];
@@ -88,6 +110,9 @@ export interface HomepageData {
   categories: CategoryItem[];
   customerStories: CustomerStoryItem[];
   contactInfo: SiteContactInfo;
+  dressMaterialsPageContent?: DressMaterialsPageContent;
+  productPageSettings?: ProductPageSettings;
+  aboutPageContent?: AboutPageContent;
 }
 
 // Default Fallback Initial Content
@@ -99,6 +124,25 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
     whyGaurangi: false,
     customerStories: false,
     newsletter: false,
+  },
+  dressMaterialsPageContent: {
+    bannerTitle: 'Premium Dress Materials',
+    bannerSubtitle: 'Discover unstitched pure silks, hand-embroidered organzas, Banarasi weaves, and breathable linens ready for bespoke tailoring.',
+    fabrics: ['All Fabrics', 'Pure Silk', 'Organza', 'Banarasi Silk', 'Chanderi', 'Linen', 'Tussar Silk', 'Cotton'],
+  },
+  productPageSettings: {
+    defaultTopMetres: '2.5 Metres',
+    defaultBottomMetres: '2.5 Metres',
+    defaultDupattaMetres: '2.25 Metres',
+    defaultWashCare: 'Dry Clean Only',
+    shippingPolicyText: 'Free Express Shipping across India',
+    returnPolicyText: 'Easy 7-Day Hassle Free Returns',
+    whatsAppNumber: '+919876543210',
+  },
+  aboutPageContent: {
+    ethosTitle: 'The Gaurangi Ethos',
+    ethosSubtitle: 'Where every collection tells a story of heritage & timeless grace.',
+    heritageNarrative: 'We believe fashion should feel calm, authentic, and deeply personal. Instead of mass-produced catalogs, we present handpicked edits designed to celebrate your unique story.',
   },
   heroSlides: [
     {
