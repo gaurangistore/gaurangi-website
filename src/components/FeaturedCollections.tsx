@@ -3,6 +3,7 @@
 import React from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { useContent } from '@/context/ContentContext';
+import { getImageUrl } from '@/lib/constants';
 
 export const FeaturedCollections: React.FC = () => {
   const { data } = useContent();
@@ -33,7 +34,7 @@ export const FeaturedCollections: React.FC = () => {
             {/* Image Container */}
             <div className="relative aspect-[4/5] w-full overflow-hidden">
               <img
-                src={item.image}
+                src={getImageUrl(item.image)}
                 alt={item.title}
                 className="w-full h-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
               />

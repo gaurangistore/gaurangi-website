@@ -3,6 +3,7 @@
 import React, { useRef } from 'react';
 import { ChevronLeft, ChevronRight, Heart, Eye, ShoppingBag } from 'lucide-react';
 import { useContent } from '@/context/ContentContext';
+import { getImageUrl } from '@/lib/constants';
 
 export const NewArrivals: React.FC = () => {
   const { data } = useContent();
@@ -68,7 +69,7 @@ export const NewArrivals: React.FC = () => {
               {/* Product Photography */}
               <div className="relative aspect-[3/4] w-full overflow-hidden bg-gray-100">
                 <img
-                  src={item.image}
+                  src={getImageUrl(item.image)}
                   alt={item.name}
                   className="w-full h-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-105"
                 />

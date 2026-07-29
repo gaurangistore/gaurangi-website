@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { ArrowRight } from 'lucide-react';
-import { DUMMY_IMAGE } from '@/lib/constants';
+import { DUMMY_IMAGE, getImageUrl } from '@/lib/constants';
 
 interface CategoryTab {
   id: string;
@@ -84,7 +84,7 @@ export const TrendingCategories: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-[#FAF6EE] p-8 md:p-12 rounded-2xl border border-[#EAE5D9]">
           <div className="lg:col-span-7 relative aspect-[4/3] rounded-xl overflow-hidden shadow-lg">
             <img
-              src={activeCategory.image}
+              src={getImageUrl(activeCategory.image)}
               alt={activeCategory.name}
               className="w-full h-full object-cover object-top transition-transform duration-700 hover:scale-105"
             />

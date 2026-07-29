@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { DUMMY_IMAGE } from '@/lib/constants';
+import { DUMMY_IMAGE, getImageUrl } from '@/lib/constants';
 
 export const Lookbook: React.FC = () => {
   return (
@@ -26,7 +26,7 @@ export const Lookbook: React.FC = () => {
         {/* Main Large Editorial Image */}
         <div className="md:col-span-7 relative aspect-[3/4] rounded-2xl overflow-hidden shadow-xl group border border-[#EAE5D9]">
           <img
-            src={DUMMY_IMAGE}
+            src={getImageUrl(DUMMY_IMAGE)}
             alt="Lookbook Editorial Main"
             className="w-full h-full object-cover object-top transition-transform duration-1000 ease-out group-hover:scale-105"
           />
@@ -43,7 +43,7 @@ export const Lookbook: React.FC = () => {
         <div className="md:col-span-5 flex flex-col gap-8">
           <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg group border border-[#EAE5D9]">
             <img
-              src={DUMMY_IMAGE}
+              src={getImageUrl(DUMMY_IMAGE)}
               alt="Lookbook Editorial Detail"
               className="w-full h-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
             />

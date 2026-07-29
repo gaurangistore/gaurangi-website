@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Camera } from 'lucide-react';
-import { DUMMY_IMAGE } from '@/lib/constants';
+import { DUMMY_IMAGE, getImageUrl } from '@/lib/constants';
 
 const INSTA_IMAGES = [
   {
@@ -47,7 +47,7 @@ export const InstagramGallery: React.FC = () => {
             className="group relative aspect-[3/4] rounded-xl overflow-hidden cursor-pointer border border-[#EAE5D9]"
           >
             <img
-              src={img.url}
+              src={getImageUrl(img.url)}
               alt={`Instagram Gallery ${idx}`}
               className="w-full h-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
             />

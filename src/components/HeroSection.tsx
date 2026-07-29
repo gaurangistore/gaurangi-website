@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useContent } from '@/context/ContentContext';
+import { getImageUrl } from '@/lib/constants';
 
 export const HeroSection: React.FC = () => {
   const { data } = useContent();
@@ -146,7 +147,7 @@ export const HeroSection: React.FC = () => {
             <div className="relative w-full max-w-[460px] aspect-[3/4]">
               <img
                 key={active.id}
-                src={active.image}
+                src={getImageUrl(active.image)}
                 alt={active.title || 'Slide'}
                 className="w-full h-full object-contain object-center rounded-2xl shadow-xl transition-all duration-500 animate-fade-in"
               />

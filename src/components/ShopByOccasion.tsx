@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useContent } from '@/context/ContentContext';
+import { getImageUrl } from '@/lib/constants';
 
 export const ShopByOccasion: React.FC = () => {
   const { data } = useContent();
@@ -30,7 +31,7 @@ export const ShopByOccasion: React.FC = () => {
             className={`group relative overflow-hidden rounded-2xl border border-[#EAE5D9] cursor-pointer ${occ.gridSpan || ''}`}
           >
             <img
-              src={occ.image}
+              src={getImageUrl(occ.image)}
               alt={occ.title || 'Occasion'}
               className="w-full h-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
             />

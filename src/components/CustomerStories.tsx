@@ -3,6 +3,7 @@
 import React from 'react';
 import { Quote } from 'lucide-react';
 import { useContent } from '@/context/ContentContext';
+import { getImageUrl } from '@/lib/constants';
 
 export const CustomerStories: React.FC = () => {
   const { data } = useContent();
@@ -43,7 +44,7 @@ export const CustomerStories: React.FC = () => {
               <div className="flex items-center gap-4 pt-4 border-t border-[#EAE5D9]">
                 {story.image && (
                   <img
-                    src={story.image}
+                    src={getImageUrl(story.image)}
                     alt={story.name || 'Client'}
                     className="w-12 h-12 rounded-full object-cover border border-[#C5A059]"
                   />
