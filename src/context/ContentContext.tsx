@@ -119,6 +119,13 @@ export interface SectionHeaderConfig {
   reviewsTitle?: string;
 }
 
+export interface TrustPillarItem {
+  id: string;
+  title: string;
+  description: string;
+  iconName?: string;
+}
+
 export interface HomepageData {
   hiddenSections?: SectionVisibility;
   sectionHeaders?: SectionHeaderConfig;
@@ -127,6 +134,7 @@ export interface HomepageData {
   products: ProductItem[];
   occasions: OccasionItem[];
   categories: CategoryItem[];
+  whyGaurangiPillars?: TrustPillarItem[];
   customerStories: CustomerStoryItem[];
   contactInfo: SiteContactInfo;
   dressMaterialsPageContent?: DressMaterialsPageContent;
@@ -144,6 +152,32 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
     customerStories: false,
     newsletter: false,
   },
+  whyGaurangiPillars: [
+    {
+      id: 'p1',
+      title: 'Premium Fabrics',
+      description: '100% authentic handloom pure silks, organzas, Banarasis & breathable linens.',
+      iconName: 'Sparkles',
+    },
+    {
+      id: 'p2',
+      title: 'Authentic Craftsmanship',
+      description: 'Directly sourced from traditional master weavers and embroiderers across India.',
+      iconName: 'HeartHandshake',
+    },
+    {
+      id: 'p3',
+      title: 'Quality Checked',
+      description: 'Every set undergoes rigorous 3-step hand inspection before dispatch.',
+      iconName: 'ShieldCheck',
+    },
+    {
+      id: 'p4',
+      title: 'Fast & Secure Delivery',
+      description: 'Free express doorstep delivery with hassle-free 7-day easy returns.',
+      iconName: 'Truck',
+    },
+  ],
   sectionHeaders: {
     categoriesBadge: 'Explore Weaves',
     categoriesTitle: 'Featured Fabric Categories',

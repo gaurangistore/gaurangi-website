@@ -541,6 +541,142 @@ export default function AdminDashboard() {
                       {formData.hiddenSections?.whyGaurangi ? '🔴 Hidden on Homepage' : '🟢 Visible on Homepage'}
                     </button>
                   </div>
+
+                  {/* Section Header Controls */}
+                  <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
+                    <h3 className="font-serif-editorial text-base text-[#7A1C30]">Section Header Settings</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Top Badge Text</label>
+                        <input
+                          type="text"
+                          value={formData.sectionHeaders?.whyGaurangiBadge || ''}
+                          onChange={(e) => {
+                            setFormData({
+                              ...formData,
+                              sectionHeaders: {
+                                ...formData.sectionHeaders,
+                                whyGaurangiBadge: e.target.value,
+                              },
+                            });
+                          }}
+                          placeholder="e.g. The Gaurangi Promise"
+                          className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Section Main Title</label>
+                        <input
+                          type="text"
+                          value={formData.sectionHeaders?.whyGaurangiTitle || ''}
+                          onChange={(e) => {
+                            setFormData({
+                              ...formData,
+                              sectionHeaders: {
+                                ...formData.sectionHeaders,
+                                whyGaurangiTitle: e.target.value,
+                              },
+                            });
+                          }}
+                          placeholder="e.g. Why Choose Our Boutique"
+                          className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Trust Pillars Item Manager */}
+                  <div className="space-y-4">
+                    <h3 className="font-serif-editorial text-lg text-[#7A1C30]">Trust Pillars Manager</h3>
+
+                    <div className="grid grid-cols-1 gap-6">
+                      {(formData.whyGaurangiPillars || []).map((pillar, idx) => (
+                        <div key={pillar.id || idx} className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
+                          <div className="flex items-center justify-between">
+                            <h4 className="font-serif-editorial text-base text-[#7A1C30]">Pillar #{idx + 1}</h4>
+                            <button
+                              onClick={() => {
+                                const updated = (formData.whyGaurangiPillars || []).filter((_, i) => i !== idx);
+                                setFormData({ ...formData, whyGaurangiPillars: updated });
+                              }}
+                              className="text-xs text-red-600 hover:underline flex items-center gap-1"
+                            >
+                              <Trash2 size={13} /> Remove
+                            </button>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Pillar Title</label>
+                              <input
+                                type="text"
+                                value={pillar.title || ''}
+                                onChange={(e) => {
+                                  const updated = [...(formData.whyGaurangiPillars || [])];
+                                  updated[idx].title = e.target.value;
+                                  setFormData({ ...formData, whyGaurangiPillars: updated });
+                                }}
+                                placeholder="e.g. Premium Fabrics"
+                                className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                              />
+                            </div>
+
+                            <div>
+                              <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Icon Style</label>
+                              <select
+                                value={pillar.iconName || 'Sparkles'}
+                                onChange={(e) => {
+                                  const updated = [...(formData.whyGaurangiPillars || [])];
+                                  updated[idx].iconName = e.target.value;
+                                  setFormData({ ...formData, whyGaurangiPillars: updated });
+                                }}
+                                className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none bg-white"
+                              >
+                                <option value="Sparkles">Sparkles (Quality/Fabrics)</option>
+                                <option value="HeartHandshake">Heart Handshake (Craftsmanship)</option>
+                                <option value="ShieldCheck">Shield Check (Inspection/Guarantee)</option>
+                                <option value="Truck">Truck (Delivery/Returns)</option>
+                              </select>
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Description</label>
+                            <textarea
+                              value={pillar.description || ''}
+                              rows={2}
+                              onChange={(e) => {
+                                const updated = [...(formData.whyGaurangiPillars || [])];
+                                updated[idx].description = e.target.value;
+                                setFormData({ ...formData, whyGaurangiPillars: updated });
+                              }}
+                              placeholder="Pillar description..."
+                              className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        const newPillar = {
+                          id: `p-${Date.now()}`,
+                          title: 'New Trust Pillar',
+                          description: 'Description of commitment',
+                          iconName: 'Sparkles',
+                        };
+                        setFormData({
+                          ...formData,
+                          whyGaurangiPillars: [...(formData.whyGaurangiPillars || []), newPillar],
+                        });
+                      }}
+                      className="btn-maroon text-xs px-6 py-2.5 rounded-full flex items-center gap-2"
+                    >
+                      <Plus size={15} /> Add New Trust Pillar
+                    </button>
+                  </div>
                 </div>
               )}
 

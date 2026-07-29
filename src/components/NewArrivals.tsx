@@ -69,7 +69,7 @@ export const NewArrivals: React.FC = () => {
           {products.slice(0, 8).map((item) => (
             <div
               key={item.id}
-              className="flex-shrink-0 w-[280px] md:w-[320px] group bg-[#FAF6EE] rounded-xl overflow-hidden border border-[#EAE5D9] transition-all duration-300 hover:shadow-lg flex flex-col justify-between"
+              className="flex-shrink-0 w-[280px] sm:w-[320px] lg:w-[calc((100%-48px)/3)] group bg-[#FAF6EE] rounded-xl overflow-hidden border border-[#EAE5D9] transition-all duration-300 hover:shadow-lg flex flex-col justify-between"
             >
               {/* Product Photography */}
               <Link href={`/product/${item.id}`} className="relative aspect-[3/4] w-full overflow-hidden bg-gray-100 block">
