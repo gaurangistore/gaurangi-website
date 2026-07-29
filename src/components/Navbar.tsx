@@ -44,34 +44,28 @@ export const Navbar: React.FC = () => {
           {/* Left Navigation Links */}
           <nav className="hidden lg:flex items-center gap-8 text-[0.88rem] tracking-widest uppercase font-medium">
             <Link
-              href="/collections"
+              href="/"
               className="transition-colors text-[#1F1F1F] hover:text-[#7A1C30]"
             >
-              Collections
+              Home
             </Link>
             <Link
-              href="/occasions"
-              className="transition-colors text-[#1F1F1F] hover:text-[#7A1C30]"
+              href="/dress-materials"
+              className="transition-colors text-[#7A1C30] font-semibold"
             >
-              Occasions
-            </Link>
-            <Link
-              href="/#new-arrivals"
-              className="transition-colors text-[#1F1F1F] hover:text-[#7A1C30]"
-            >
-              New Arrivals
-            </Link>
-            <Link
-              href="/#stories"
-              className="transition-colors text-[#1F1F1F] hover:text-[#7A1C30]"
-            >
-              Stories
+              Dress Materials
             </Link>
             <Link
               href="/#about"
               className="transition-colors text-[#1F1F1F] hover:text-[#7A1C30]"
             >
               About
+            </Link>
+            <Link
+              href="/#contact"
+              className="transition-colors text-[#1F1F1F] hover:text-[#7A1C30]"
+            >
+              Contact
             </Link>
           </nav>
 
@@ -161,20 +155,17 @@ export const Navbar: React.FC = () => {
               </div>
 
               <nav className="flex flex-col gap-6 text-sm tracking-widest uppercase font-medium">
-                <Link href="#collections" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#7A1C30]">
-                  Collections
+                <Link href="/" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#7A1C30]">
+                  Home
                 </Link>
-                <Link href="#occasions" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#7A1C30]">
-                  Occasions
+                <Link href="/dress-materials" onClick={() => setMobileMenuOpen(false)} className="text-[#7A1C30] font-semibold">
+                  Dress Materials
                 </Link>
-                <Link href="#new-arrivals" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#7A1C30]">
-                  New Arrivals
-                </Link>
-                <Link href="#stories" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#7A1C30]">
-                  Stories
-                </Link>
-                <Link href="#about" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#7A1C30]">
+                <Link href="/#about" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#7A1C30]">
                   About
+                </Link>
+                <Link href="/#contact" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#7A1C30]">
+                  Contact
                 </Link>
               </nav>
             </div>

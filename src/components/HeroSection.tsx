@@ -92,12 +92,12 @@ export const HeroSection: React.FC = () => {
           {/* Action Buttons & Slider Controls */}
           <div className="flex flex-wrap items-center justify-between gap-4 pt-2 w-full max-w-lg">
             <div className="flex items-center gap-3">
-              <Link href="/collections" className="btn-maroon group shadow-md">
-                <span>Explore Collections</span>
+              <Link href="/dress-materials" className="btn-maroon group shadow-md">
+                <span>Shop Dress Materials</span>
                 <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
-              <Link href="/occasions" className="px-6 py-3 rounded-full text-xs uppercase tracking-widest font-medium border border-[#7A1C30]/40 text-[#7A1C30] hover:bg-[#7A1C30] hover:text-white transition-all">
-                View Occasions
+              <Link href="/#new-arrivals" className="px-6 py-3 rounded-full text-xs uppercase tracking-widest font-medium border border-[#7A1C30]/40 text-[#7A1C30] hover:bg-[#7A1C30] hover:text-white transition-all">
+                New Arrivals
               </Link>
             </div>
 
