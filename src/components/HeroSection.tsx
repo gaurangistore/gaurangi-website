@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { ArrowRight, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useContent } from '@/context/ContentContext';
 import { getImageUrl } from '@/lib/constants';
@@ -91,13 +92,13 @@ export const HeroSection: React.FC = () => {
           {/* Action Buttons & Slider Controls */}
           <div className="flex flex-wrap items-center justify-between gap-4 pt-2 w-full max-w-lg">
             <div className="flex items-center gap-3">
-              <a href="#collections" className="btn-maroon group shadow-md">
-                <span>Explore Collection</span>
+              <Link href="/collections" className="btn-maroon group shadow-md">
+                <span>Explore Collections</span>
                 <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-              </a>
-              <a href="#occasions" className="px-6 py-3 rounded-full text-xs uppercase tracking-widest font-medium border border-[#7A1C30]/40 text-[#7A1C30] hover:bg-[#7A1C30] hover:text-white transition-all">
+              </Link>
+              <Link href="/occasions" className="px-6 py-3 rounded-full text-xs uppercase tracking-widest font-medium border border-[#7A1C30]/40 text-[#7A1C30] hover:bg-[#7A1C30] hover:text-white transition-all">
                 View Occasions
-              </a>
+              </Link>
             </div>
 
             {/* Slider Next/Prev Arrow Controls */}

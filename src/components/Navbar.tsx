@@ -44,31 +44,31 @@ export const Navbar: React.FC = () => {
           {/* Left Navigation Links */}
           <nav className="hidden lg:flex items-center gap-8 text-[0.88rem] tracking-widest uppercase font-medium">
             <Link
-              href="#collections"
+              href="/collections"
               className="transition-colors text-[#1F1F1F] hover:text-[#7A1C30]"
             >
               Collections
             </Link>
             <Link
-              href="#occasions"
+              href="/occasions"
               className="transition-colors text-[#1F1F1F] hover:text-[#7A1C30]"
             >
               Occasions
             </Link>
             <Link
-              href="#new-arrivals"
+              href="/#new-arrivals"
               className="transition-colors text-[#1F1F1F] hover:text-[#7A1C30]"
             >
               New Arrivals
             </Link>
             <Link
-              href="#stories"
+              href="/#stories"
               className="transition-colors text-[#1F1F1F] hover:text-[#7A1C30]"
             >
               Stories
             </Link>
             <Link
-              href="#about"
+              href="/#about"
               className="transition-colors text-[#1F1F1F] hover:text-[#7A1C30]"
             >
               About
