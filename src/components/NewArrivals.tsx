@@ -30,12 +30,16 @@ export const NewArrivals: React.FC = () => {
         {/* Section Header */}
         <div className="flex items-end justify-between mb-12">
           <div>
-            <span className="text-[0.72rem] tracking-[0.3em] uppercase text-[#C5A059] font-medium block mb-2">
-              Curated for This Season
-            </span>
-            <h3 className="font-serif-editorial text-3xl md:text-4xl text-[#7A1C30] font-normal tracking-wide">
-              New Arrivals
-            </h3>
+            {(data.sectionHeaders?.newArrivalsBadge !== undefined ? data.sectionHeaders.newArrivalsBadge : 'Curated for This Season') && (
+              <span className="text-[0.72rem] tracking-[0.3em] uppercase text-[#C5A059] font-medium block mb-2">
+                {data.sectionHeaders?.newArrivalsBadge || 'Curated for This Season'}
+              </span>
+            )}
+            {(data.sectionHeaders?.newArrivalsTitle !== undefined ? data.sectionHeaders.newArrivalsTitle : 'New Arrivals') && (
+              <h3 className="font-serif-editorial text-3xl md:text-4xl text-[#7A1C30] font-normal tracking-wide">
+                {data.sectionHeaders?.newArrivalsTitle || 'New Arrivals'}
+              </h3>
+            )}
           </div>
 
           {/* Navigation Controls */}

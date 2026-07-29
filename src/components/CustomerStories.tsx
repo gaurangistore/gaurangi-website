@@ -16,12 +16,16 @@ export const CustomerStories: React.FC = () => {
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         {/* Header */}
         <div className="text-center max-w-xl mx-auto mb-16">
-          <span className="text-[0.72rem] tracking-[0.3em] uppercase text-[#C5A059] font-medium block mb-2">
-            Real Experiences
-          </span>
-          <h3 className="font-serif-editorial text-3xl md:text-4xl text-[#7A1C30] font-normal tracking-wide">
-            Customer Stories
-          </h3>
+          {(data.sectionHeaders?.reviewsBadge !== undefined ? data.sectionHeaders.reviewsBadge : 'Real Experiences') && (
+            <span className="text-[0.72rem] tracking-[0.3em] uppercase text-[#C5A059] font-medium block mb-2">
+              {data.sectionHeaders?.reviewsBadge || 'Real Experiences'}
+            </span>
+          )}
+          {(data.sectionHeaders?.reviewsTitle !== undefined ? data.sectionHeaders.reviewsTitle : 'Customer Stories') && (
+            <h3 className="font-serif-editorial text-3xl md:text-4xl text-[#7A1C30] font-normal tracking-wide">
+              {data.sectionHeaders?.reviewsTitle || 'Customer Stories'}
+            </h3>
+          )}
           <div className="w-12 h-[1px] bg-[#C5A059] mx-auto mt-4" />
         </div>
 

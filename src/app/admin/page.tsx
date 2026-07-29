@@ -347,6 +347,88 @@ export default function AdminDashboard() {
                     </button>
                   </div>
 
+                  {/* Authorable Section Header & Link Settings */}
+                  <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
+                    <h3 className="font-serif-editorial text-base text-[#7A1C30]">Section Header & Link Settings</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Top Badge Text</label>
+                        <input
+                          type="text"
+                          value={formData.sectionHeaders?.categoriesBadge || ''}
+                          onChange={(e) => {
+                            setFormData({
+                              ...formData,
+                              sectionHeaders: {
+                                ...formData.sectionHeaders,
+                                categoriesBadge: e.target.value,
+                              },
+                            });
+                          }}
+                          placeholder="e.g. Explore Weaves"
+                          className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Section Main Title</label>
+                        <input
+                          type="text"
+                          value={formData.sectionHeaders?.categoriesTitle || ''}
+                          onChange={(e) => {
+                            setFormData({
+                              ...formData,
+                              sectionHeaders: {
+                                ...formData.sectionHeaders,
+                                categoriesTitle: e.target.value,
+                              },
+                            });
+                          }}
+                          placeholder="e.g. Featured Fabric Categories"
+                          className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Link Title / Button Text</label>
+                        <input
+                          type="text"
+                          value={formData.sectionHeaders?.categoriesLinkText || ''}
+                          onChange={(e) => {
+                            setFormData({
+                              ...formData,
+                              sectionHeaders: {
+                                ...formData.sectionHeaders,
+                                categoriesLinkText: e.target.value,
+                              },
+                            });
+                          }}
+                          placeholder="e.g. View All Dress Materials →"
+                          className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Link Destination URL</label>
+                        <input
+                          type="text"
+                          value={formData.sectionHeaders?.categoriesLinkUrl || '/dress-materials'}
+                          onChange={(e) => {
+                            setFormData({
+                              ...formData,
+                              sectionHeaders: {
+                                ...formData.sectionHeaders,
+                                categoriesLinkUrl: e.target.value,
+                              },
+                            });
+                          }}
+                          placeholder="e.g. /dress-materials"
+                          className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-1 gap-6">
                     {(formData.collections || []).map((col, idx) => (
                       <div key={col.id || idx} className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">

@@ -42,12 +42,16 @@ export const WhyGaurangi: React.FC = () => {
       <div className="max-w-7xl mx-auto px-6 md:px-12 text-center">
         {/* Section Header */}
         <div className="max-w-xl mx-auto mb-12">
-          <span className="text-[0.72rem] tracking-[0.3em] uppercase text-[#C5A059] font-medium block mb-2">
-            Why Shop With Us
-          </span>
-          <h2 className="font-serif-editorial text-3xl md:text-4xl text-[#7A1C30] font-normal tracking-wide">
-            The Gaurangi Guarantee
-          </h2>
+          {(data.sectionHeaders?.whyGaurangiBadge !== undefined ? data.sectionHeaders.whyGaurangiBadge : 'Why Shop With Us') && (
+            <span className="text-[0.72rem] tracking-[0.3em] uppercase text-[#C5A059] font-medium block mb-2">
+              {data.sectionHeaders?.whyGaurangiBadge || 'Why Shop With Us'}
+            </span>
+          )}
+          {(data.sectionHeaders?.whyGaurangiTitle !== undefined ? data.sectionHeaders.whyGaurangiTitle : 'The Gaurangi Guarantee') && (
+            <h2 className="font-serif-editorial text-3xl md:text-4xl text-[#7A1C30] font-normal tracking-wide">
+              {data.sectionHeaders?.whyGaurangiTitle || 'The Gaurangi Guarantee'}
+            </h2>
+          )}
           <div className="w-12 h-[1px] bg-[#C5A059] mx-auto mt-4" />
         </div>
 

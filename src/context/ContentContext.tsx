@@ -101,8 +101,27 @@ export interface AboutPageContent {
   heritageNarrative: string;
 }
 
+export interface SectionHeaderConfig {
+  categoriesBadge?: string;
+  categoriesTitle?: string;
+  categoriesLinkText?: string;
+  categoriesLinkUrl?: string;
+
+  newArrivalsBadge?: string;
+  newArrivalsTitle?: string;
+  newArrivalsLinkText?: string;
+  newArrivalsLinkUrl?: string;
+
+  whyGaurangiBadge?: string;
+  whyGaurangiTitle?: string;
+
+  reviewsBadge?: string;
+  reviewsTitle?: string;
+}
+
 export interface HomepageData {
   hiddenSections?: SectionVisibility;
+  sectionHeaders?: SectionHeaderConfig;
   heroSlides: HeroSlide[];
   collections: CollectionItem[];
   products: ProductItem[];
@@ -124,6 +143,23 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
     whyGaurangi: false,
     customerStories: false,
     newsletter: false,
+  },
+  sectionHeaders: {
+    categoriesBadge: 'Explore Weaves',
+    categoriesTitle: 'Featured Fabric Categories',
+    categoriesLinkText: 'View All Dress Materials →',
+    categoriesLinkUrl: '/dress-materials',
+
+    newArrivalsBadge: 'Handloom Masterpieces',
+    newArrivalsTitle: 'New Unstitched Arrivals',
+    newArrivalsLinkText: 'Browse Full Catalog →',
+    newArrivalsLinkUrl: '/dress-materials',
+
+    whyGaurangiBadge: 'The Gaurangi Promise',
+    whyGaurangiTitle: 'Why Choose Our Boutique',
+
+    reviewsBadge: 'Artisanal Love',
+    reviewsTitle: 'Customer Stories & Reviews',
   },
   dressMaterialsPageContent: {
     bannerTitle: 'Premium Dress Materials',
