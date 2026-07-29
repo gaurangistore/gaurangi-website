@@ -27,7 +27,7 @@ export const CustomerStories: React.FC = () => {
 
         {/* Stories Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {stories.map((story) => (
+          {stories.slice(0, 3).map((story) => (
             <div
               key={story.id}
               className="bg-[#FAF6EE] p-8 rounded-2xl border border-[#EAE5D9] flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow"

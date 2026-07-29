@@ -56,6 +56,12 @@ export const Navbar: React.FC = () => {
               Dress Materials
             </Link>
             <Link
+              href="/#new-arrivals"
+              className="transition-colors text-[#1F1F1F] hover:text-[#7A1C30]"
+            >
+              New Arrivals
+            </Link>
+            <Link
               href="/#about"
               className="transition-colors text-[#1F1F1F] hover:text-[#7A1C30]"
             >
@@ -160,6 +166,9 @@ export const Navbar: React.FC = () => {
                 </Link>
                 <Link href="/dress-materials" onClick={() => setMobileMenuOpen(false)} className="text-[#7A1C30] font-semibold">
                   Dress Materials
+                </Link>
+                <Link href="/#new-arrivals" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#7A1C30]">
+                  New Arrivals
                 </Link>
                 <Link href="/#about" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#7A1C30]">
                   About

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef } from 'react';
+import Link from 'next/link';
 import { ChevronLeft, ChevronRight, Heart, Eye, ShoppingBag } from 'lucide-react';
 import { useContent } from '@/context/ContentContext';
 import { getImageUrl } from '@/lib/constants';
@@ -61,13 +62,13 @@ export const NewArrivals: React.FC = () => {
           ref={scrollRef}
           className="flex gap-6 overflow-x-auto no-scrollbar scroll-smooth pb-4"
         >
-          {products.map((item) => (
+          {products.slice(0, 8).map((item) => (
             <div
               key={item.id}
-              className="flex-shrink-0 w-[280px] md:w-[320px] group bg-[#FAF6EE] rounded-xl overflow-hidden border border-[#EAE5D9] transition-all duration-300 hover:shadow-lg"
+              className="flex-shrink-0 w-[280px] md:w-[320px] group bg-[#FAF6EE] rounded-xl overflow-hidden border border-[#EAE5D9] transition-all duration-300 hover:shadow-lg flex flex-col justify-between"
             >
               {/* Product Photography */}
-              <div className="relative aspect-[3/4] w-full overflow-hidden bg-gray-100">
+              <Link href={`/product/${item.id}`} className="relative aspect-[3/4] w-full overflow-hidden bg-gray-100 block">
                 <img
                   src={getImageUrl(item.image)}
                   alt={item.name}
@@ -79,42 +80,52 @@ export const NewArrivals: React.FC = () => {
                   <button
                     className="w-9 h-9 rounded-full bg-white/90 backdrop-blur-md text-[#1F1F1F] hover:bg-[#7A1C30] hover:text-white flex items-center justify-center shadow-md transition-colors"
                     title="Wishlist"
+                    onClick={(e) => e.preventDefault()}
                   >
                     <Heart size={16} />
                   </button>
                   <button
                     className="w-9 h-9 rounded-full bg-white/90 backdrop-blur-md text-[#1F1F1F] hover:bg-[#7A1C30] hover:text-white flex items-center justify-center shadow-md transition-colors"
                     title="Quick View"
+                    onClick={(e) => e.preventDefault()}
                   >
                     <Eye size={16} />
                   </button>
                 </div>
-              </div>
+              </Link>
 
               {/* Minimal Product Meta */}
-              <div className="p-5 flex flex-col gap-1.5">
-                {item.category && (
-                  <span className="text-[0.68rem] tracking-widest uppercase text-[#C5A059] font-medium">
-                    {item.category}
-                  </span>
-                )}
-                {item.name && (
-                  <h4 className="font-serif-editorial text-lg text-[#1F1F1F] font-medium leading-snug line-clamp-1">
-                    {item.name}
-                  </h4>
-                )}
-                {item.fabric && (
-                  <p className="text-xs text-gray-500 font-light">{item.fabric}</p>
-                )}
+              <div className="p-5 flex flex-col gap-1.5 flex-1 justify-between">
+                <div>
+                  {item.category && (
+                    <span className="text-[0.68rem] tracking-widest uppercase text-[#C5A059] font-medium block mb-1">
+                      {item.category}
+                    </span>
+                  )}
+                  {item.name && (
+                    <Link href={`/product/${item.id}`}>
+                      <h4 className="font-serif-editorial text-lg text-[#1F1F1F] font-medium leading-snug line-clamp-1 hover:text-[#7A1C30] transition-colors">
+                        {item.name}
+                      </h4>
+                    </Link>
+                  )}
+                  {item.fabric && (
+                    <p className="text-xs text-gray-500 font-light">{item.fabric}</p>
+                  )}
+                </div>
+
                 <div className="mt-3 pt-3 border-t border-[#EAE5D9] flex items-center justify-between">
                   {item.price ? (
                     <span className="font-serif-editorial text-base font-semibold text-[#7A1C30]">
                       {item.price}
                     </span>
                   ) : <div />}
-                  <button className="text-xs tracking-wider uppercase font-medium text-[#7A1C30] hover:underline flex items-center gap-1">
-                    <ShoppingBag size={13} /> Add
-                  </button>
+                  <Link
+                    href={`/product/${item.id}`}
+                    className="text-xs tracking-wider uppercase font-medium text-[#7A1C30] hover:underline flex items-center gap-1"
+                  >
+                    <ShoppingBag size={13} /> View
+                  </Link>
                 </div>
               </div>
             </div>
