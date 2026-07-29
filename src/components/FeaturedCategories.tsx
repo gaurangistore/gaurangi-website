@@ -10,8 +10,8 @@ export const FeaturedCategories: React.FC = () => {
   const { data } = useContent();
   const categories = data.collections && data.collections.length > 0 ? data.collections : [];
 
-  // Hide entire section if un-authored or empty
-  if (categories.length === 0) return null;
+  // Hide entire section if un-authored, hidden, or empty
+  if (data.hiddenSections?.featuredCategories || categories.length === 0) return null;
 
   return (
     <section className="py-20 px-6 md:px-12 max-w-7xl mx-auto w-full">

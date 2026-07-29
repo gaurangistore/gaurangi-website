@@ -2,10 +2,14 @@
 
 import React, { useState } from 'react';
 import { Mail, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { useContent } from '@/context/ContentContext';
 
 export const Newsletter: React.FC = () => {
+  const { data } = useContent();
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+
+  if (data.hiddenSections?.newsletter) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

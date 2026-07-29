@@ -70,7 +70,17 @@ export interface SiteContactInfo {
   instagram: string;
 }
 
+export interface SectionVisibility {
+  heroBanner?: boolean;
+  featuredCategories?: boolean;
+  newArrivals?: boolean;
+  whyGaurangi?: boolean;
+  customerStories?: boolean;
+  newsletter?: boolean;
+}
+
 export interface HomepageData {
+  hiddenSections?: SectionVisibility;
   heroSlides: HeroSlide[];
   collections: CollectionItem[];
   products: ProductItem[];
@@ -82,6 +92,14 @@ export interface HomepageData {
 
 // Default Fallback Initial Content
 export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
+  hiddenSections: {
+    heroBanner: false,
+    featuredCategories: false,
+    newArrivals: false,
+    whyGaurangi: false,
+    customerStories: false,
+    newsletter: false,
+  },
   heroSlides: [
     {
       id: 1,

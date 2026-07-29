@@ -162,6 +162,24 @@ export default function AdminDashboard() {
                     Author main headline, tagline, and model photography for the top hero section.
                   </p>
                 </div>
+                <button
+                  onClick={() => {
+                    setFormData({
+                      ...formData,
+                      hiddenSections: {
+                        ...formData.hiddenSections,
+                        heroBanner: !formData.hiddenSections?.heroBanner,
+                      },
+                    });
+                  }}
+                  className={`px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider flex items-center gap-2 border transition-all ${
+                    formData.hiddenSections?.heroBanner
+                      ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'
+                      : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                  }`}
+                >
+                  {formData.hiddenSections?.heroBanner ? '🔴 Section Hidden on Website' : '🟢 Section Visible on Website'}
+                </button>
               </div>
 
               {(formData.heroSlides || []).map((slide, idx) => (
@@ -264,6 +282,24 @@ export default function AdminDashboard() {
                     Author fabric tiles on the homepage (Pure Silk, Organza, Banarasi, Chanderi, Linen, Cotton).
                   </p>
                 </div>
+                <button
+                  onClick={() => {
+                    setFormData({
+                      ...formData,
+                      hiddenSections: {
+                        ...formData.hiddenSections,
+                        featuredCategories: !formData.hiddenSections?.featuredCategories,
+                      },
+                    });
+                  }}
+                  className={`px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider flex items-center gap-2 border transition-all ${
+                    formData.hiddenSections?.featuredCategories
+                      ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'
+                      : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                  }`}
+                >
+                  {formData.hiddenSections?.featuredCategories ? '🔴 Section Hidden on Website' : '🟢 Section Visible on Website'}
+                </button>
               </div>
 
               <div className="grid grid-cols-1 gap-6">
@@ -379,6 +415,24 @@ export default function AdminDashboard() {
                     Manage unstitched dress material products, prices, fabric specifications, and photos.
                   </p>
                 </div>
+                <button
+                  onClick={() => {
+                    setFormData({
+                      ...formData,
+                      hiddenSections: {
+                        ...formData.hiddenSections,
+                        newArrivals: !formData.hiddenSections?.newArrivals,
+                      },
+                    });
+                  }}
+                  className={`px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider flex items-center gap-2 border transition-all ${
+                    formData.hiddenSections?.newArrivals
+                      ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'
+                      : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                  }`}
+                >
+                  {formData.hiddenSections?.newArrivals ? '🔴 Section Hidden on Website' : '🟢 Section Visible on Website'}
+                </button>
               </div>
 
               <div className="grid grid-cols-1 gap-6">
@@ -510,6 +564,24 @@ export default function AdminDashboard() {
                     Manage the 4 trust pillars on your homepage.
                   </p>
                 </div>
+                <button
+                  onClick={() => {
+                    setFormData({
+                      ...formData,
+                      hiddenSections: {
+                        ...formData.hiddenSections,
+                        whyGaurangi: !formData.hiddenSections?.whyGaurangi,
+                      },
+                    });
+                  }}
+                  className={`px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider flex items-center gap-2 border transition-all ${
+                    formData.hiddenSections?.whyGaurangi
+                      ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'
+                      : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                  }`}
+                >
+                  {formData.hiddenSections?.whyGaurangi ? '🔴 Section Hidden on Website' : '🟢 Section Visible on Website'}
+                </button>
               </div>
 
               <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
@@ -532,6 +604,24 @@ export default function AdminDashboard() {
                     Author customer reviews. If un-authored or blank, reviews or optional labels will not render.
                   </p>
                 </div>
+                <button
+                  onClick={() => {
+                    setFormData({
+                      ...formData,
+                      hiddenSections: {
+                        ...formData.hiddenSections,
+                        customerStories: !formData.hiddenSections?.customerStories,
+                      },
+                    });
+                  }}
+                  className={`px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider flex items-center gap-2 border transition-all ${
+                    formData.hiddenSections?.customerStories
+                      ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'
+                      : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                  }`}
+                >
+                  {formData.hiddenSections?.customerStories ? '🔴 Section Hidden on Website' : '🟢 Section Visible on Website'}
+                </button>
               </div>
 
               <div className="grid grid-cols-1 gap-6">

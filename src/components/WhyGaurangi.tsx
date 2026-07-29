@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Sparkles, ShieldCheck, HeartHandshake, Truck } from 'lucide-react';
+import { useContent } from '@/context/ContentContext';
 
 interface Pillar {
   icon: React.ReactNode;
@@ -33,6 +34,9 @@ const PILLARS: Pillar[] = [
 ];
 
 export const WhyGaurangi: React.FC = () => {
+  const { data } = useContent();
+
+  if (data.hiddenSections?.whyGaurangi) return null;
   return (
     <section id="about" className="py-16 bg-[#F3EFEA] border-b border-[#EAE5D9]">
       <div className="max-w-7xl mx-auto px-6 md:px-12 text-center">

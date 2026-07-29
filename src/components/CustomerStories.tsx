@@ -9,7 +9,7 @@ export const CustomerStories: React.FC = () => {
   const { data } = useContent();
   const stories = data.customerStories && data.customerStories.length > 0 ? data.customerStories : [];
 
-  if (stories.length === 0) return null;
+  if (data.hiddenSections?.customerStories || stories.length === 0) return null;
 
   return (
     <section className="py-24 bg-[#F3EFEA] border-y border-[#EAE5D9]">

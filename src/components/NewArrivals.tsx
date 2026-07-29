@@ -11,7 +11,7 @@ export const NewArrivals: React.FC = () => {
   const products = data.products && data.products.length > 0 ? data.products : [];
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  if (products.length === 0) return null;
+  if (data.hiddenSections?.newArrivals || products.length === 0) return null;
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {

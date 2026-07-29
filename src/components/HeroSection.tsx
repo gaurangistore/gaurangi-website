@@ -20,7 +20,7 @@ export const HeroSection: React.FC = () => {
     return () => clearInterval(timer);
   }, [slides.length]);
 
-  if (slides.length === 0) return null;
+  if (data.hiddenSections?.heroBanner || slides.length === 0) return null;
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
