@@ -34,6 +34,17 @@ export interface ProductItem {
   price: string;
   image: string;
   category: string;
+  topMetres?: string;
+  bottomFabric?: string;
+  bottomMetres?: string;
+  dupattaFabric?: string;
+  dupattaMetres?: string;
+  craft?: string;
+  washCare?: string;
+  badge?: string;
+  description?: string;
+  rating?: string;
+  reviewsCount?: string;
 }
 
 export interface OccasionItem {
@@ -86,6 +97,7 @@ export interface DressMaterialsPageContent {
 }
 
 export interface ProductPageSettings {
+  specsSectionTitle?: string;
   defaultTopMetres: string;
   defaultBottomMetres: string;
   defaultDupattaMetres: string;
@@ -201,6 +213,7 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
     fabrics: ['All Fabrics', 'Pure Silk', 'Organza', 'Banarasi Silk', 'Chanderi', 'Linen', 'Tussar Silk', 'Cotton'],
   },
   productPageSettings: {
+    specsSectionTitle: "What's Included in This Set",
     defaultTopMetres: '2.5 Metres',
     defaultBottomMetres: '2.5 Metres',
     defaultDupattaMetres: '2.25 Metres',
@@ -281,36 +294,80 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
   ],
   products: [
     {
-      id: 'arr-1',
+      id: 'chanderi-zari-silk',
       name: 'Chanderi Zari Silk Ensemble',
       fabric: 'Handloom Chanderi Silk',
       price: '₹ 14,500',
       image: DUMMY_IMAGE,
       category: 'Festive Wear',
+      topMetres: '2.5 Metres',
+      bottomFabric: 'Matching Silk Satin Blend',
+      bottomMetres: '2.5 Metres',
+      dupattaFabric: 'Woven Zari Border Drape',
+      dupattaMetres: '2.25 Metres',
+      craft: 'Real Zari Hand Weave',
+      washCare: 'Dry Clean Only',
+      badge: '100% Authentic Handloom',
+      description: 'Handcrafted by royal weavers of Madhya Pradesh, this unstitched set showcases delicate metallic zari motifs on breathable Chanderi silk.',
+      rating: '4.9',
+      reviewsCount: '28',
     },
     {
-      id: 'arr-2',
+      id: 'organza-floral-saree',
       name: 'Organza Floral Embroidered Saree',
       fabric: 'Pure Organza & Metallic Thread',
       price: '₹ 18,900',
       image: DUMMY_IMAGE,
       category: 'Luxury Handcraft',
+      topMetres: '2.5 Metres',
+      bottomFabric: 'Raw Silk Blend',
+      bottomMetres: '2.5 Metres',
+      dupattaFabric: 'Pure Sheer Organza',
+      dupattaMetres: '2.5 Metres',
+      craft: 'Zardosi & Resham Embroidery',
+      washCare: 'Dry Clean Only',
+      badge: 'Artisanal Edit',
+      description: 'Ethereal sheer organza woven with floral hand embroidery and fine gold zari border accents for festive galas.',
+      rating: '4.8',
+      reviewsCount: '19',
     },
     {
-      id: 'arr-3',
+      id: 'tussar-raw-silk',
       name: 'Tussar Raw Silk Dress Material',
       fabric: 'Unstitched Pure Silk & Dupatta',
       price: '₹ 12,200',
       image: DUMMY_IMAGE,
       category: 'Dress Materials',
+      topMetres: '2.5 Metres',
+      bottomFabric: 'Pure Tussar Silk',
+      bottomMetres: '2.5 Metres',
+      dupattaFabric: 'Matching Handloom Tussar',
+      dupattaMetres: '2.25 Metres',
+      craft: 'Hand Block Print',
+      washCare: 'Dry Clean Only',
+      badge: 'Heritage Collection',
+      description: 'Rich textured wild Tussar silk set designed for sophisticated executive gatherings and cultural events.',
+      rating: '5.0',
+      reviewsCount: '34',
     },
     {
-      id: 'arr-4',
+      id: 'ivory-zardosi-velvet',
       name: 'Ivory Zardosi Velvet Jacket',
       fabric: 'Hand-embroidered Micro Velvet',
       price: '₹ 22,000',
       image: DUMMY_IMAGE,
       category: 'Haute Outerwear',
+      topMetres: '2.5 Metres',
+      bottomFabric: 'Heavy Micro Velvet',
+      bottomMetres: '2.5 Metres',
+      dupattaFabric: 'Net with Velvet Border',
+      dupattaMetres: '2.25 Metres',
+      craft: 'Royal Zardosi Work',
+      washCare: 'Dry Clean Only',
+      badge: 'Haute Couture',
+      description: 'Plush velvet ensemble featuring heavy gold zardosi embroidery inspired by Mughal court couture.',
+      rating: '4.9',
+      reviewsCount: '15',
     },
   ],
   occasions: [

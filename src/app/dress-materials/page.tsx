@@ -284,9 +284,11 @@ export default function DressMaterialsPage() {
                       </div>
 
                       <div className="pt-3 border-t border-[#EAE5D9] flex items-center justify-between">
-                        <span className="font-serif-editorial text-lg font-semibold text-[#7A1C30]">
-                          {item.price}
-                        </span>
+                        {item.price ? (
+                          <span className="font-sans text-[#7A1C30] font-bold text-base">
+                            {item.price}
+                          </span>
+                        ) : <div />}
                         <Link
                           href={`/product/${item.id}`}
                           className="text-xs tracking-wider uppercase font-semibold text-white bg-[#7A1C30] hover:bg-[#5C1423] px-3.5 py-1.5 rounded-full transition-colors flex items-center gap-1.5 shadow-sm"

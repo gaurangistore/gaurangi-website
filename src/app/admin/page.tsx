@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useContent, HomepageData, HeroSlide, CollectionItem, ProductItem, CustomerStoryItem } from '@/context/ContentContext';
-import { Sparkles, Save, Plus, Trash2, CheckCircle, Home, Layers, ShoppingBag, Quote, PhoneCall, ShieldCheck, Tag, Info, Package, Settings, Eye } from 'lucide-react';
+import { Sparkles, Save, Plus, Trash2, CheckCircle, Home, Layers, ShoppingBag, Quote, PhoneCall, ShieldCheck, Tag, Info, Package, Settings, Eye, GripVertical, ArrowUp, ArrowDown, Download, Upload, FileSpreadsheet } from 'lucide-react';
 import Link from 'next/link';
 import { DUMMY_IMAGE } from '@/lib/constants';
 
@@ -13,11 +13,81 @@ export default function AdminDashboard() {
   const [activeHomeSubtab, setActiveHomeSubtab] = useState<'hero' | 'categories' | 'products' | 'whyGaurangi' | 'stories'>('hero');
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
   // Sync state if context data updates
   React.useEffect(() => {
     setFormData(data);
   }, [data]);
+
+  // Reorder product helper
+  const moveProduct = (fromIndex: number, toIndex: number) => {
+    if (toIndex < 0 || toIndex >= (formData.products || []).length) return;
+    const updated = [...(formData.products || [])];
+    const [moved] = updated.splice(fromIndex, 1);
+    updated.splice(toIndex, 0, moved);
+    setFormData({ ...formData, products: updated });
+  };
+
+  // CSV Export Helper for Content Authors
+  const handleExportCSV = () => {
+    const products = formData.products || [];
+    const headers = ['id', 'name', 'fabric', 'price', 'image', 'category', 'topMetres', 'bottomFabric', 'bottomMetres', 'dupattaFabric', 'dupattaMetres', 'craft', 'washCare', 'badge', 'description', 'rating', 'reviewsCount'];
+    
+    const csvRows = [
+      headers.join(','),
+      ...products.map(p => headers.map(h => `"${(p[h as keyof ProductItem] || '').toString().replace(/"/g, '""')}"`).join(','))
+    ];
+
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `gaurangi_products_${Date.now()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // CSV Import Helper for Content Authors
+  const handleImportCSV = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = event.target?.result as string;
+      if (!text) return;
+
+      const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== '');
+      if (lines.length < 2) return;
+
+      const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+      const newProducts: ProductItem[] = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        const row = lines[i].split(/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/);
+        const cleanedRow = row.map(cell => cell.trim().replace(/^"|"$/g, '').replace(/""/g, '"'));
+
+        const prodObj: any = { id: `prod-${Date.now()}-${i}` };
+        headers.forEach((header, colIdx) => {
+          if (cleanedRow[colIdx] !== undefined) {
+            prodObj[header] = cleanedRow[colIdx];
+          }
+        });
+
+        if (prodObj.name) {
+          newProducts.push(prodObj as ProductItem);
+        }
+      }
+
+      if (newProducts.length > 0) {
+        setFormData({ ...formData, products: newProducts });
+        alert(`Successfully imported ${newProducts.length} products from CSV!`);
+      }
+    };
+    reader.readAsText(file);
+  };
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -776,22 +846,93 @@ export default function AdminDashboard() {
 
               {/* Product Catalog List */}
               <div className="space-y-6">
-                <h3 className="font-serif-editorial text-xl text-[#7A1C30]">Dress Materials Product Manager</h3>
+                <div className="pb-2 border-b border-[#EAE5D9] flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div>
+                    <h3 className="font-serif-editorial text-xl text-[#7A1C30]">Dress Materials Product Manager</h3>
+                    <p className="text-xs text-gray-500 font-light mt-0.5">Manage, reorder, or bulk import products for your store.</p>
+                  </div>
+
+                  {/* Bulk Authoring & Spreadsheet Tools */}
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={handleExportCSV}
+                      className="px-3.5 py-1.5 rounded-lg border border-[#C5A059] text-[#7A1C30] hover:bg-[#C5A059]/10 text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-sm"
+                      title="Export all products to CSV for editing in Excel / Google Sheets"
+                    >
+                      <Download size={14} /> Export CSV
+                    </button>
+
+                    <label className="px-3.5 py-1.5 rounded-lg bg-[#C5A059] text-white hover:bg-[#B38F48] text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-colors shadow-sm">
+                      <Upload size={14} /> Bulk Import CSV
+                      <input
+                        type="file"
+                        accept=".csv"
+                        className="hidden"
+                        onChange={handleImportCSV}
+                      />
+                    </label>
+                  </div>
+                </div>
 
                 <div className="grid grid-cols-1 gap-6">
                   {(formData.products || []).map((prod, idx) => (
-                    <div key={prod.id || idx} className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
-                      <div className="flex items-center justify-between">
-                        <h4 className="font-serif-editorial text-base text-[#7A1C30]">Product #{idx + 1}: {prod.name}</h4>
-                        <button
-                          onClick={() => {
-                            const updated = formData.products.filter((_, i) => i !== idx);
-                            setFormData({ ...formData, products: updated });
-                          }}
-                          className="text-xs text-red-600 hover:underline flex items-center gap-1"
-                        >
-                          <Trash2 size={13} /> Remove
-                        </button>
+                    <div
+                      key={prod.id || idx}
+                      draggable={true}
+                      onDragStart={() => setDraggedIndex(idx)}
+                      onDragOver={(e) => e.preventDefault()}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        if (draggedIndex !== null && draggedIndex !== idx) {
+                          moveProduct(draggedIndex, idx);
+                          setDraggedIndex(null);
+                        }
+                      }}
+                      className={`p-6 bg-[#FAF6EE] rounded-xl border ${draggedIndex === idx ? 'border-2 border-[#7A1C30] opacity-50' : 'border-[#EAE5D9]'} space-y-4 shadow-sm transition-all`}
+                    >
+                      <div className="flex items-center justify-between pb-2 border-b border-[#EAE5D9]">
+                        <div className="flex items-center gap-2">
+                          <span className="cursor-grab text-gray-400 hover:text-[#7A1C30]" title="Drag to reorder">
+                            <GripVertical size={18} />
+                          </span>
+                          <h4 className="font-serif-editorial text-base text-[#7A1C30]">Product #{idx + 1}: {prod.name}</h4>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          {/* Reorder Buttons */}
+                          <div className="flex items-center gap-1 bg-white border border-[#EAE5D9] rounded-lg p-0.5">
+                            <button
+                              type="button"
+                              disabled={idx === 0}
+                              onClick={() => moveProduct(idx, idx - 1)}
+                              className="p-1 text-gray-600 hover:text-[#7A1C30] disabled:opacity-30 disabled:hover:text-gray-600"
+                              title="Move Up"
+                            >
+                              <ArrowUp size={13} />
+                            </button>
+                            <button
+                              type="button"
+                              disabled={idx === (formData.products || []).length - 1}
+                              onClick={() => moveProduct(idx, idx + 1)}
+                              className="p-1 text-gray-600 hover:text-[#7A1C30] disabled:opacity-30 disabled:hover:text-gray-600"
+                              title="Move Down"
+                            >
+                              <ArrowDown size={13} />
+                            </button>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = formData.products.filter((_, i) => i !== idx);
+                              setFormData({ ...formData, products: updated });
+                            }}
+                            className="text-xs text-red-600 hover:underline flex items-center gap-1 font-sans ml-2"
+                          >
+                            <Trash2 size={13} /> Remove
+                          </button>
+                        </div>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -811,6 +952,21 @@ export default function AdminDashboard() {
                         </div>
 
                         <div>
+                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Product Price</label>
+                          <input
+                            type="text"
+                            value={prod.price || ''}
+                            onChange={(e) => {
+                              const updated = [...formData.products];
+                              updated[idx].price = e.target.value;
+                              setFormData({ ...formData, products: updated });
+                            }}
+                            placeholder="e.g. ₹ 14,500"
+                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          />
+                        </div>
+
+                        <div>
                           <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Fabric Type</label>
                           <input
                             type="text"
@@ -820,22 +976,22 @@ export default function AdminDashboard() {
                               updated[idx].fabric = e.target.value;
                               setFormData({ ...formData, products: updated });
                             }}
-                            placeholder="e.g. Pure Silk"
+                            placeholder="e.g. Pure Handloom Silk"
                             className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
                           />
                         </div>
 
                         <div>
-                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Price (₹)</label>
+                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Category Badge</label>
                           <input
                             type="text"
-                            value={prod.price || ''}
+                            value={prod.category || ''}
                             onChange={(e) => {
                               const updated = [...formData.products];
-                              updated[idx].price = e.target.value;
+                              updated[idx].category = e.target.value;
                               setFormData({ ...formData, products: updated });
                             }}
-                            placeholder="e.g. ₹ 4,850"
+                            placeholder="e.g. Festive Wear"
                             className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
                           />
                         </div>
@@ -876,6 +1032,7 @@ export default function AdminDashboard() {
                 </div>
 
                 <button
+                  type="button"
                   onClick={() => {
                     const newItem: ProductItem = {
                       id: `prod-${Date.now()}`,
@@ -887,7 +1044,7 @@ export default function AdminDashboard() {
                     };
                     setFormData({ ...formData, products: [...(formData.products || []), newItem] });
                   }}
-                  className="btn-maroon text-xs px-6 py-2.5 rounded-full flex items-center gap-2"
+                  className="btn-maroon text-xs px-6 py-2.5 rounded-full flex items-center gap-2 shadow-md"
                 >
                   <Plus size={15} /> Add New Dress Material Product
                 </button>
@@ -912,11 +1069,34 @@ export default function AdminDashboard() {
               </div>
 
               <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
-                <h3 className="font-serif-editorial text-base text-[#7A1C30]">Default Fabric Metre Specs</h3>
+                <div>
+                  <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Specifications Box Section Title</label>
+                  <input
+                    type="text"
+                    value={formData.productPageSettings?.specsSectionTitle || "What's Included in This Set"}
+                    onChange={(e) => {
+                      setFormData({
+                        ...formData,
+                        productPageSettings: {
+                          ...formData.productPageSettings,
+                          specsSectionTitle: e.target.value,
+                          defaultTopMetres: formData.productPageSettings?.defaultTopMetres || '',
+                          defaultBottomMetres: formData.productPageSettings?.defaultBottomMetres || '',
+                          defaultDupattaMetres: formData.productPageSettings?.defaultDupattaMetres || '',
+                          defaultWashCare: formData.productPageSettings?.defaultWashCare || '',
+                          shippingPolicyText: formData.productPageSettings?.shippingPolicyText || '',
+                          returnPolicyText: formData.productPageSettings?.returnPolicyText || '',
+                          whatsAppNumber: formData.productPageSettings?.whatsAppNumber || '',
+                        },
+                      });
+                    }}
+                    className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none font-serif-editorial text-base text-[#7A1C30]"
+                  />
+                </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Kurta / Top Fabric</label>
+                    <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Kurta / Top Fabric Default</label>
                     <input
                       type="text"
                       value={formData.productPageSettings?.defaultTopMetres || '2.5 Metres'}
@@ -940,7 +1120,7 @@ export default function AdminDashboard() {
                   </div>
 
                   <div>
-                    <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Salwar / Bottom Fabric</label>
+                    <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Salwar / Bottom Fabric Default</label>
                     <input
                       type="text"
                       value={formData.productPageSettings?.defaultBottomMetres || '2.5 Metres'}
@@ -964,7 +1144,7 @@ export default function AdminDashboard() {
                   </div>
 
                   <div>
-                    <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Dupatta Fabric</label>
+                    <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Dupatta Fabric Default</label>
                     <input
                       type="text"
                       value={formData.productPageSettings?.defaultDupattaMetres || '2.25 Metres'}
@@ -988,7 +1168,7 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Wash & Care Note</label>
                     <input
@@ -1014,30 +1194,423 @@ export default function AdminDashboard() {
                   </div>
 
                   <div>
-                    <label className="text-xs uppercase font-medium text-gray-600 block mb-1">WhatsApp Direct Order Number</label>
+                    <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Express Shipping Policy Text</label>
                     <input
                       type="text"
-                      value={formData.productPageSettings?.whatsAppNumber || '+919876543210'}
+                      value={formData.productPageSettings?.shippingPolicyText || 'Free Express Shipping across India'}
                       onChange={(e) => {
                         setFormData({
                           ...formData,
                           productPageSettings: {
                             ...formData.productPageSettings,
-                            whatsAppNumber: e.target.value,
+                            shippingPolicyText: e.target.value,
+                            defaultTopMetres: formData.productPageSettings?.defaultTopMetres || '',
+                            defaultBottomMetres: formData.productPageSettings?.defaultBottomMetres || '',
+                            defaultDupattaMetres: formData.productPageSettings?.defaultDupattaMetres || '',
+                            defaultWashCare: formData.productPageSettings?.defaultWashCare || '',
+                            returnPolicyText: formData.productPageSettings?.returnPolicyText || '',
+                            whatsAppNumber: formData.productPageSettings?.whatsAppNumber || '',
+                          },
+                        });
+                      }}
+                      className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Easy Return Policy Text</label>
+                    <input
+                      type="text"
+                      value={formData.productPageSettings?.returnPolicyText || '7-Day Easy Returns & Exchange'}
+                      onChange={(e) => {
+                        setFormData({
+                          ...formData,
+                          productPageSettings: {
+                            ...formData.productPageSettings,
+                            returnPolicyText: e.target.value,
                             defaultTopMetres: formData.productPageSettings?.defaultTopMetres || '',
                             defaultBottomMetres: formData.productPageSettings?.defaultBottomMetres || '',
                             defaultDupattaMetres: formData.productPageSettings?.defaultDupattaMetres || '',
                             defaultWashCare: formData.productPageSettings?.defaultWashCare || '',
                             shippingPolicyText: formData.productPageSettings?.shippingPolicyText || '',
-                            returnPolicyText: formData.productPageSettings?.returnPolicyText || '',
+                            whatsAppNumber: formData.productPageSettings?.whatsAppNumber || '',
                           },
                         });
                       }}
-                      placeholder="+91 98765 43210"
                       className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
                     />
                   </div>
                 </div>
+
+                <div>
+                  <label className="text-xs uppercase font-medium text-gray-600 block mb-1">WhatsApp Direct Order Number</label>
+                  <input
+                    type="text"
+                    value={formData.productPageSettings?.whatsAppNumber || '+919876543210'}
+                    onChange={(e) => {
+                      setFormData({
+                        ...formData,
+                        productPageSettings: {
+                          ...formData.productPageSettings,
+                          whatsAppNumber: e.target.value,
+                          defaultTopMetres: formData.productPageSettings?.defaultTopMetres || '',
+                          defaultBottomMetres: formData.productPageSettings?.defaultBottomMetres || '',
+                          defaultDupattaMetres: formData.productPageSettings?.defaultDupattaMetres || '',
+                          defaultWashCare: formData.productPageSettings?.defaultWashCare || '',
+                          shippingPolicyText: formData.productPageSettings?.shippingPolicyText || '',
+                          returnPolicyText: formData.productPageSettings?.returnPolicyText || '',
+                        },
+                      });
+                    }}
+                    placeholder="+91 98765 43210"
+                    className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Per-Product Detail Authoring Manager */}
+              <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-6">
+                <div className="pb-3 border-b border-[#EAE5D9] flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div>
+                    <h3 className="font-serif-editorial text-xl text-[#7A1C30]">Author Specific Product Details</h3>
+                    <p className="text-xs text-gray-500 font-light mt-0.5">
+                      Edit individual fabric measurements, descriptions, price, and craft details for any specific dress material product.
+                    </p>
+                  </div>
+
+                  {/* Bulk Authoring & Spreadsheet Tools */}
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={handleExportCSV}
+                      className="px-3.5 py-1.5 rounded-lg border border-[#C5A059] text-[#7A1C30] hover:bg-[#C5A059]/10 text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-sm"
+                      title="Export all products to CSV for editing in Excel / Google Sheets"
+                    >
+                      <Download size={14} /> Export CSV
+                    </button>
+
+                    <label className="px-3.5 py-1.5 rounded-lg bg-[#C5A059] text-white hover:bg-[#B38F48] text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-colors shadow-sm">
+                      <Upload size={14} /> Bulk Import CSV
+                      <input
+                        type="file"
+                        accept=".csv"
+                        className="hidden"
+                        onChange={handleImportCSV}
+                      />
+                    </label>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-6">
+                  {(formData.products || []).map((prod, idx) => (
+                    <div
+                      key={prod.id || idx}
+                      draggable={true}
+                      onDragStart={() => setDraggedIndex(idx)}
+                      onDragOver={(e) => e.preventDefault()}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        if (draggedIndex !== null && draggedIndex !== idx) {
+                          moveProduct(draggedIndex, idx);
+                          setDraggedIndex(null);
+                        }
+                      }}
+                      className={`p-5 bg-white rounded-xl border ${draggedIndex === idx ? 'border-2 border-[#7A1C30] opacity-50' : 'border-[#EAE5D9]'} space-y-4 shadow-sm transition-all`}
+                    >
+                      <div className="flex items-center justify-between pb-2 border-b border-[#EAE5D9]">
+                        <div className="flex items-center gap-2">
+                          <span className="cursor-grab text-gray-400 hover:text-[#7A1C30]" title="Drag to reorder">
+                            <GripVertical size={18} />
+                          </span>
+                          <h4 className="font-serif-editorial text-base text-[#7A1C30] font-medium">
+                            Product #{idx + 1}: {prod.name}
+                          </h4>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          {/* Reorder Buttons */}
+                          <div className="flex items-center gap-1 bg-[#FAF6EE] border border-[#EAE5D9] rounded-lg p-0.5">
+                            <button
+                              type="button"
+                              disabled={idx === 0}
+                              onClick={() => moveProduct(idx, idx - 1)}
+                              className="p-1 text-gray-600 hover:text-[#7A1C30] disabled:opacity-30 disabled:hover:text-gray-600"
+                              title="Move Up"
+                            >
+                              <ArrowUp size={13} />
+                            </button>
+                            <button
+                              type="button"
+                              disabled={idx === (formData.products || []).length - 1}
+                              onClick={() => moveProduct(idx, idx + 1)}
+                              className="p-1 text-gray-600 hover:text-[#7A1C30] disabled:opacity-30 disabled:hover:text-gray-600"
+                              title="Move Down"
+                            >
+                              <ArrowDown size={13} />
+                            </button>
+                          </div>
+
+                          <span className="text-xs font-sans text-[#C5A059] font-bold">{prod.price}</span>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = formData.products.filter((_, i) => i !== idx);
+                              setFormData({ ...formData, products: updated });
+                            }}
+                            className="text-xs text-red-600 hover:underline flex items-center gap-1 font-sans ml-2"
+                          >
+                            <Trash2 size={13} /> Remove
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Product Title</label>
+                          <input
+                            type="text"
+                            value={prod.name || ''}
+                            onChange={(e) => {
+                              const updated = [...formData.products];
+                              updated[idx].name = e.target.value;
+                              setFormData({ ...formData, products: updated });
+                            }}
+                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Product Price</label>
+                          <input
+                            type="text"
+                            value={prod.price || ''}
+                            onChange={(e) => {
+                              const updated = [...formData.products];
+                              updated[idx].price = e.target.value;
+                              setFormData({ ...formData, products: updated });
+                            }}
+                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Fabric Type</label>
+                          <input
+                            type="text"
+                            value={prod.fabric || ''}
+                            onChange={(e) => {
+                              const updated = [...formData.products];
+                              updated[idx].fabric = e.target.value;
+                              setFormData({ ...formData, products: updated });
+                            }}
+                            placeholder="e.g. Pure Handloom Silk"
+                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Category Badge</label>
+                          <input
+                            type="text"
+                            value={prod.category || ''}
+                            onChange={(e) => {
+                              const updated = [...formData.products];
+                              updated[idx].category = e.target.value;
+                              setFormData({ ...formData, products: updated });
+                            }}
+                            placeholder="e.g. Festive Wear"
+                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Authenticity Badge</label>
+                          <input
+                            type="text"
+                            value={prod.badge || ''}
+                            onChange={(e) => {
+                              const updated = [...formData.products];
+                              updated[idx].badge = e.target.value;
+                              setFormData({ ...formData, products: updated });
+                            }}
+                            placeholder="e.g. 100% Authentic Handloom"
+                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Top Metres</label>
+                          <input
+                            type="text"
+                            value={prod.topMetres || ''}
+                            onChange={(e) => {
+                              const updated = [...formData.products];
+                              updated[idx].topMetres = e.target.value;
+                              setFormData({ ...formData, products: updated });
+                            }}
+                            placeholder="e.g. 2.5 Metres"
+                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Bottom Fabric</label>
+                          <input
+                            type="text"
+                            value={prod.bottomFabric || ''}
+                            onChange={(e) => {
+                              const updated = [...formData.products];
+                              updated[idx].bottomFabric = e.target.value;
+                              setFormData({ ...formData, products: updated });
+                            }}
+                            placeholder="e.g. Matching Silk Satin Blend"
+                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Bottom Metres</label>
+                          <input
+                            type="text"
+                            value={prod.bottomMetres || ''}
+                            onChange={(e) => {
+                              const updated = [...formData.products];
+                              updated[idx].bottomMetres = e.target.value;
+                              setFormData({ ...formData, products: updated });
+                            }}
+                            placeholder="e.g. 2.5 Metres"
+                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Dupatta Fabric</label>
+                          <input
+                            type="text"
+                            value={prod.dupattaFabric || ''}
+                            onChange={(e) => {
+                              const updated = [...formData.products];
+                              updated[idx].dupattaFabric = e.target.value;
+                              setFormData({ ...formData, products: updated });
+                            }}
+                            placeholder="e.g. Woven Zari Border Drape"
+                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Dupatta Metres</label>
+                          <input
+                            type="text"
+                            value={prod.dupattaMetres || ''}
+                            onChange={(e) => {
+                              const updated = [...formData.products];
+                              updated[idx].dupattaMetres = e.target.value;
+                              setFormData({ ...formData, products: updated });
+                            }}
+                            placeholder="e.g. 2.25 Metres"
+                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Craft & Embroidery</label>
+                          <input
+                            type="text"
+                            value={prod.craft || ''}
+                            onChange={(e) => {
+                              const updated = [...formData.products];
+                              updated[idx].craft = e.target.value;
+                              setFormData({ ...formData, products: updated });
+                            }}
+                            placeholder="e.g. Zari Hand Embroidery"
+                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Wash Care</label>
+                          <input
+                            type="text"
+                            value={prod.washCare || ''}
+                            onChange={(e) => {
+                              const updated = [...formData.products];
+                              updated[idx].washCare = e.target.value;
+                              setFormData({ ...formData, products: updated });
+                            }}
+                            placeholder="e.g. Dry Clean Only"
+                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Product Photo</label>
+                        <div className="flex items-center gap-3">
+                          <input
+                            type="text"
+                            value={prod.image || ''}
+                            onChange={(e) => {
+                              const updated = [...formData.products];
+                              updated[idx].image = e.target.value;
+                              setFormData({ ...formData, products: updated });
+                            }}
+                            className="flex-1 px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          />
+                          <label className="px-4 py-2 bg-[#7A1C30] text-white rounded-lg text-xs font-medium cursor-pointer">
+                            Upload Photo
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) =>
+                                handleImageFileChange(e, (url) => {
+                                  const updated = [...formData.products];
+                                  updated[idx].image = url;
+                                  setFormData({ ...formData, products: updated });
+                                })
+                              }
+                            />
+                          </label>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Product Description / Story</label>
+                        <textarea
+                          value={prod.description || ''}
+                          onChange={(e) => {
+                            const updated = [...formData.products];
+                            updated[idx].description = e.target.value;
+                            setFormData({ ...formData, products: updated });
+                          }}
+                          rows={2}
+                          placeholder="Describe the weave heritage and details of this product..."
+                          className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    const newItem: ProductItem = {
+                      id: `prod-${Date.now()}`,
+                      name: 'New Dress Material Ensemble',
+                      fabric: 'Pure Handloom Silk',
+                      price: '₹ 3,500',
+                      image: DUMMY_IMAGE,
+                      category: 'Dress Material',
+                    };
+                    setFormData({ ...formData, products: [...(formData.products || []), newItem] });
+                  }}
+                  className="btn-maroon text-xs px-6 py-2.5 rounded-full flex items-center gap-2 shadow-md"
+                >
+                  <Plus size={15} /> Add New Product
+                </button>
               </div>
             </div>
           )}

@@ -134,7 +134,7 @@ export default async function CollectionDetailPage({ params }: { params: Promise
 
                 <div className="mt-4 pt-3 border-t border-[#EAE5D9] flex items-center justify-between">
                   {item.price && (
-                    <span className="font-serif-editorial text-base font-semibold text-[#7A1C30]">
+                    <span className="font-sans text-base font-bold text-[#7A1C30]">
                       {item.price}
                     </span>
                   )}

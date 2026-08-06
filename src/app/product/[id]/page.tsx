@@ -8,7 +8,12 @@ import { getImageUrl } from '@/lib/constants';
 
 // Required for Next.js static export on GitHub Pages
 export function generateStaticParams() {
-  const productIds = ['prod-1', 'prod-2', 'prod-3', 'prod-4', 'prod-5', 'prod-6', '1', '2', '3', '4'];
+  const productIds = [
+    'chanderi-zari-silk', 'organza-floral-saree', 'tussar-raw-silk', 'ivory-zardosi-velvet',
+    'arr-1', 'arr-2', 'arr-3', 'arr-4', 'arr-5', 'arr-6', 'arr-7', 'arr-8',
+    'prod-1', 'prod-2', 'prod-3', 'prod-4', 'prod-5', 'prod-6',
+    '1', '2', '3', '4'
+  ];
   return productIds.map((id) => ({ id }));
 }
 
@@ -50,68 +55,98 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
               <img
                 src={getImageUrl(product.image)}
                 alt={product.name}
-                className="w-full h-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
               />
-              <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-white/90 backdrop-blur-md text-[0.68rem] tracking-widest uppercase font-semibold text-[#7A1C30] border border-[#C5A059]/30">
-                100% Authentic Handloom
-              </span>
+              {product.badge && (
+                <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-white/90 backdrop-blur-md text-[0.68rem] tracking-widest uppercase font-semibold text-[#7A1C30] border border-[#C5A059]/30">
+                  {product.badge}
+                </span>
+              )}
             </div>
           </div>
 
           {/* Right Column: Product Meta, Price, Fabric Specs & CTAs */}
           <div className="lg:col-span-6 space-y-8">
             <div className="space-y-3 pb-6 border-b border-[#EAE5D9]">
-              <span className="text-[0.72rem] tracking-[0.3em] uppercase text-[#C5A059] font-semibold block">
-                {product.category || 'Boutique Dress Material'}
-              </span>
-              <h1 className="font-serif-editorial text-3xl md:text-4xl text-[#7A1C30] font-normal leading-tight">
-                {product.name}
-              </h1>
+              {product.category && (
+                <span className="text-[0.72rem] tracking-[0.3em] uppercase text-[#C5A059] font-semibold block">
+                  {product.category}
+                </span>
+              )}
+              {product.name && (
+                <h1 className="font-serif-editorial text-3xl md:text-4xl text-[#7A1C30] font-normal leading-tight">
+                  {product.name}
+                </h1>
+              )}
 
               {/* Price & Rating */}
-              <div className="flex items-center gap-4 pt-2">
-                <span className="font-serif-editorial text-3xl font-semibold text-[#7A1C30]">
-                  {product.price}
-                </span>
-                <span className="text-xs text-gray-500 font-light">(Inclusive of all taxes)</span>
-                <div className="ml-auto flex items-center gap-1 text-xs text-[#C5A059] font-medium">
-                  <Star size={14} className="fill-[#C5A059]" /> 4.9 (28 Boutique Reviews)
+              {(product.price || product.rating) && (
+                <div className="flex items-center gap-4 pt-2">
+                  {product.price && (
+                    <span className="font-sans text-3xl font-bold tracking-tight text-[#7A1C30]">
+                      {product.price}
+                    </span>
+                  )}
+                  {product.price && <span className="text-xs text-gray-500 font-light">(Inclusive of all taxes)</span>}
+                  
+                  {(product.rating || product.reviewsCount) && (
+                    <div className="ml-auto flex items-center gap-1 text-xs text-[#C5A059] font-medium font-sans">
+                      <Star size={14} className="fill-[#C5A059]" />
+                      {product.rating && <strong className="font-semibold">{product.rating}</strong>}
+                      {product.reviewsCount && <span className="text-gray-500">({product.reviewsCount} Boutique Reviews)</span>}
+                    </div>
+                  )}
                 </div>
-              </div>
+              )}
+
+              {product.description && (
+                <p className="text-xs text-gray-600 font-light leading-relaxed pt-2">
+                  {product.description}
+                </p>
+              )}
             </div>
 
             {/* What's Included / Fabric Breakdown Specifications Box */}
-            <div className="bg-[#F3EFEA] p-6 rounded-2xl border border-[#EAE5D9] space-y-4">
-              <h3 className="font-serif-editorial text-lg text-[#7A1C30] font-medium flex items-center gap-2">
-                <Sparkles size={16} className="text-[#C5A059]" /> What's Included in This Set
-              </h3>
+            {(product.topMetres || product.fabric || product.bottomMetres || product.bottomFabric || product.dupattaMetres || product.dupattaFabric || product.craft || product.washCare) && (
+              <div className="bg-[#F3EFEA] p-6 rounded-2xl border border-[#EAE5D9] space-y-4">
+                <h3 className="font-serif-editorial text-lg text-[#7A1C30] font-medium flex items-center gap-2">
+                  <Sparkles size={16} className="text-[#C5A059]" /> {DEFAULT_HOMEPAGE_DATA.productPageSettings?.specsSectionTitle || "What's Included in This Set"}
+                </h3>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-sans">
-                <div className="bg-white p-3.5 rounded-xl border border-[#EAE5D9]">
-                  <span className="text-gray-500 block text-[0.68rem] uppercase tracking-wider mb-0.5">Top (Kurta Fabric)</span>
-                  <strong className="text-[#7A1C30] font-semibold text-sm">2.5 Metres</strong>
-                  <p className="text-gray-600 font-light text-[0.75rem]">{product.fabric || 'Pure Handloom Silk'}</p>
-                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-sans">
+                  {(product.topMetres || product.fabric) && (
+                    <div className="bg-white p-3.5 rounded-xl border border-[#EAE5D9]">
+                      <span className="text-gray-500 block text-[0.68rem] uppercase tracking-wider mb-0.5">Top (Kurta Fabric)</span>
+                      {product.topMetres && <strong className="text-[#7A1C30] font-semibold text-sm block font-sans">{product.topMetres}</strong>}
+                      {product.fabric && <p className="text-gray-600 font-light text-[0.75rem]">{product.fabric}</p>}
+                    </div>
+                  )}
 
-                <div className="bg-white p-3.5 rounded-xl border border-[#EAE5D9]">
-                  <span className="text-gray-500 block text-[0.68rem] uppercase tracking-wider mb-0.5">Bottom (Salwar / Pants)</span>
-                  <strong className="text-[#7A1C30] font-semibold text-sm">2.5 Metres</strong>
-                  <p className="text-gray-600 font-light text-[0.75rem]">Matching Silk Satin Blend</p>
-                </div>
+                  {(product.bottomMetres || product.bottomFabric) && (
+                    <div className="bg-white p-3.5 rounded-xl border border-[#EAE5D9]">
+                      <span className="text-gray-500 block text-[0.68rem] uppercase tracking-wider mb-0.5">Bottom (Salwar / Pants)</span>
+                      {product.bottomMetres && <strong className="text-[#7A1C30] font-semibold text-sm block font-sans">{product.bottomMetres}</strong>}
+                      {product.bottomFabric && <p className="text-gray-600 font-light text-[0.75rem]">{product.bottomFabric}</p>}
+                    </div>
+                  )}
 
-                <div className="bg-white p-3.5 rounded-xl border border-[#EAE5D9]">
-                  <span className="text-gray-500 block text-[0.68rem] uppercase tracking-wider mb-0.5">Dupatta (Drape)</span>
-                  <strong className="text-[#7A1C30] font-semibold text-sm">2.25 Metres</strong>
-                  <p className="text-gray-600 font-light text-[0.75rem]">Woven Zari Border Drape</p>
-                </div>
+                  {(product.dupattaMetres || product.dupattaFabric) && (
+                    <div className="bg-white p-3.5 rounded-xl border border-[#EAE5D9]">
+                      <span className="text-gray-500 block text-[0.68rem] uppercase tracking-wider mb-0.5">Dupatta (Drape)</span>
+                      {product.dupattaMetres && <strong className="text-[#7A1C30] font-semibold text-sm block font-sans">{product.dupattaMetres}</strong>}
+                      {product.dupattaFabric && <p className="text-gray-600 font-light text-[0.75rem]">{product.dupattaFabric}</p>}
+                    </div>
+                  )}
 
-                <div className="bg-white p-3.5 rounded-xl border border-[#EAE5D9]">
-                  <span className="text-gray-500 block text-[0.68rem] uppercase tracking-wider mb-0.5">Craft & Care</span>
-                  <strong className="text-[#7A1C30] font-semibold text-sm">Zari Hand Embroidery</strong>
-                  <p className="text-gray-600 font-light text-[0.75rem]">Dry Clean Only</p>
+                  {(product.craft || product.washCare) && (
+                    <div className="bg-white p-3.5 rounded-xl border border-[#EAE5D9]">
+                      <span className="text-gray-500 block text-[0.68rem] uppercase tracking-wider mb-0.5">Craft & Care</span>
+                      {product.craft && <strong className="text-[#7A1C30] font-semibold text-sm block">{product.craft}</strong>}
+                      {product.washCare && <p className="text-gray-600 font-light text-[0.75rem]">{product.washCare}</p>}
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
+            )}
 
             {/* Action CTAs */}
             <div className="space-y-4 pt-2">
@@ -125,7 +160,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
               </div>
 
               <a
-                href={`https://wa.me/?text=${encodeURIComponent(`Hi Gaurangi Fashions! I want to inquire about ${product.name} (${product.price})`)}`}
+                href={`https://wa.me/?text=${encodeURIComponent(`Hi Gaurangi Fashions! I want to inquire about ${product.name} (${product.price || ''})`)}`}
                 target="_blank"
                 rel="noreferrer"
                 className="w-full py-3 px-4 rounded-full border border-[#25D366] text-[#25D366] hover:bg-[#25D366] hover:text-white transition-all text-xs font-semibold uppercase tracking-widest flex items-center justify-center gap-2"
@@ -188,9 +223,11 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                       {item.name}
                     </h3>
                     <div className="mt-3 pt-2 border-t border-[#EAE5D9] flex items-center justify-between">
-                      <span className="font-serif-editorial text-sm font-semibold text-[#7A1C30]">
-                        {item.price}
-                      </span>
+                      {item.price ? (
+                        <span className="font-sans text-sm font-bold text-[#7A1C30]">
+                          {item.price}
+                        </span>
+                      ) : <div />}
                       <span className="text-[0.68rem] uppercase font-semibold text-[#7A1C30]">
                         View Set
                       </span>
