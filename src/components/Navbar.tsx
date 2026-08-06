@@ -2,13 +2,15 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, Heart, ShoppingBag, User, Menu, X, Sparkles } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { Search, Heart, ShoppingBag, User, Menu, X } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,6 +23,19 @@ export const Navbar: React.FC = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const isActive = (path: string) => {
+    if (path === '/') return pathname === '/';
+    return pathname.startsWith(path);
+  };
+
+  const navItems = [
+    { name: 'Home', href: '/' },
+    { name: 'Collections', href: '/collections' },
+    { name: 'Dress Materials', href: '/dress-materials' },
+    { name: 'About', href: '/#about' },
+    { name: 'Contact', href: '/#contact' },
+  ];
 
   return (
     <>
@@ -35,38 +50,30 @@ export const Navbar: React.FC = () => {
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? (
-              <X className={isScrolled ? 'text-[#1F1F1F]' : 'text-white'} size={24} />
+              <X className="text-[#1F1F1F]" size={24} />
             ) : (
-              <Menu className={isScrolled ? 'text-[#1F1F1F]' : 'text-white'} size={24} />
+              <Menu className="text-[#1F1F1F]" size={24} />
             )}
           </button>
 
           {/* Left Navigation Links */}
           <nav className="hidden lg:flex items-center gap-8 text-[0.88rem] tracking-widest uppercase font-medium">
-            <Link
-              href="/"
-              className="transition-colors text-[#1F1F1F] hover:text-[#7A1C30]"
-            >
-              Home
-            </Link>
-            <Link
-              href="/dress-materials"
-              className="transition-colors text-[#7A1C30] font-semibold"
-            >
-              Dress Materials
-            </Link>
-            <Link
-              href="/#about"
-              className="transition-colors text-[#1F1F1F] hover:text-[#7A1C30]"
-            >
-              About
-            </Link>
-            <Link
-              href="/#contact"
-              className="transition-colors text-[#1F1F1F] hover:text-[#7A1C30]"
-            >
-              Contact
-            </Link>
+            {navItems.map((item) => {
+              const active = isActive(item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`transition-colors py-1 ${
+                    active
+                      ? 'text-[#7A1C30] font-bold border-b-2 border-[#7A1C30]'
+                      : 'text-[#1F1F1F] hover:text-[#7A1C30]'
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              );
+            })}
           </nav>
 
           {/* Center Brand Logo */}
@@ -155,18 +162,23 @@ export const Navbar: React.FC = () => {
               </div>
 
               <nav className="flex flex-col gap-6 text-sm tracking-widest uppercase font-medium">
-                <Link href="/" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#7A1C30]">
-                  Home
-                </Link>
-                <Link href="/dress-materials" onClick={() => setMobileMenuOpen(false)} className="text-[#7A1C30] font-semibold">
-                  Dress Materials
-                </Link>
-                <Link href="/#about" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#7A1C30]">
-                  About
-                </Link>
-                <Link href="/#contact" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#7A1C30]">
-                  Contact
-                </Link>
+                {navItems.map((item) => {
+                  const active = isActive(item.href);
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`transition-colors ${
+                        active
+                          ? 'text-[#7A1C30] font-bold border-l-4 border-[#7A1C30] pl-2'
+                          : 'hover:text-[#7A1C30]'
+                      }`}
+                    >
+                      {item.name}
+                    </Link>
+                  );
+                })}
               </nav>
             </div>
 
@@ -179,3 +191,4 @@ export const Navbar: React.FC = () => {
     </>
   );
 };
+
