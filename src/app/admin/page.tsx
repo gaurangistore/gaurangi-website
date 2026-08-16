@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useContent, HomepageData, HeroSlide, CollectionItem, ProductItem, CustomerStoryItem } from '@/context/ContentContext';
-import { Sparkles, Save, Plus, Trash2, CheckCircle, Home, Layers, ShoppingBag, Quote, PhoneCall, ShieldCheck, Tag, Info, Package, Settings, Eye, GripVertical, ArrowUp, ArrowDown, Download, Upload, FileSpreadsheet } from 'lucide-react';
+import { useContent, HomepageData, ProductItem, CraftPageContent } from '@/context/ContentContext';
+import { Sparkles, Save, Plus, Trash2, CheckCircle, Home, ShoppingBag, PhoneCall, Info, Package, GripVertical, ArrowUp, ArrowDown, Download, Upload } from 'lucide-react';
 import Link from 'next/link';
-import { DUMMY_IMAGE } from '@/lib/constants';
+import { DUMMY_IMAGE, TECHNIQUES } from '@/lib/constants';
 
 export default function AdminDashboard() {
   const { data, saveData, uploadImage } = useContent();
@@ -15,10 +15,12 @@ export default function AdminDashboard() {
   const [isSaving, setIsSaving] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
-  // Sync state if context data updates
-  React.useEffect(() => {
+  // Sync form state when context data loads or is saved
+  const [prevData, setPrevData] = useState<HomepageData>(data);
+  if (data !== prevData) {
+    setPrevData(data);
     setFormData(data);
-  }, [data]);
+  }
 
   // Reorder product helper
   const moveProduct = (fromIndex: number, toIndex: number) => {
@@ -32,7 +34,7 @@ export default function AdminDashboard() {
   // CSV Export Helper for Content Authors
   const handleExportCSV = () => {
     const products = formData.products || [];
-    const headers = ['id', 'name', 'fabric', 'price', 'image', 'category', 'topMetres', 'bottomFabric', 'bottomMetres', 'dupattaFabric', 'dupattaMetres', 'craft', 'washCare', 'badge', 'description', 'rating', 'reviewsCount'];
+    const headers = ['id', 'name', 'fabric', 'price', 'image', 'category', 'technique', 'topMetres', 'bottomFabric', 'bottomMetres', 'dupattaFabric', 'dupattaMetres', 'craft', 'washCare', 'badge', 'description', 'rating', 'reviewsCount'];
     
     const csvRows = [
       headers.join(','),
@@ -69,7 +71,7 @@ export default function AdminDashboard() {
         const row = lines[i].split(/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/);
         const cleanedRow = row.map(cell => cell.trim().replace(/^"|"$/g, '').replace(/""/g, '"'));
 
-        const prodObj: any = { id: `prod-${Date.now()}-${i}` };
+        const prodObj: { [key: string]: string } = { id: `prod-${Date.now()}-${i}` };
         headers.forEach((header, colIdx) => {
           if (cleanedRow[colIdx] !== undefined) {
             prodObj[header] = cleanedRow[colIdx];
@@ -77,7 +79,7 @@ export default function AdminDashboard() {
         });
 
         if (prodObj.name) {
-          newProducts.push(prodObj as ProductItem);
+          newProducts.push(prodObj as unknown as ProductItem);
         }
       }
 
@@ -120,15 +122,15 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-[#FAF6EE] text-[#1F1F1F] flex flex-col font-sans">
       
       {/* Top Admin Navigation Header */}
-      <header className="bg-[#7A1C30] text-white py-4 px-6 md:px-12 flex items-center justify-between shadow-md">
+      <header className="bg-[#0A2A54] text-white py-3 px-4 md:px-12 flex flex-wrap items-center justify-between gap-3 shadow-md sticky top-0 z-50">
         <div className="flex items-center gap-3">
-          <Sparkles className="w-5 h-5 text-[#C5A059]" />
-          <h1 className="font-serif-editorial text-xl md:text-2xl font-medium tracking-wider uppercase">
+          <Sparkles className="w-5 h-5 text-[#E3B463] shrink-0" />
+          <h1 className="font-serif-editorial text-base md:text-2xl font-medium tracking-wider uppercase leading-tight">
             Gaurangi Page-Based CMS Portal
           </h1>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <Link
             href="/"
             target="_blank"
@@ -139,7 +141,7 @@ export default function AdminDashboard() {
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="btn-maroon bg-[#C5A059] text-[#7A1C30] hover:bg-white text-xs px-5 py-2.5 rounded-full font-semibold uppercase tracking-wider flex items-center gap-2 shadow-lg"
+            className="bg-[#E3B463] text-[#0A2A54] hover:bg-white text-xs px-5 py-2.5 rounded-full font-semibold uppercase tracking-wider flex items-center gap-2 shadow-lg min-h-[44px]"
           >
             <Save size={15} /> {isSaving ? 'Publishing...' : 'Publish Changes'}
           </button>
@@ -155,67 +157,69 @@ export default function AdminDashboard() {
       )}
 
       {/* Main Admin Workspace */}
-      <div className="flex-1 max-w-7xl w-full mx-auto p-6 md:p-12 grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-12 lg:grid lg:grid-cols-12 gap-8">
         
-        {/* Page Selector Sidebar Navigation */}
-        <aside className="lg:col-span-3 bg-white p-6 rounded-2xl border border-[#EAE5D9] shadow-sm flex flex-col gap-2 h-fit">
-          <span className="text-[0.65rem] tracking-[0.25em] uppercase text-[#C5A059] font-semibold mb-2 block">
+        {/* Page Selector Navigation — top tab rail on mobile, sidebar on desktop */}
+        <aside className="lg:col-span-3 bg-white p-4 md:p-6 rounded-2xl border border-[#EAE5D9] shadow-sm mb-4 lg:mb-0">
+          <span className="text-[0.65rem] tracking-[0.25em] uppercase text-[#C5A059] font-semibold mb-2 block lg:block">
             Select Website Page to Author
           </span>
 
-          {/* PAGE 1: HOMEPAGE */}
-          <button
-            onClick={() => setActivePageTab('homepage')}
-            className={`w-full text-left px-4 py-3 rounded-xl text-xs uppercase tracking-wider font-semibold flex items-center gap-3 transition-colors ${
-              activePageTab === 'homepage' ? 'bg-[#7A1C30] text-white' : 'hover:bg-[#FAF6EE] text-[#1F1F1F]'
-            }`}
-          >
-            <Home size={16} /> 🏠 Page 1: Homepage (/)
-          </button>
+          <div className="flex lg:flex-col gap-2 overflow-x-auto no-scrollbar -mx-1 px-1 pb-1 lg:pb-0">
+            {/* PAGE 1: HOMEPAGE */}
+            <button
+              onClick={() => setActivePageTab('homepage')}
+              className={`flex-1 lg:w-full shrink-0 text-left lg:text-left px-4 py-3 rounded-xl text-xs uppercase tracking-wider font-semibold flex items-center gap-3 transition-colors min-h-[48px] ${
+                activePageTab === 'homepage' ? 'bg-[#7A1C30] text-white' : 'hover:bg-[#FAF6EE] text-[#1F1F1F]'
+              }`}
+            >
+              <Home size={16} /> 🏠 Homepage (/)
+            </button>
 
-          {/* PAGE 2: DRESS MATERIALS CATALOG PAGE */}
-          <button
-            onClick={() => setActivePageTab('catalogPage')}
-            className={`w-full text-left px-4 py-3 rounded-xl text-xs uppercase tracking-wider font-semibold flex items-center gap-3 transition-colors ${
-              activePageTab === 'catalogPage' ? 'bg-[#7A1C30] text-white' : 'hover:bg-[#FAF6EE] text-[#1F1F1F]'
-            }`}
-          >
-            <Tag size={16} /> 👗 Page 2: Dress Materials Catalog (/dress-materials)
-          </button>
+            {/* PAGE 2: SHOP / THE EDIT */}
+            <button
+              onClick={() => setActivePageTab('catalogPage')}
+              className={`flex-1 lg:w-full shrink-0 text-left lg:text-left px-4 py-3 rounded-xl text-xs uppercase tracking-wider font-semibold flex items-center gap-3 transition-colors min-h-[48px] ${
+                activePageTab === 'catalogPage' ? 'bg-[#7A1C30] text-white' : 'hover:bg-[#FAF6EE] text-[#1F1F1F]'
+              }`}
+            >
+              <ShoppingBag size={16} /> 🛍️ Shop / The Edit (/shop)
+            </button>
 
-          {/* PAGE 3: PRODUCT DETAILS PAGE */}
-          <button
-            onClick={() => setActivePageTab('productDetailsPage')}
-            className={`w-full text-left px-4 py-3 rounded-xl text-xs uppercase tracking-wider font-semibold flex items-center gap-3 transition-colors ${
-              activePageTab === 'productDetailsPage' ? 'bg-[#7A1C30] text-white' : 'hover:bg-[#FAF6EE] text-[#1F1F1F]'
-            }`}
-          >
-            <Package size={16} /> 🛍️ Page 3: Product Details (/product/[id])
-          </button>
+            {/* PAGE 3: PRODUCT DETAILS PAGE */}
+            <button
+              onClick={() => setActivePageTab('productDetailsPage')}
+              className={`flex-1 lg:w-full shrink-0 text-left lg:text-left px-4 py-3 rounded-xl text-xs uppercase tracking-wider font-semibold flex items-center gap-3 transition-colors min-h-[48px] ${
+                activePageTab === 'productDetailsPage' ? 'bg-[#7A1C30] text-white' : 'hover:bg-[#FAF6EE] text-[#1F1F1F]'
+              }`}
+            >
+              <Package size={16} /> 🛍️ Product Details (/product/[id])
+            </button>
 
-          {/* PAGE 4: ABOUT & BRAND STORY */}
-          <button
-            onClick={() => setActivePageTab('aboutPage')}
-            className={`w-full text-left px-4 py-3 rounded-xl text-xs uppercase tracking-wider font-semibold flex items-center gap-3 transition-colors ${
-              activePageTab === 'aboutPage' ? 'bg-[#7A1C30] text-white' : 'hover:bg-[#FAF6EE] text-[#1F1F1F]'
-            }`}
-          >
-            <Info size={16} /> 📖 Page 4: About Story (/#about)
-          </button>
+            {/* PAGE 4: THE CRAFT */}
+            <button
+              onClick={() => setActivePageTab('aboutPage')}
+              className={`flex-1 lg:w-full shrink-0 text-left lg:text-left px-4 py-3 rounded-xl text-xs uppercase tracking-wider font-semibold flex items-center gap-3 transition-colors min-h-[48px] ${
+                activePageTab === 'aboutPage' ? 'bg-[#7A1C30] text-white' : 'hover:bg-[#FAF6EE] text-[#1F1F1F]'
+              }`}
+            >
+              <Info size={16} /> 🎨 The Craft (/craft)
+            </button>
 
-          {/* PAGE 5: CONTACT & FOOTER */}
-          <button
-            onClick={() => setActivePageTab('contactFooter')}
-            className={`w-full text-left px-4 py-3 rounded-xl text-xs uppercase tracking-wider font-semibold flex items-center gap-3 transition-colors ${
-              activePageTab === 'contactFooter' ? 'bg-[#7A1C30] text-white' : 'hover:bg-[#FAF6EE] text-[#1F1F1F]'
-            }`}
-          >
-            <PhoneCall size={16} /> 📞 Page 5: Contact & Footer (/#contact)
-          </button>
+            {/* PAGE 5: CONTACT & FOOTER */}
+            <button
+              onClick={() => setActivePageTab('contactFooter')}
+              className={`flex-1 lg:w-full shrink-0 text-left lg:text-left px-4 py-3 rounded-xl text-xs uppercase tracking-wider font-semibold flex items-center gap-3 transition-colors min-h-[48px] ${
+                activePageTab === 'contactFooter' ? 'bg-[#7A1C30] text-white' : 'hover:bg-[#FAF6EE] text-[#1F1F1F]'
+              }`}
+            >
+              <PhoneCall size={16} /> 📞 Contact & Footer
+            </button>
+          </div>
         </aside>
 
         {/* Tab Content Editor Form Area */}
-        <main className="lg:col-span-9 bg-white p-8 rounded-2xl border border-[#EAE5D9] shadow-sm">
+        <main className="lg:col-span-9 bg-white p-4 md:p-8 rounded-2xl border border-[#EAE5D9] shadow-sm">
           
           {/* ========================================== */}
           {/* PAGE 1: HOMEPAGE AUTHORING                 */}
@@ -237,7 +241,7 @@ export default function AdminDashboard() {
               <div className="flex flex-wrap gap-2 border-b border-[#EAE5D9] pb-4">
                 <button
                   onClick={() => setActiveHomeSubtab('hero')}
-                  className={`px-4 py-2 rounded-lg text-xs uppercase font-medium transition-colors ${
+                  className={`px-4 py-2 rounded-lg text-xs uppercase font-medium transition-colors min-h-[44px] ${
                     activeHomeSubtab === 'hero' ? 'bg-[#7A1C30] text-white' : 'bg-[#FAF6EE] text-[#1F1F1F]'
                   }`}
                 >
@@ -245,23 +249,23 @@ export default function AdminDashboard() {
                 </button>
                 <button
                   onClick={() => setActiveHomeSubtab('categories')}
-                  className={`px-4 py-2 rounded-lg text-xs uppercase font-medium transition-colors ${
+                  className={`px-4 py-2 rounded-lg text-xs uppercase font-medium transition-colors min-h-[44px] ${
                     activeHomeSubtab === 'categories' ? 'bg-[#7A1C30] text-white' : 'bg-[#FAF6EE] text-[#1F1F1F]'
                   }`}
                 >
-                  🧵 2. Fabric Categories
+                  🧵 2. Shop by Technique
                 </button>
                 <button
                   onClick={() => setActiveHomeSubtab('products')}
-                  className={`px-4 py-2 rounded-lg text-xs uppercase font-medium transition-colors ${
+                  className={`px-4 py-2 rounded-lg text-xs uppercase font-medium transition-colors min-h-[44px] ${
                     activeHomeSubtab === 'products' ? 'bg-[#7A1C30] text-white' : 'bg-[#FAF6EE] text-[#1F1F1F]'
                   }`}
                 >
-                  👗 3. Featured Products
+                  👗 3. New Arrivals
                 </button>
                 <button
                   onClick={() => setActiveHomeSubtab('whyGaurangi')}
-                  className={`px-4 py-2 rounded-lg text-xs uppercase font-medium transition-colors ${
+                  className={`px-4 py-2 rounded-lg text-xs uppercase font-medium transition-colors min-h-[44px] ${
                     activeHomeSubtab === 'whyGaurangi' ? 'bg-[#7A1C30] text-white' : 'bg-[#FAF6EE] text-[#1F1F1F]'
                   }`}
                 >
@@ -269,11 +273,11 @@ export default function AdminDashboard() {
                 </button>
                 <button
                   onClick={() => setActiveHomeSubtab('stories')}
-                  className={`px-4 py-2 rounded-lg text-xs uppercase font-medium transition-colors ${
+                  className={`px-4 py-2 rounded-lg text-xs uppercase font-medium transition-colors min-h-[44px] ${
                     activeHomeSubtab === 'stories' ? 'bg-[#7A1C30] text-white' : 'bg-[#FAF6EE] text-[#1F1F1F]'
                   }`}
                 >
-                  💬 5. Reviews
+                  💬 5. Style Notes
                 </button>
               </div>
 
@@ -334,8 +338,8 @@ export default function AdminDashboard() {
                               updated[idx].title = e.target.value;
                               setFormData({ ...formData, heroSlides: updated });
                             }}
-                            placeholder="e.g. Timeless Dress Materials"
-                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                            placeholder="e.g. Applied, not printed."
+                            className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
                           />
                         </div>
                       </div>
@@ -390,12 +394,12 @@ export default function AdminDashboard() {
                 </div>
               )}
 
-              {/* Subtab 2: Fabric Categories */}
+              {/* Subtab 2: Shop by Technique */}
               {activeHomeSubtab === 'categories' && (
                 <div className="space-y-6">
                   <div className="flex items-center justify-between bg-[#FAF6EE] p-4 rounded-xl border border-[#EAE5D9]">
                     <span className="text-xs font-semibold uppercase tracking-wider text-[#7A1C30]">
-                      Fabric Categories Visibility Control
+                      Shop by Technique Visibility Control
                     </span>
                     <button
                       onClick={() => {
@@ -415,6 +419,53 @@ export default function AdminDashboard() {
                     >
                       {formData.hiddenSections?.featuredCategories ? '🔴 Hidden on Homepage' : '🟢 Visible on Homepage'}
                     </button>
+                  </div>
+
+                  {/* Craft Section + Artisans Section Visibility */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="flex items-center justify-between bg-[#FAF6EE] p-4 rounded-xl border border-[#EAE5D9]">
+                      <span className="text-xs font-semibold uppercase tracking-wider text-[#7A1C30]">The Craft Section</span>
+                      <button
+                        onClick={() => {
+                          setFormData({
+                            ...formData,
+                            hiddenSections: {
+                              ...formData.hiddenSections,
+                              craftSection: !formData.hiddenSections?.craftSection,
+                            },
+                          });
+                        }}
+                        className={`px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider border ${
+                          formData.hiddenSections?.craftSection
+                            ? 'bg-red-50 text-red-600 border-red-200'
+                            : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                        }`}
+                      >
+                        {formData.hiddenSections?.craftSection ? '🔴 Hidden' : '🟢 Visible'}
+                      </button>
+                    </div>
+
+                    <div className="flex items-center justify-between bg-[#FAF6EE] p-4 rounded-xl border border-[#EAE5D9]">
+                      <span className="text-xs font-semibold uppercase tracking-wider text-[#7A1C30]">Artisans Section</span>
+                      <button
+                        onClick={() => {
+                          setFormData({
+                            ...formData,
+                            hiddenSections: {
+                              ...formData.hiddenSections,
+                              artisansSection: !formData.hiddenSections?.artisansSection,
+                            },
+                          });
+                        }}
+                        className={`px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider border ${
+                          formData.hiddenSections?.artisansSection
+                            ? 'bg-red-50 text-red-600 border-red-200'
+                            : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                        }`}
+                      >
+                        {formData.hiddenSections?.artisansSection ? '🔴 Hidden' : '🟢 Visible'}
+                      </button>
+                    </div>
                   </div>
 
                   {/* Authorable Section Header & Link Settings */}
@@ -454,8 +505,8 @@ export default function AdminDashboard() {
                               },
                             });
                           }}
-                          placeholder="e.g. Featured Fabric Categories"
-                          className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          placeholder="e.g. Shop by Technique"
+                          className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
                         />
                       </div>
 
@@ -473,8 +524,8 @@ export default function AdminDashboard() {
                               },
                             });
                           }}
-                          placeholder="e.g. View All Dress Materials →"
-                          className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          placeholder="e.g. Shop All Techniques →"
+                          className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
                         />
                       </div>
 
@@ -482,7 +533,7 @@ export default function AdminDashboard() {
                         <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Link Destination URL</label>
                         <input
                           type="text"
-                          value={formData.sectionHeaders?.categoriesLinkUrl || '/dress-materials'}
+                          value={formData.sectionHeaders?.categoriesLinkUrl || '/shop'}
                           onChange={(e) => {
                             setFormData({
                               ...formData,
@@ -492,8 +543,8 @@ export default function AdminDashboard() {
                               },
                             });
                           }}
-                          placeholder="e.g. /dress-materials"
-                          className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          placeholder="e.g. /shop"
+                          className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
                         />
                       </div>
                     </div>
@@ -503,7 +554,7 @@ export default function AdminDashboard() {
                     {(formData.collections || []).map((col, idx) => (
                       <div key={col.id || idx} className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
                         <div className="flex items-center justify-between">
-                          <h3 className="font-serif-editorial text-base text-[#7A1C30]">Category #{idx + 1}</h3>
+                          <h3 className="font-serif-editorial text-base text-[#7A1C30]">Technique #{idx + 1}</h3>
                           <button
                             onClick={() => {
                               const updated = formData.collections.filter((_, i) => i !== idx);
@@ -526,8 +577,8 @@ export default function AdminDashboard() {
                                 updated[idx].title = e.target.value;
                                 setFormData({ ...formData, collections: updated });
                               }}
-                              placeholder="e.g. Pure Silk"
-                              className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                              placeholder="e.g. Floral Vine Appliqué"
+                              className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
                             />
                           </div>
 
@@ -541,8 +592,8 @@ export default function AdminDashboard() {
                                 updated[idx].subtitle = e.target.value;
                                 setFormData({ ...formData, collections: updated });
                               }}
-                              placeholder="e.g. Lustrous Kanjivaram & Mulberry Silk"
-                              className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                              placeholder="e.g. Vines & blossoms traced by hand"
+                              className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
                             />
                           </div>
                         </div>
@@ -580,7 +631,7 @@ export default function AdminDashboard() {
                   </div>
 
                   <p className="text-xs text-gray-600">
-                    Manage full product list under <strong>Page 2: Dress Materials Catalog</strong>. Up to 8 products are featured on the homepage.
+                    Manage full product list under <strong>Shop / The Edit</strong>. Up to 8 products are featured on the homepage.
                   </p>
                 </div>
               )}
@@ -742,7 +793,7 @@ export default function AdminDashboard() {
                           whyGaurangiPillars: [...(formData.whyGaurangiPillars || []), newPillar],
                         });
                       }}
-                      className="btn-maroon text-xs px-6 py-2.5 rounded-full flex items-center gap-2"
+                      className="bg-[#0A2A54] text-[#FFFBF3] hover:bg-[#C9962F] text-xs px-6 py-2.5 rounded-full flex items-center gap-2"
                     >
                       <Plus size={15} /> Add New Trust Pillar
                     </button>
@@ -789,10 +840,10 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between pb-4 border-b border-[#EAE5D9]">
                 <div>
                   <h2 className="font-serif-editorial text-2xl text-[#7A1C30] font-medium">
-                    Page 2: Dress Materials Catalog (/dress-materials)
+                    Shop / The Edit (/shop) Editor
                   </h2>
                   <p className="text-xs text-gray-500 font-light mt-1">
-                    Author catalog banner titles, fabric filters, and unstitched dress material products.
+                    Author the edit banner, category filters, technique chips, and the full product catalog.
                   </p>
                 </div>
               </div>
@@ -817,8 +868,8 @@ export default function AdminDashboard() {
                         },
                       });
                     }}
-                    placeholder="e.g. Premium Dress Materials"
-                    className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                    placeholder="e.g. The Gaurangi Edit"
+                    className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
                   />
                 </div>
 
@@ -848,7 +899,7 @@ export default function AdminDashboard() {
               <div className="space-y-6">
                 <div className="pb-2 border-b border-[#EAE5D9] flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <div>
-                    <h3 className="font-serif-editorial text-xl text-[#7A1C30]">Dress Materials Product Manager</h3>
+                    <h3 className="font-serif-editorial text-xl text-[#7A1C30]">The Edit Product Manager</h3>
                     <p className="text-xs text-gray-500 font-light mt-0.5">Manage, reorder, or bulk import products for your store.</p>
                   </div>
 
@@ -906,19 +957,21 @@ export default function AdminDashboard() {
                               type="button"
                               disabled={idx === 0}
                               onClick={() => moveProduct(idx, idx - 1)}
-                              className="p-1 text-gray-600 hover:text-[#7A1C30] disabled:opacity-30 disabled:hover:text-gray-600"
+                              className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center text-gray-600 hover:text-[#7A1C30] disabled:opacity-30 disabled:hover:text-gray-600"
                               title="Move Up"
+                              aria-label="Move product up"
                             >
-                              <ArrowUp size={13} />
+                              <ArrowUp size={16} />
                             </button>
                             <button
                               type="button"
                               disabled={idx === (formData.products || []).length - 1}
                               onClick={() => moveProduct(idx, idx + 1)}
-                              className="p-1 text-gray-600 hover:text-[#7A1C30] disabled:opacity-30 disabled:hover:text-gray-600"
+                              className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center text-gray-600 hover:text-[#7A1C30] disabled:opacity-30 disabled:hover:text-gray-600"
                               title="Move Down"
+                              aria-label="Move product down"
                             >
-                              <ArrowDown size={13} />
+                              <ArrowDown size={16} />
                             </button>
                           </div>
 
@@ -991,9 +1044,27 @@ export default function AdminDashboard() {
                               updated[idx].category = e.target.value;
                               setFormData({ ...formData, products: updated });
                             }}
-                            placeholder="e.g. Festive Wear"
-                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                            placeholder="e.g. Suit Sets"
+                            className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
                           />
+                        </div>
+
+                        <div>
+                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Technique</label>
+                          <select
+                            value={prod.technique || ''}
+                            onChange={(e) => {
+                              const updated = [...formData.products];
+                              updated[idx].technique = e.target.value;
+                              setFormData({ ...formData, products: updated });
+                            }}
+                            className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none bg-white"
+                          >
+                            <option value="">None</option>
+                            {TECHNIQUES.map((t) => (
+                              <option key={t.id} value={t.id}>{t.name}</option>
+                            ))}
+                          </select>
                         </div>
                       </div>
 
@@ -1036,17 +1107,18 @@ export default function AdminDashboard() {
                   onClick={() => {
                     const newItem: ProductItem = {
                       id: `prod-${Date.now()}`,
-                      name: 'New Dress Material Ensemble',
-                      fabric: 'Pure Handloom Silk',
-                      price: '₹ 3,500',
+                      name: 'New Appliqué Suit Set',
+                      fabric: 'Cotton',
+                      price: '₹ 2,500',
                       image: DUMMY_IMAGE,
-                      category: 'Dress Material',
+                      category: 'Suit Sets',
+                      technique: 'floral-vine',
                     };
                     setFormData({ ...formData, products: [...(formData.products || []), newItem] });
                   }}
                   className="btn-maroon text-xs px-6 py-2.5 rounded-full flex items-center gap-2 shadow-md"
                 >
-                  <Plus size={15} /> Add New Dress Material Product
+                  <Plus size={15} /> Add New Product
                 </button>
               </div>
             </div>
@@ -1599,15 +1671,16 @@ export default function AdminDashboard() {
                   onClick={() => {
                     const newItem: ProductItem = {
                       id: `prod-${Date.now()}`,
-                      name: 'New Dress Material Ensemble',
-                      fabric: 'Pure Handloom Silk',
-                      price: '₹ 3,500',
+                      name: 'New Appliqué Suit Set',
+                      fabric: 'Cotton',
+                      price: '₹ 2,500',
                       image: DUMMY_IMAGE,
-                      category: 'Dress Material',
+                      category: 'Suit Sets',
+                      technique: 'floral-vine',
                     };
                     setFormData({ ...formData, products: [...(formData.products || []), newItem] });
                   }}
-                  className="btn-maroon text-xs px-6 py-2.5 rounded-full flex items-center gap-2 shadow-md"
+                  className="bg-[#0A2A54] text-[#FFFBF3] hover:bg-[#C9962F] text-xs px-6 py-2.5 rounded-full flex items-center gap-2 shadow-md"
                 >
                   <Plus size={15} /> Add New Product
                 </button>
@@ -1616,61 +1689,269 @@ export default function AdminDashboard() {
           )}
 
           {/* ========================================== */}
-          {/* PAGE 4: ABOUT & BRAND STORY               */}
+          {/* PAGE 4: THE CRAFT                          */}
           {/* ========================================== */}
           {activePageTab === 'aboutPage' && (
             <div className="space-y-8">
               <div className="flex items-center justify-between pb-4 border-b border-[#EAE5D9]">
                 <div>
                   <h2 className="font-serif-editorial text-2xl text-[#7A1C30] font-medium">
-                    Page 4: About & Brand Story (/#about)
+                    The Craft (/craft) Editor
                   </h2>
                   <p className="text-xs text-gray-500 font-light mt-1">
-                    Author brand ethos, artisan heritage, and boutique storytelling.
+                    Author the Pipili appliqué story, how-it&rsquo;s-made steps, workshops, and the artisan spotlight.
                   </p>
                 </div>
               </div>
 
               <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
+                <h3 className="font-serif-editorial text-base text-[#7A1C30]">Craft Hero</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Hero Badge</label>
+                    <input
+                      type="text"
+                      value={formData.craftPageContent?.heroBadge || ''}
+                      onChange={(e) => {
+                        const next = { ...formData.craftPageContent, heroBadge: e.target.value } as CraftPageContent;
+                        setFormData({ ...formData, craftPageContent: next });
+                      }}
+                      placeholder="e.g. The Craft"
+                      className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Hero Title</label>
+                    <input
+                      type="text"
+                      value={formData.craftPageContent?.heroTitle || ''}
+                      onChange={(e) => {
+                        const next = { ...formData.craftPageContent, heroTitle: e.target.value } as CraftPageContent;
+                        setFormData({ ...formData, craftPageContent: next });
+                      }}
+                      placeholder="e.g. Applied, not printed. Layered, not flat."
+                      className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                    />
+                  </div>
+                </div>
                 <div>
-                  <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Ethos Headline</label>
-                  <input
-                    type="text"
-                    value={formData.aboutPageContent?.ethosTitle || ''}
+                  <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Hero Subtitle</label>
+                  <textarea
+                    value={formData.craftPageContent?.heroSubtitle || ''}
+                    rows={3}
                     onChange={(e) => {
-                      setFormData({
-                        ...formData,
-                        aboutPageContent: {
-                          ...formData.aboutPageContent,
-                          ethosTitle: e.target.value,
-                          ethosSubtitle: formData.aboutPageContent?.ethosSubtitle || '',
-                          heritageNarrative: formData.aboutPageContent?.heritageNarrative || '',
-                        },
-                      });
+                      const next = { ...formData.craftPageContent, heroSubtitle: e.target.value } as CraftPageContent;
+                      setFormData({ ...formData, craftPageContent: next });
                     }}
-                    placeholder="e.g. The Gaurangi Ethos"
-                    className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                    placeholder="Explains how appliqué differs from embroidery..."
+                    className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
                   />
                 </div>
+              </div>
 
+              <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
+                <h3 className="font-serif-editorial text-base text-[#7A1C30]">What Is Pipili Appliqué?</h3>
                 <div>
-                  <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Heritage Narrative Story</label>
+                  <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Title</label>
+                  <input
+                    type="text"
+                    value={formData.craftPageContent?.whatIsTitle || ''}
+                    onChange={(e) => {
+                      const next = { ...formData.craftPageContent, whatIsTitle: e.target.value } as CraftPageContent;
+                      setFormData({ ...formData, craftPageContent: next });
+                    }}
+                    className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Body</label>
                   <textarea
-                    value={formData.aboutPageContent?.heritageNarrative || ''}
+                    value={formData.craftPageContent?.whatIsBody || ''}
                     rows={4}
                     onChange={(e) => {
-                      setFormData({
-                        ...formData,
-                        aboutPageContent: {
-                          ...formData.aboutPageContent,
-                          heritageNarrative: e.target.value,
-                          ethosTitle: formData.aboutPageContent?.ethosTitle || '',
-                          ethosSubtitle: formData.aboutPageContent?.ethosSubtitle || '',
-                        },
-                      });
+                      const next = { ...formData.craftPageContent, whatIsBody: e.target.value } as CraftPageContent;
+                      setFormData({ ...formData, craftPageContent: next });
                     }}
-                    placeholder="Write brand history..."
-                    className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                    className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-serif-editorial text-base text-[#7A1C30]">How It&rsquo;s Made — Steps</h3>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const steps = [...(formData.craftPageContent?.steps || [])];
+                      steps.push({ number: String(steps.length + 1).padStart(2, '0'), title: 'New step', description: '' });
+                      const next = { ...formData.craftPageContent, steps } as CraftPageContent;
+                      setFormData({ ...formData, craftPageContent: next });
+                    }}
+                    className="px-3.5 py-1.5 rounded-lg bg-[#C5A059] text-white hover:bg-[#B38F48] text-xs font-semibold flex items-center gap-1.5"
+                  >
+                    <Plus size={14} /> Add Step
+                  </button>
+                </div>
+
+                {(formData.craftPageContent?.steps || []).map((step, idx) => (
+                  <div key={idx} className="border border-[#EAE5D9] rounded-lg bg-white p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="mono text-[#C5A059] text-xs">Step {step.number || idx + 1}</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const steps = (formData.craftPageContent?.steps || []).filter((_, i) => i !== idx);
+                          const next = { ...formData.craftPageContent, steps } as CraftPageContent;
+                          setFormData({ ...formData, craftPageContent: next });
+                        }}
+                        className="text-xs text-red-600 hover:underline flex items-center gap-1"
+                      >
+                        <Trash2 size={13} /> Remove
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <input
+                        type="text"
+                        value={step.number}
+                        onChange={(e) => {
+                          const steps = [...(formData.craftPageContent?.steps || [])];
+                          steps[idx] = { ...steps[idx], number: e.target.value };
+                          const next = { ...formData.craftPageContent, steps } as CraftPageContent;
+                          setFormData({ ...formData, craftPageContent: next });
+                        }}
+                        placeholder="Number (e.g. 01)"
+                        className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                      />
+                      <input
+                        type="text"
+                        value={step.title}
+                        onChange={(e) => {
+                          const steps = [...(formData.craftPageContent?.steps || [])];
+                          steps[idx] = { ...steps[idx], title: e.target.value };
+                          const next = { ...formData.craftPageContent, steps } as CraftPageContent;
+                          setFormData({ ...formData, craftPageContent: next });
+                        }}
+                        placeholder="Step title"
+                        className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                      />
+                    </div>
+                    <textarea
+                      value={step.description}
+                      rows={2}
+                      onChange={(e) => {
+                        const steps = [...(formData.craftPageContent?.steps || [])];
+                        steps[idx] = { ...steps[idx], description: e.target.value };
+                        const next = { ...formData.craftPageContent, steps } as CraftPageContent;
+                        setFormData({ ...formData, craftPageContent: next });
+                      }}
+                      placeholder="Step description"
+                      className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
+                <h3 className="font-serif-editorial text-base text-[#7A1C30]">Workshops &amp; Artisans</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Workshops Title</label>
+                    <input
+                      type="text"
+                      value={formData.craftPageContent?.workshopsTitle || ''}
+                      onChange={(e) => {
+                        const next = { ...formData.craftPageContent, workshopsTitle: e.target.value } as CraftPageContent;
+                        setFormData({ ...formData, craftPageContent: next });
+                      }}
+                      className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Workshops Link Text</label>
+                    <input
+                      type="text"
+                      value={formData.craftPageContent?.workshopsLinkText || ''}
+                      onChange={(e) => {
+                        const next = { ...formData.craftPageContent, workshopsLinkText: e.target.value } as CraftPageContent;
+                        setFormData({ ...formData, craftPageContent: next });
+                      }}
+                      className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Workshops Body</label>
+                  <textarea
+                    value={formData.craftPageContent?.workshopsBody || ''}
+                    rows={3}
+                    onChange={(e) => {
+                      const next = { ...formData.craftPageContent, workshopsBody: e.target.value } as CraftPageContent;
+                      setFormData({ ...formData, craftPageContent: next });
+                    }}
+                    className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Artisans Title</label>
+                  <input
+                    type="text"
+                    value={formData.craftPageContent?.artisansTitle || ''}
+                    onChange={(e) => {
+                      const next = { ...formData.craftPageContent, artisansTitle: e.target.value } as CraftPageContent;
+                      setFormData({ ...formData, craftPageContent: next });
+                    }}
+                    className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Artisans Body</label>
+                  <textarea
+                    value={formData.craftPageContent?.artisansBody || ''}
+                    rows={3}
+                    onChange={(e) => {
+                      const next = { ...formData.craftPageContent, artisansBody: e.target.value } as CraftPageContent;
+                      setFormData({ ...formData, craftPageContent: next });
+                    }}
+                    className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                  />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Why Hand-Cut Title</label>
+                    <input
+                      type="text"
+                      value={formData.craftPageContent?.handCutTitle || ''}
+                      onChange={(e) => {
+                        const next = { ...formData.craftPageContent, handCutTitle: e.target.value } as CraftPageContent;
+                        setFormData({ ...formData, craftPageContent: next });
+                      }}
+                      className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs uppercase font-medium text-gray-600 block mb-1">CTA Link Text</label>
+                    <input
+                      type="text"
+                      value={formData.craftPageContent?.ctaLinkText || ''}
+                      onChange={(e) => {
+                        const next = { ...formData.craftPageContent, ctaLinkText: e.target.value } as CraftPageContent;
+                        setFormData({ ...formData, craftPageContent: next });
+                      }}
+                      className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Why Hand-Cut Body</label>
+                  <textarea
+                    value={formData.craftPageContent?.handCutBody || ''}
+                    rows={3}
+                    onChange={(e) => {
+                      const next = { ...formData.craftPageContent, handCutBody: e.target.value } as CraftPageContent;
+                      setFormData({ ...formData, craftPageContent: next });
+                    }}
+                    className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
                   />
                 </div>
               </div>
@@ -1685,10 +1966,10 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between pb-4 border-b border-[#EAE5D9]">
                 <div>
                   <h2 className="font-serif-editorial text-2xl text-[#7A1C30] font-medium">
-                    Page 5: Contact & Footer (/#contact)
+                    Contact & Footer Editor
                   </h2>
                   <p className="text-xs text-gray-500 font-light mt-1">
-                    Author store details, phone, email, and physical address.
+                    Author contact details shown in the footer across all pages.
                   </p>
                 </div>
               </div>

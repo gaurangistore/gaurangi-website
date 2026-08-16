@@ -1,93 +1,204 @@
 @import "tailwindcss";
 
+@theme {
+  --color-canvas: #FBF1E4;
+  --color-paper: #FFFBF3;
+  --color-ink: #0A2A54;
+  --color-ink-soft: rgba(10, 42, 84, 0.62);
+  --color-rose: #C9962F;
+  --color-gold: #E3B463;
+  --color-emerald: #1F5A52;
+  --color-border-hair: rgba(10, 42, 84, 0.14);
+  --color-stem: #F6ECE9;
+
+  --font-display: 'Instrument Serif', Georgia, serif;
+  --font-logotype: 'Italiana', Georgia, serif;
+  --font-sans: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Space Mono', ui-monospace, monospace;
+}
+
 @layer base {
   :root {
-    --color-maroon: #7A1C30;
-    --color-maroon-dark: #58111A;
-    --color-maroon-light: #9B2842;
-    --color-ivory: #FAF6EE;
-    --color-ivory-light: #FDFBF7;
-    --color-gold: #C5A059;
-    --color-gold-bright: #D4AF37;
-    --color-charcoal: #1F1F1F;
-    --color-soft-gray: #F3EFEA;
+    --radius: 2px;
+  }
+
+  html {
+    scroll-behavior: smooth;
   }
 
   body {
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    background-color: var(--color-ivory);
-    color: var(--color-charcoal);
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.6;
   }
 
-  h1, h2, h3, h4, .font-serif-editorial {
-    font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  img, svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  :focus-visible {
+    outline: 2.5px solid var(--color-rose);
+    outline-offset: 3px;
   }
 }
 
-/* Custom Scrollbar for Luxury Aesthetics */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #FAF6EE;
-}
-::-webkit-scrollbar-thumb {
-  background: #C5A059;
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #7A1C30;
-}
+/* ---------- Reusable brand utilities ---------- */
 
-/* Button & Card Utilities */
-.btn-maroon {
-  background-color: #7A1C30;
-  color: #FFFFFF;
-  padding: 14px 32px;
-  border-radius: 9999px;
-  font-weight: 500;
-  font-size: 0.88rem;
-  letter-spacing: 1px;
+/* Mono uppercase label (Space Mono) */
+.mono {
+  font-family: var(--font-mono);
   text-transform: uppercase;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  letter-spacing: 0.09em;
+  font-size: 11.5px;
+}
+
+/* Stitched / dashed border overlay motif */
+.stitch {
+  position: relative;
+}
+.stitch::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(90deg, var(--color-ink) 0 6px, transparent 6px 13px);
+  background-position: 0 0, 0 100%, 0 0, 100% 0;
+  background-size: 13px 1.4px, 13px 1.4px, 1.4px 13px, 1.4px 13px;
+  background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+  opacity: 0.4;
+}
+
+/* Italiana logotype */
+.logotype {
+  font-family: var(--font-logotype);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+
+/* Editorial eyebrow label with rule */
+.eyebrow {
+  color: var(--color-rose);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.eyebrow::before {
+  content: "";
+  width: 22px;
+  height: 1.4px;
+  background: var(--color-rose);
+  display: inline-block;
+}
+
+/* Buttons */
+.btn-primary {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  padding: 15px 28px;
+  border-radius: var(--radius);
+  font-size: 13.5px;
+  font-weight: 600;
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  box-shadow: 0 4px 20px rgba(122, 28, 48, 0.15);
+  transition: transform 0.15s ease, background 0.15s ease;
+  cursor: pointer;
+  border: none;
 }
-
-.btn-maroon:hover {
-  background-color: #58111A;
+.btn-primary:hover {
+  background: var(--color-rose);
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(122, 28, 48, 0.25);
 }
 
-.btn-outline-gold {
+.btn-outline {
   background: transparent;
-  color: #1F1F1F;
-  border: 1px solid #C5A059;
-  padding: 12px 28px;
-  border-radius: 9999px;
-  font-weight: 500;
-  font-size: 0.85rem;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  transition: all 0.3s ease;
+  color: var(--color-ink);
+  border: 1px solid var(--color-ink);
+  padding: 14px 28px;
+  border-radius: var(--radius);
+  font-size: 13.5px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+.btn-outline:hover {
+  background: var(--color-ink);
+  color: var(--color-paper);
 }
 
-.btn-outline-gold:hover {
-  background-color: #7A1C30;
-  color: #FFFFFF;
-  border-color: #7A1C30;
-  transform: translateY(-2px);
+.link-under {
+  font-size: 13.5px;
+  font-weight: 600;
+  border-bottom: 1.5px solid var(--color-ink);
+  padding-bottom: 2px;
+  display: inline-block;
+}
+.link-under:hover {
+  color: var(--color-rose);
+  border-color: var(--color-rose);
 }
 
-/* Hide Scrollbar for Carousels */
+/* Tag pill */
+.tag {
+  border: 1px solid var(--color-border-hair);
+  padding: 7px 14px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  background: var(--color-paper);
+}
+
+/* Content max-width wrapper */
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+@media (max-width: 640px) {
+  .wrap {
+    padding: 0 20px;
+  }
+}
+
+/* Hide scrollbar for horizontal chip rails */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* Prevent iOS auto-zoom when focusing inputs */
+@media (max-width: 640px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
 }

@@ -1,37 +1,45 @@
 import { Navbar } from '@/components/Navbar';
 import { HeroSection } from '@/components/HeroSection';
-import { FeaturedCategories } from '@/components/FeaturedCategories';
+import { ShopByTechnique } from '@/components/ShopByTechnique';
+import { CraftSection } from '@/components/CraftSection';
 import { NewArrivals } from '@/components/NewArrivals';
 import { WhyGaurangi } from '@/components/WhyGaurangi';
-import { CustomerStories } from '@/components/CustomerStories';
+import { ArtisansSection } from '@/components/ArtisansSection';
+import { StyleNotes } from '@/components/StyleNotes';
 import { Newsletter } from '@/components/Newsletter';
 import { Footer } from '@/components/Footer';
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#FAF6EE] text-[#1F1F1F] selection:bg-[#7A1C30] selection:text-white">
+    <main className="min-h-screen bg-canvas text-ink overflow-x-hidden">
       {/* 1. Header & Navigation */}
       <Navbar />
 
-      {/* 2. Hero Banner (Single Image, Single Message, Single CTA: Shop Now) */}
+      {/* 2. Hero Banner */}
       <HeroSection />
 
-      {/* 3. Featured Fabric Categories (Pure Silk, Organza, Banarasi, Chanderi, Linen, Cotton) */}
-      <FeaturedCategories />
+      {/* 3. Shop by Technique */}
+      <ShopByTechnique />
 
-      {/* 4. New Arrivals (8 Featured Products Grid) */}
+      {/* 4. The Craft */}
+      <CraftSection />
+
+      {/* 5. New Arrivals (8 Featured Products Grid) */}
       <NewArrivals />
 
-      {/* 5. Why Gaurangi (4 Scannable Trust Pillars) */}
+      {/* 6. Why Gaurangi (4 Scannable Trust Pillars) */}
       <WhyGaurangi />
 
-      {/* 6. Customer Reviews (3 Verified Stories) */}
-      <CustomerStories />
+      {/* 7. Artisans */}
+      <ArtisansSection />
 
-      {/* 7. Newsletter Subscription */}
+      {/* 8. Style Notes */}
+      <StyleNotes />
+
+      {/* 9. Newsletter Subscription */}
       <Newsletter />
 
-      {/* 8. Boutique Footer */}
+      {/* 10. Boutique Footer */}
       <Footer />
     </main>
   );

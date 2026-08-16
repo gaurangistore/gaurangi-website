@@ -1,10 +1,15 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { ContentProvider } from '@/context/ContentContext';
 
 export const metadata: Metadata = {
-  title: 'Gaurangi Fashions | Luxury Modern Ethnic Boutique',
-  description: 'A premium digital fashion boutique where every collection tells a story. Explore curated ethnic weaves, designer ensembles, and timeless luxury.',
+  title: 'Gaurangi — Modern Appliqué, Worn Today',
+  description: 'Contemporary womenswear and home textiles built on hand-cut appliqué — suit sets, dupattas and bedding, for the woman who wears heritage her own way.',
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -15,15 +20,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Google Fonts: Cormorant Garamond for Editorial Serif, Plus Jakarta Sans for Body */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Italiana&family=Work+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body className="bg-[#FAF6EE] text-[#1F1F1F] font-sans antialiased selection:bg-[#7A1C30] selection:text-white">
+      <body className="bg-canvas text-ink font-sans antialiased selection:bg-rose selection:text-paper">
         <ContentProvider>{children}</ContentProvider>
       </body>
     </html>
