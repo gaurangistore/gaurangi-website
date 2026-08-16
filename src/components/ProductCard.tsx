@@ -1,6 +1,8 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
-import { ProductItem } from '@/context/ContentContext';
+import { ProductItem, useContent } from '@/context/ContentContext';
 import { getImageUrl } from '@/lib/constants';
 import { getTechniqueName } from '@/lib/constants';
 
@@ -9,6 +11,7 @@ interface ProductCardProps {
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  const { isLoading } = useContent();
   const techniqueLabel = getTechniqueName(product.technique);
 
   return (
@@ -25,12 +28,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             {product.category}
           </span>
         )}
-        <img
-          src={getImageUrl(product.image)}
-          alt={product.name}
-          className="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
-          loading="lazy"
-        />
+        {!isLoading && (
+          <img
+            src={getImageUrl(product.image)}
+            alt={product.name}
+            className="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
+            loading="lazy"
+          />
+        )}
       </div>
       <div className="product-body p-4 md:p-5 flex flex-col justify-between flex-1">
         <div>

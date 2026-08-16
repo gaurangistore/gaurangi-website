@@ -6,7 +6,7 @@ import { useContent } from '@/context/ContentContext';
 import { getImageUrl } from '@/lib/constants';
 
 export const HeroSection: React.FC = () => {
-  const { data } = useContent();
+  const { data, isLoading } = useContent();
   const slides = data.heroSlides && data.heroSlides.length > 0 ? data.heroSlides : [];
   const active = slides[0];
 
@@ -52,7 +52,7 @@ export const HeroSection: React.FC = () => {
 
         {/* Right Column: Motif Stage */}
         <div className="motif-stage stitch aspect-square bg-paper flex items-center justify-center relative p-8">
-          {active.image && (
+          {!isLoading && active.image && (
             <img
               src={getImageUrl(active.image)}
               alt={active.title || 'Gaurangi'}
