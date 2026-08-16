@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useContent } from '@/context/ContentContext';
 import { ProductCard } from '@/components/ProductCard';
-import { TECHNIQUES } from '@/lib/constants';
 
 export const NewArrivals: React.FC = () => {
   const { data } = useContent();
@@ -17,12 +16,12 @@ export const NewArrivals: React.FC = () => {
   if (data.hiddenSections?.newArrivals || products.length === 0) return null;
 
   const header = data.sectionHeaders || {};
-  const technique = TECHNIQUES.find((t) => t.id === techniqueParam);
-
-  const filtered =
-    technique && techniqueParam !== 'all'
-      ? products.filter((p) => p.technique === techniqueParam)
+  const technique =
+    techniqueParam && techniqueParam !== 'all'
+      ? (data.collections || []).find((c) => c.id === techniqueParam)
       : null;
+
+  const filtered = technique ? products.filter((p) => p.technique === technique.id) : null;
   const visible = filtered || products.slice(0, 8);
 
   return (
@@ -32,19 +31,19 @@ export const NewArrivals: React.FC = () => {
           <div>
             {header.newArrivalsBadge && (
               <span className="mono text-rose mb-2.5 block">
-                {technique ? technique.name : header.newArrivalsBadge}
+                {technique ? technique.title : header.newArrivalsBadge}
               </span>
             )}
             <h2 className="font-display italic text-[clamp(30px,3.6vw,44px)]">
               {technique
-                ? `${technique.name} new arrivals`
+                ? `${technique.title} new arrivals`
                 : header.newArrivalsTitle || 'New arrivals'}
             </h2>
           </div>
           <div className="max-w-[380px]">
             <p className="text-ink-soft text-[14.5px]">
               {technique
-                ? `Every current ${technique.name} piece in stock — suit sets, dupattas and home textiles.`
+                ? `Every current ${technique.title} piece in stock — suit sets, dupattas and home textiles.`
                 : 'Real pieces, real photography — this is our current stock across suit sets, dupattas and home textiles.'}
               <br />
               <span className="mono text-rose">
@@ -70,7 +69,7 @@ export const NewArrivals: React.FC = () => {
             <p className="font-display italic text-2xl mb-2">Nothing here yet</p>
             <p className="text-ink-soft text-sm">
               {technique
-                ? `No ${technique.name} pieces listed yet — check back soon.`
+                ? `No ${technique.title} pieces listed yet — check back soon.`
                 : 'Pieces are being added — check back soon.'}
             </p>
           </div>

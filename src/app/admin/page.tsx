@@ -34,6 +34,20 @@ export default function AdminDashboard() {
     setFormData({ ...formData, products: updated });
   };
 
+  // Generate a URL-friendly slug from a title
+  const slugify = (text: string): string =>
+    (text || '')
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .replace(/-+/g, '-');
+
+  // Technique options for the product form — includes techniques added in the admin
+  const techniqueOptions = (formData.collections || []).length
+    ? (formData.collections || []).map((c) => ({ id: c.id, label: c.title }))
+    : TECHNIQUES.map((t) => ({ id: t.id, label: t.name }));
+
   // CSV Export Helper for Content Authors
   const handleExportCSV = () => {
     const products = formData.products || [];
@@ -673,10 +687,76 @@ export default function AdminDashboard() {
                               className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
                             />
                           </div>
+
+                          <div>
+                            <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Small Tag Text (shown under title)</label>
+                            <input
+                              type="text"
+                              value={col.tag || ''}
+                              onChange={(e) => {
+                                const updated = [...formData.collections];
+                                updated[idx].tag = e.target.value;
+                                setFormData({ ...formData, collections: updated });
+                              }}
+                              placeholder="e.g. Suit Sets"
+                              className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="text-xs uppercase font-medium text-gray-600 block mb-1">
+                              Technique Link ID (lowercase, hyphens)
+                            </label>
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="text"
+                                value={col.id || ''}
+                                onChange={(e) => {
+                                  const updated = [...formData.collections];
+                                  updated[idx].id = e.target.value;
+                                  setFormData({ ...formData, collections: updated });
+                                }}
+                                placeholder="e.g. zardozi"
+                                className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const updated = [...formData.collections];
+                                  updated[idx].id = slugify(updated[idx].title || '');
+                                  setFormData({ ...formData, collections: updated });
+                                }}
+                                title="Generate the link ID from the title"
+                                className="px-3 py-2 bg-[#0A2A54] text-white rounded-lg text-xs whitespace-nowrap"
+                              >
+                                ↻ from Title
+                              </button>
+                            </div>
+                            <p className="text-[10px] text-gray-400 mt-1">
+                              Must match the &quot;Technique&quot; chosen on a product so the card filters New Arrivals.
+                            </p>
+                          </div>
                         </div>
                       </div>
                     ))}
                   </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newTechnique = {
+                        id: `technique-${Date.now()}`,
+                        title: 'New Technique',
+                        subtitle: 'Subtitle for this technique',
+                        image: DUMMY_IMAGE,
+                        tag: 'Suit Sets',
+                      };
+                      setFormData({ ...formData, collections: [...(formData.collections || []), newTechnique] });
+                    }}
+                    className="bg-[#0A2A54] text-[#FFFBF3] hover:bg-[#C9962F] text-xs px-6 py-2.5 rounded-full flex items-center gap-2"
+                  >
+                    <Plus size={15} /> Add New Technique
+                  </button>
                 </div>
               )}
 
@@ -1138,8 +1218,8 @@ export default function AdminDashboard() {
                             className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none bg-white"
                           >
                             <option value="">None</option>
-                            {TECHNIQUES.map((t) => (
-                              <option key={t.id} value={t.id}>{t.name}</option>
+                            {techniqueOptions.map((t) => (
+                              <option key={t.id} value={t.id}>{t.label}</option>
                             ))}
                           </select>
                         </div>

@@ -31,6 +31,10 @@ export const ShopContent: React.FC = () => {
 
   const banner = data.dressMaterialsPageContent;
 
+  const techList = (data.collections || []).length
+    ? (data.collections || []).map((c) => ({ id: c.id, name: c.title }))
+    : TECHNIQUES;
+
   const filtered = useMemo(() => {
     const products = data.products || [];
     return products.filter((p) => {
@@ -46,7 +50,7 @@ export const ShopContent: React.FC = () => {
 
   const activeTechniqueLabel =
     technique !== 'all'
-      ? TECHNIQUES.find((t) => t.id === technique)?.name
+      ? techList.find((t) => t.id === technique)?.name
       : null;
 
   return (
@@ -96,7 +100,7 @@ export const ShopContent: React.FC = () => {
           >
             All Techniques
           </button>
-          {TECHNIQUES.map((t) => (
+          {techList.map((t) => (
             <button
               key={t.id}
               onClick={() => setTechnique(t.id)}
