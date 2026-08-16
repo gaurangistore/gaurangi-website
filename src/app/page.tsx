@@ -1,3 +1,4 @@
+import React, { Suspense } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { HeroSection } from '@/components/HeroSection';
 import { ShopByTechnique } from '@/components/ShopByTechnique';
@@ -25,7 +26,9 @@ export default function Home() {
       <CraftSection />
 
       {/* 5. New Arrivals (8 Featured Products Grid) */}
-      <NewArrivals />
+      <Suspense fallback={null}>
+        <NewArrivals />
+      </Suspense>
 
       {/* 6. Why Gaurangi (4 Scannable Trust Pillars) */}
       <WhyGaurangi />
