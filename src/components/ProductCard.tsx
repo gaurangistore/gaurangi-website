@@ -16,7 +16,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   return (
     <Link
-      href={`/product/${product.id}`}
+      href={`/product?id=${product.id}`}
       className="product-card group bg-paper flex flex-col"
     >
       <div className="swatch aspect-[4/5] relative flex items-center justify-center overflow-hidden bg-[#EFE3DC]">

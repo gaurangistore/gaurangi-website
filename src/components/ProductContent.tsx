@@ -1,34 +1,62 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { Heart, ShoppingBag, Truck, RefreshCw, ShieldCheck, CheckCircle2, MessageCircle } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { ProductCard } from '@/components/ProductCard';
-import { DEFAULT_HOMEPAGE_DATA } from '@/lib/contentDefaults';
+import { useContent } from '@/context/ContentContext';
 import { getImageUrl } from '@/lib/constants';
 import { getTechniqueName } from '@/lib/constants';
 
-// Required for Next.js static export on GitHub Pages
-export function generateStaticParams() {
-  const products = DEFAULT_HOMEPAGE_DATA?.products || [];
-  return products.map((p) => ({ id: p.id }));
-}
+export const ProductContent: React.FC = () => {
+  const { data, isLoading } = useContent();
+  const searchParams = useSearchParams();
+  const id = searchParams.get('id');
 
-export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const products = DEFAULT_HOMEPAGE_DATA?.products || [];
-  const product = products.find((p) => p.id === id) || products[0] || {
-    id: 'prod-1',
-    name: 'Gaurangi Appliqué Piece',
-    price: '₹ —',
-    fabric: '',
-    category: 'Suit Sets',
-    image: '/images/model-dummy.jpg',
-  };
+  const products = data.products || [];
+  const product = id ? products.find((p) => p.id === id) : undefined;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-canvas text-ink flex flex-col overflow-x-hidden">
+        <Navbar />
+        <div className="flex-1 flex items-center justify-center py-32">
+          <span className="mono text-ink-soft">Loading the piece…</span>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="min-h-screen bg-canvas text-ink flex flex-col overflow-x-hidden">
+        <Navbar />
+        <main className="flex-1 flex flex-col items-center justify-center text-center py-32 px-6">
+          <span className="mono text-rose mb-3">Piece unavailable</span>
+          <h1 className="font-display italic text-3xl md:text-4xl mb-2">
+            This piece is no longer available
+          </h1>
+          <p className="text-ink-soft text-sm max-w-[360px] mb-8">
+            It may have been sold or removed. Browse the full edit to find another favourite.
+          </p>
+          <Link href="/shop" className="btn-outline">
+            Back to the Edit
+          </Link>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   const similarProducts = products.filter((p) => p.id !== product.id).slice(0, 4);
   const techniqueLabel = getTechniqueName(product.technique);
-  const whatsAppNumber = DEFAULT_HOMEPAGE_DATA.productPageSettings?.whatsAppNumber || '+919876543210';
+  const settings = data.productPageSettings;
+  const whatsAppNumber = settings?.whatsAppNumber || '+919876543210';
+  const specsSectionTitle = settings?.specsSectionTitle || 'About This Piece';
 
   const specs: { label: string; value?: string }[] = [
     { label: 'Base fabric', value: product.fabric },
@@ -108,8 +136,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             {specs.length > 0 && (
               <div className="bg-paper p-5 md:p-6 border border-border-hair space-y-3">
                 <h3 className="font-display text-lg text-ink flex items-center gap-2">
-                  <CheckCircle2 size={16} className="text-rose" />{' '}
-                  {DEFAULT_HOMEPAGE_DATA.productPageSettings?.specsSectionTitle || 'About This Piece'}
+                  <CheckCircle2 size={16} className="text-rose" /> {specsSectionTitle}
                 </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-sans">
@@ -193,4 +220,4 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       <Footer />
     </div>
   );
-}
+};
