@@ -1,9 +1,8 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
-import { db, storage } from '@/lib/firebase';
+import { db } from '@/lib/firebase';
 import { doc, getDoc, setDoc, collection, getDocs, addDoc } from 'firebase/firestore';
-import { ref, uploadString, getDownloadURL } from 'firebase/storage';
 import { HomepageData, DEFAULT_HOMEPAGE_DATA } from '@/lib/contentDefaults';
 
 export * from '@/lib/contentDefaults';
@@ -120,29 +119,25 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   };
 
-  // Upload Image Handler: Firebase Storage first, then Firestore document fallback.
+  // Upload Image Handler: store the (compressed) image as its own Firestore
+  // document and reference it from the content as `img:<docId>`. Firebase
+  // Storage is intentionally not used - it requires a paid plan upgrade and the
+  // bucket is not provisioned, so it can never succeed on this project.
   const uploadImage = async (base64String: string, filename: string): Promise<string> => {
     if (!base64String.startsWith('data:image')) {
       return base64String;
     }
     try {
-      const storageRef = ref(storage, `images/${Date.now()}_${filename}`);
-      await uploadString(storageRef, base64String, 'data_url');
-      const downloadUrl = await getDownloadURL(storageRef);
-      return downloadUrl;
+      const imageDoc = await addDoc(collection(db, 'images'), {
+        data: base64String,
+        filename: filename || '',
+        createdAt: new Date().toISOString(),
+      });
+      imageMapRef.current[imageDoc.id] = base64String;
+      return `img:${imageDoc.id}`;
     } catch (err) {
-      console.warn('Firebase Storage upload failed, storing image in Firestore:', err);
-      try {
-        const imageDoc = await addDoc(collection(db, 'images'), {
-          data: base64String,
-          createdAt: new Date().toISOString(),
-        });
-        imageMapRef.current[imageDoc.id] = base64String;
-        return `img:${imageDoc.id}`;
-      } catch (err2) {
-        console.error('Firestore image storage failed:', err2);
-        return base64String;
-      }
+      console.error('Firestore image storage failed:', err);
+      return base64String;
     }
   };
 

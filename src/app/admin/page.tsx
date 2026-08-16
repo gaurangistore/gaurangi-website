@@ -15,6 +15,7 @@ export default function AdminDashboard() {
   const [saveError, setSaveError] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadMessage, setUploadMessage] = useState<{ ok: boolean; text: string } | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
   // Sync form state when context data loads or is saved
@@ -146,16 +147,19 @@ export default function AdminDashboard() {
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    setUploadMessage(null);
+    setIsUploading(true);
     const reader = new FileReader();
     reader.onloadend = async () => {
       const base64 = reader.result as string;
-      setIsUploading(true);
       try {
         const compressed = await compressImage(base64);
         const uploadedUrl = await uploadImage(compressed, file.name);
         onUploadComplete(uploadedUrl);
+        setUploadMessage({ ok: true, text: `Photo uploaded successfully (${file.name}).` });
       } catch (err) {
         console.error('Image upload failed:', err);
+        setUploadMessage({ ok: false, text: `Photo upload failed: ${err instanceof Error ? err.message : 'unknown error'}` });
       } finally {
         setIsUploading(false);
       }
@@ -214,6 +218,18 @@ export default function AdminDashboard() {
         <div className="bg-[#C5A059] text-white px-6 py-3 text-center text-sm font-medium flex items-center justify-center gap-2 shadow-sm">
           <Loader2 size={18} className="animate-spin" />
           Uploading photo, please wait...
+        </div>
+      )}
+
+      {/* Upload Result Banner */}
+      {!isUploading && uploadMessage && (
+        <div
+          className={`px-6 py-3 text-center text-sm font-medium flex items-center justify-center gap-2 shadow-sm ${
+            uploadMessage.ok ? 'bg-[#10B981] text-white' : 'bg-[#B91C1C] text-white'
+          }`}
+        >
+          {uploadMessage.ok ? <CheckCircle size={18} /> : <AlertTriangle size={18} />}
+          {uploadMessage.text}
         </div>
       )}
 
