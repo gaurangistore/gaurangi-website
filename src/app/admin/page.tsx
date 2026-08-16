@@ -2,24 +2,26 @@
 
 import React, { useState } from 'react';
 import { useContent, HomepageData, ProductItem, CraftPageContent } from '@/context/ContentContext';
-import { Sparkles, Save, Plus, Trash2, CheckCircle, Home, ShoppingBag, PhoneCall, Info, Package, GripVertical, ArrowUp, ArrowDown, Download, Upload } from 'lucide-react';
+import { Sparkles, Save, Plus, Trash2, CheckCircle, AlertTriangle, Loader2, Home, ShoppingBag, PhoneCall, Info, Package, GripVertical, ArrowUp, ArrowDown, Download, Upload } from 'lucide-react';
 import Link from 'next/link';
 import { DUMMY_IMAGE, TECHNIQUES } from '@/lib/constants';
 
 export default function AdminDashboard() {
-  const { data, saveData, uploadImage } = useContent();
-  const [formData, setFormData] = useState<HomepageData>(data);
+  const { rawData, saveData, uploadImage } = useContent();
+  const [formData, setFormData] = useState<HomepageData>(rawData);
   const [activePageTab, setActivePageTab] = useState<'homepage' | 'catalogPage' | 'productDetailsPage' | 'aboutPage' | 'contactFooter'>('homepage');
   const [activeHomeSubtab, setActiveHomeSubtab] = useState<'hero' | 'categories' | 'products' | 'whyGaurangi' | 'stories'>('hero');
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [saveError, setSaveError] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
   // Sync form state when context data loads or is saved
-  const [prevData, setPrevData] = useState<HomepageData>(data);
-  if (data !== prevData) {
-    setPrevData(data);
-    setFormData(data);
+  const [prevData, setPrevData] = useState<HomepageData>(rawData);
+  if (rawData !== prevData) {
+    setPrevData(rawData);
+    setFormData(rawData);
   }
 
   // Reorder product helper
@@ -93,12 +95,48 @@ export default function AdminDashboard() {
 
   const handleSave = async () => {
     setIsSaving(true);
+    setSaveError(false);
     const success = await saveData(formData);
     setIsSaving(false);
     if (success) {
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 4000);
+    } else {
+      setSaveError(true);
+      setTimeout(() => setSaveError(false), 6000);
     }
+  };
+
+  // Compress/downscale a data URL image in the browser so uploads stay fast
+  // and small enough to survive the Firebase Storage / Firestore limits.
+  const compressImage = (dataUrl: string, maxDim = 1200, quality = 0.85): Promise<string> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+          const w = Math.max(1, Math.round(img.width * scale));
+          const h = Math.max(1, Math.round(img.height * scale));
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          if (!ctx) {
+            resolve(dataUrl);
+            return;
+          }
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(0, 0, w, h);
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        } catch (err) {
+          console.error('Image compression failed:', err);
+          resolve(dataUrl);
+        }
+      };
+      img.onerror = () => resolve(dataUrl);
+      img.src = dataUrl;
+    });
   };
 
   // Image Upload Handler helper
@@ -107,15 +145,22 @@ export default function AdminDashboard() {
     onUploadComplete: (url: string) => void
   ) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        const base64 = reader.result as string;
-        const uploadedUrl = await uploadImage(base64, file.name);
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const base64 = reader.result as string;
+      setIsUploading(true);
+      try {
+        const compressed = await compressImage(base64);
+        const uploadedUrl = await uploadImage(compressed, file.name);
         onUploadComplete(uploadedUrl);
-      };
-      reader.readAsDataURL(file);
-    }
+      } catch (err) {
+        console.error('Image upload failed:', err);
+      } finally {
+        setIsUploading(false);
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   return (
@@ -153,6 +198,22 @@ export default function AdminDashboard() {
         <div className="bg-[#10B981] text-white px-6 py-3 text-center text-sm font-medium flex items-center justify-center gap-2 shadow-sm animate-fade-in">
           <CheckCircle size={18} />
           Changes Published Successfully! All website pages have been updated live.
+        </div>
+      )}
+
+      {/* Save Error Banner */}
+      {saveError && (
+        <div className="bg-[#B91C1C] text-white px-6 py-3 text-center text-sm font-medium flex items-center justify-center gap-2 shadow-sm animate-fade-in">
+          <AlertTriangle size={18} />
+          Publish failed — changes were only saved in this browser. Check your Firebase connection and try again.
+        </div>
+      )}
+
+      {/* Upload In Progress Banner */}
+      {isUploading && (
+        <div className="bg-[#C5A059] text-white px-6 py-3 text-center text-sm font-medium flex items-center justify-center gap-2 shadow-sm">
+          <Loader2 size={18} className="animate-spin" />
+          Uploading photo, please wait...
         </div>
       )}
 
