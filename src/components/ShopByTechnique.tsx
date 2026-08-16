@@ -35,7 +35,11 @@ export const ShopByTechnique: React.FC = () => {
           {techniques.map((technique) => (
             <Link
               key={technique.id}
-              href={`/?technique=${technique.id}#new`}
+              href="/#new"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('new')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
               className="motif-card bg-paper text-center p-6 md:p-6 px-4 py-5 transition-transform duration-200 hover:-translate-y-[5px] hover:shadow-[0_14px_26px_-18px_rgba(36,16,25,0.35)]"
             >
               <TechniqueIcon

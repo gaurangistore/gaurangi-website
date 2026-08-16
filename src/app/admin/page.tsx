@@ -733,7 +733,7 @@ export default function AdminDashboard() {
                               </button>
                             </div>
                             <p className="text-[10px] text-gray-400 mt-1">
-                              Must match the &quot;Technique&quot; chosen on a product so the card filters New Arrivals.
+                              Lowercase link ID used to match products to this technique (e.g. in the Shop filters).
                             </p>
                           </div>
                         </div>
