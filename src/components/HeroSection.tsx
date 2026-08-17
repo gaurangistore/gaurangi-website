@@ -13,7 +13,7 @@ export const HeroSection: React.FC = () => {
   if (data.hiddenSections?.heroBanner || !active) return null;
 
   return (
-    <section className="hero py-12 md:py-16">
+    <section className="hero py-6 md:py-8">
       <div className="wrap grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
         {/* Left Column: Editorial Typography & Storytelling */}
         <div className="flex flex-col items-start text-left">
@@ -51,7 +51,7 @@ export const HeroSection: React.FC = () => {
         </div>
 
         {/* Right Column: Motif Stage */}
-        <div className="motif-stage aspect-[3/4] bg-paper flex items-center justify-center relative overflow-hidden">
+        <div className="motif-stage aspect-[3/4] flex items-center justify-center relative overflow-hidden">
           {!isLoading && active.image && (
             <img
               src={getImageUrl(active.image)}
