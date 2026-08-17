@@ -34,14 +34,6 @@ export default function AdminDashboard() {
     setFormData({ ...formData, products: updated });
   };
 
-  // Generate a URL-friendly slug from a title
-  const slugify = (text: string): string =>
-    (text || '')
-      .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '')
-      .replace(/-+/g, '-');
 
   // Technique options for the product form — includes techniques added in the admin
   const techniqueOptions = (formData.collections || []).length
@@ -323,7 +315,7 @@ export default function AdminDashboard() {
                     Page 1: Homepage (/) Editor
                   </h2>
                   <p className="text-xs text-gray-500 font-light mt-1">
-                    Author all hero banners, fabric categories, trust pillars, and customer reviews on the main landing page.
+                    Author hero, category cards, new arrivals, trust pillars, craft section, style inspiration and newsletter on the main landing page.
                   </p>
                 </div>
               </div>
@@ -344,7 +336,7 @@ export default function AdminDashboard() {
                     activeHomeSubtab === 'categories' ? 'bg-[#7A1C30] text-white' : 'bg-[#FAF6EE] text-[#1F1F1F]'
                   }`}
                 >
-                  🧵 2. Shop by Technique
+                  🏷️ 2. Shop by Category
                 </button>
                 <button
                   onClick={() => setActiveHomeSubtab('products')}
@@ -368,7 +360,7 @@ export default function AdminDashboard() {
                     activeHomeSubtab === 'stories' ? 'bg-[#7A1C30] text-white' : 'bg-[#FAF6EE] text-[#1F1F1F]'
                   }`}
                 >
-                  💬 5. Style Notes
+                  🎨 5. Style Inspiration
                 </button>
               </div>
 
@@ -485,12 +477,12 @@ export default function AdminDashboard() {
                 </div>
               )}
 
-              {/* Subtab 2: Shop by Technique */}
+              {/* Subtab 2: Shop by Category */}
               {activeHomeSubtab === 'categories' && (
                 <div className="space-y-6">
                   <div className="flex items-center justify-between bg-[#FAF6EE] p-4 rounded-xl border border-[#EAE5D9]">
                     <span className="text-xs font-semibold uppercase tracking-wider text-[#7A1C30]">
-                      Shop by Technique Visibility Control
+                      Shop by Category Visibility Control
                     </span>
                     <button
                       onClick={() => {
@@ -512,8 +504,8 @@ export default function AdminDashboard() {
                     </button>
                   </div>
 
-                  {/* Craft Section + Artisans Section Visibility */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {/* Craft Section Visibility */}
+                  <div className="grid grid-cols-1 gap-3">
                     <div className="flex items-center justify-between bg-[#FAF6EE] p-4 rounded-xl border border-[#EAE5D9]">
                       <span className="text-xs font-semibold uppercase tracking-wider text-[#7A1C30]">The Craft Section</span>
                       <button
@@ -535,33 +527,14 @@ export default function AdminDashboard() {
                         {formData.hiddenSections?.craftSection ? '🔴 Hidden' : '🟢 Visible'}
                       </button>
                     </div>
-
-                    <div className="flex items-center justify-between bg-[#FAF6EE] p-4 rounded-xl border border-[#EAE5D9]">
-                      <span className="text-xs font-semibold uppercase tracking-wider text-[#7A1C30]">Artisans Section</span>
-                      <button
-                        onClick={() => {
-                          setFormData({
-                            ...formData,
-                            hiddenSections: {
-                              ...formData.hiddenSections,
-                              artisansSection: !formData.hiddenSections?.artisansSection,
-                            },
-                          });
-                        }}
-                        className={`px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider border ${
-                          formData.hiddenSections?.artisansSection
-                            ? 'bg-red-50 text-red-600 border-red-200'
-                            : 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                        }`}
-                      >
-                        {formData.hiddenSections?.artisansSection ? '🔴 Hidden' : '🟢 Visible'}
-                      </button>
-                    </div>
                   </div>
 
                   {/* Authorable Section Header & Link Settings */}
                   <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
                     <h3 className="font-serif-editorial text-base text-[#7A1C30]">Section Header & Link Settings</h3>
+                    <p className="text-xs text-gray-500 leading-relaxed">
+                      Categories are auto-derived from products. Customize the section header and visibility here.
+                    </p>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Top Badge Text</label>
@@ -577,7 +550,7 @@ export default function AdminDashboard() {
                               },
                             });
                           }}
-                          placeholder="e.g. Explore Weaves"
+                          placeholder="e.g. Browse"
                           className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
                         />
                       </div>
@@ -596,7 +569,7 @@ export default function AdminDashboard() {
                               },
                             });
                           }}
-                          placeholder="e.g. Shop by Technique"
+                          placeholder="e.g. Find your piece"
                           className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
                         />
                       </div>
@@ -615,7 +588,7 @@ export default function AdminDashboard() {
                               },
                             });
                           }}
-                          placeholder="e.g. Shop All Techniques →"
+                          placeholder="e.g. View all →"
                           className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
                         />
                       </div>
@@ -641,104 +614,24 @@ export default function AdminDashboard() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 gap-6">
-                    {(formData.collections || []).map((col, idx) => (
-                      <div key={col.id || idx} className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
-                        <div className="flex items-center justify-between">
-                          <h3 className="font-serif-editorial text-base text-[#7A1C30]">Technique #{idx + 1}</h3>
-                          <button
-                            onClick={() => {
-                              const updated = formData.collections.filter((_, i) => i !== idx);
-                              setFormData({ ...formData, collections: updated });
-                            }}
-                            className="text-xs text-red-600 hover:underline flex items-center gap-1"
-                          >
-                            <Trash2 size={13} /> Remove
-                          </button>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div>
-                            <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Title</label>
-                            <input
-                              type="text"
-                              value={col.title || ''}
-                              onChange={(e) => {
-                                const updated = [...formData.collections];
-                                updated[idx].title = e.target.value;
-                                setFormData({ ...formData, collections: updated });
-                              }}
-                              placeholder="e.g. Floral Vine Appliqué"
-                              className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
-                            />
-                          </div>
-
-                          <div>
-                            <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Subtitle</label>
-                            <input
-                              type="text"
-                              value={col.subtitle || ''}
-                              onChange={(e) => {
-                                const updated = [...formData.collections];
-                                updated[idx].subtitle = e.target.value;
-                                setFormData({ ...formData, collections: updated });
-                              }}
-                              placeholder="e.g. Vines & blossoms traced by hand"
-                              className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
-                            />
-                          </div>
-
-                          <div>
-                            <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Small Tag Text (shown under title)</label>
-                            <input
-                              type="text"
-                              value={col.tag || ''}
-                              onChange={(e) => {
-                                const updated = [...formData.collections];
-                                updated[idx].tag = e.target.value;
-                                setFormData({ ...formData, collections: updated });
-                              }}
-                              placeholder="e.g. Suit Sets"
-                              className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
-                            />
-                          </div>
-
-                          <div>
-                            <label className="text-xs uppercase font-medium text-gray-600 block mb-1">
-                              Technique Link ID (lowercase, hyphens)
-                            </label>
-                            <div className="flex items-center gap-2">
-                              <input
-                                type="text"
-                                value={col.id || ''}
-                                onChange={(e) => {
-                                  const updated = [...formData.collections];
-                                  updated[idx].id = e.target.value;
-                                  setFormData({ ...formData, collections: updated });
-                                }}
-                                placeholder="e.g. zardozi"
-                                className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
-                              />
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  const updated = [...formData.collections];
-                                  updated[idx].id = slugify(updated[idx].title || '');
-                                  setFormData({ ...formData, collections: updated });
-                                }}
-                                title="Generate the link ID from the title"
-                                className="px-3 py-2 bg-[#0A2A54] text-white rounded-lg text-xs whitespace-nowrap"
-                              >
-                                ↻ from Title
-                              </button>
-                            </div>
-                            <p className="text-[10px] text-gray-400 mt-1">
-                              Lowercase link ID used to match products to this technique (e.g. in the Shop filters).
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+                  <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
+                    <h3 className="font-serif-editorial text-base text-[#7A1C30]">Current Product Categories</h3>
+                    <p className="text-xs text-gray-500 leading-relaxed">
+                      Categories are automatically derived from your products. Add new products with a category to expand this section.
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {Array.from(new Set((formData.products || []).map(p => p.category).filter(Boolean))).map(cat => (
+                        <span key={cat} className="px-3 py-1.5 bg-white border border-[#EAE5D9] rounded-full text-xs font-medium text-[#1F1F1F]">
+                          {cat}
+                          <span className="ml-1.5 text-gray-400">
+                            ({(formData.products || []).filter(p => p.category === cat).length})
+                          </span>
+                        </span>
+                      ))}
+                      {(formData.products || []).filter(p => p.category).length === 0 && (
+                        <span className="text-xs text-gray-400 italic">No products with categories yet</span>
+                      )}
+                    </div>
                   </div>
 
                   <button
@@ -963,7 +856,7 @@ export default function AdminDashboard() {
                 <div className="space-y-6">
                   <div className="flex items-center justify-between bg-[#FAF6EE] p-4 rounded-xl border border-[#EAE5D9]">
                     <span className="text-xs font-semibold uppercase tracking-wider text-[#7A1C30]">
-                      Customer Reviews Section Control
+                      Style Inspiration Section Control
                     </span>
                     <button
                       onClick={() => {
@@ -971,18 +864,25 @@ export default function AdminDashboard() {
                           ...formData,
                           hiddenSections: {
                             ...formData.hiddenSections,
-                            customerStories: !formData.hiddenSections?.customerStories,
+                            newArrivals: !formData.hiddenSections?.newArrivals,
                           },
                         });
                       }}
                       className={`px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider border ${
-                        formData.hiddenSections?.customerStories
+                        formData.hiddenSections?.newArrivals
                           ? 'bg-red-50 text-red-600 border-red-200'
                           : 'bg-emerald-50 text-emerald-700 border-emerald-200'
                       }`}
                     >
-                      {formData.hiddenSections?.customerStories ? '🔴 Hidden on Homepage' : '🟢 Visible on Homepage'}
+                      {formData.hiddenSections?.newArrivals ? '🔴 Hidden on Homepage' : '🟢 Visible on Homepage'}
                     </button>
+                  </div>
+                  <div className="p-5 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-3">
+                    <h3 className="font-serif-editorial text-base text-[#7A1C30]">About This Section</h3>
+                    <p className="text-xs text-gray-500 leading-relaxed">
+                      &ldquo;One piece. Different occasions&rdquo; — shows a single product styled for Everyday, Work, Festive and Wedding.
+                      This section uses the first product image as a placeholder. Replace with real styled photography for each occasion.
+                    </p>
                   </div>
                 </div>
               )}

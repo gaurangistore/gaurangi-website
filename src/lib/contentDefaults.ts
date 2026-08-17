@@ -282,10 +282,10 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
   heroSlides: [
     {
       id: 1,
-      badge: 'For the Woman Who Wears Both',
-      title: 'Heritage,',
-      italicTitle: 'worn your way.',
-      tagline: 'Gaurangi takes the hand-cut appliqué of Pipili — once reserved for temple canopies — and puts it back into an everyday wardrobe. Not a costume version of tradition. Just tradition, cut for how you actually dress.',
+      badge: 'THE AUTUMN EDIT · 2026',
+      title: 'Autumn',
+      italicTitle: '',
+      tagline: 'Crafted in Pipili. Designed for today. Discover hand-cut appliqué, thoughtful Indian textiles and contemporary pieces made for celebrations, occasions and everyday elegance.',
       weave: 'Hand-cut, not printed',
       craft: 'Sizes XS–3XL',
       occasion: 'Suit sets, dupattas & home textiles',

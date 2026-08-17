@@ -25,8 +25,7 @@ export const Newsletter: React.FC = () => {
             Join the Gaurangi circle
           </h2>
           <p className="text-paper/90 max-w-[440px] mx-auto mb-7 text-[14.5px]">
-            New pieces arrive from Pipili in small batches. We&rsquo;ll tell you the day
-            they&rsquo;re cut, not the day they sell out.
+            New pieces arrive from Pipili in small batches. Be the first to know when a new piece is ready.
           </p>
 
           {submitted ? (

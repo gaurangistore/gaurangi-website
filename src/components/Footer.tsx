@@ -26,10 +26,9 @@ export const Footer: React.FC = () => {
             <h4 className="mono text-ink mb-3.5">Shop</h4>
             <ul className="list-none p-0 m-0 flex flex-col gap-2.5">
               <li><Link href="/shop" className="hover:text-rose">The Edit</Link></li>
-              <li><Link href="/shop?technique=floral-vine" className="hover:text-rose">By Technique</Link></li>
-              <li><Link href="/shop?category=Suit+Sets" className="hover:text-rose">Suit Sets</Link></li>
+              <li><Link href="/shop?category=Dress+Materials" className="hover:text-rose">Dress Materials</Link></li>
               <li><Link href="/shop?category=Dupattas" className="hover:text-rose">Dupattas</Link></li>
-              <li><Link href="/shop?category=Home+%26+Bedding" className="hover:text-rose">Home &amp; Bedding</Link></li>
+              <li><Link href="/shop?category=Sarees" className="hover:text-rose">Sarees</Link></li>
             </ul>
           </div>
 
@@ -57,7 +56,7 @@ export const Footer: React.FC = () => {
         </div>
 
         <div className="foot-bottom flex flex-wrap justify-between items-center pt-6 gap-2.5">
-          <span>© {new Date().getFullYear()} {contact.storeName}. Draft homepage — copy and prices to be finalized.</span>
+          <span>© {new Date().getFullYear()} {contact.storeName}. All rights reserved.</span>
           <span>Privacy · Terms</span>
         </div>
       </div>

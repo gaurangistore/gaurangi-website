@@ -25,12 +25,7 @@ export const NewArrivals: React.FC = () => {
             </h2>
           </div>
           <p className="max-w-[380px] text-ink-soft text-[14.5px]">
-            Real pieces, real photography — this is our current stock across suit sets, dupattas and
-            home textiles.
-            <br />
-            <span className="mono text-rose">
-              * Estimated pricing from comparable market listings — pending your actual costs.
-            </span>
+            Real pieces, photographed as they are — explore what&apos;s currently available.
           </p>
         </div>
 

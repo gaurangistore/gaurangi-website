@@ -66,10 +66,7 @@ export const ShopByCategory: React.FC = () => {
                 />
               </div>
               <div className="p-4 md:p-5 text-center">
-                <h3 className="text-base font-sans font-semibold mb-1">{cat.name}</h3>
-                <span className="mono text-ink-soft text-[10.5px]">
-                  {cat.count} {cat.count === 1 ? 'piece' : 'pieces'}
-                </span>
+                <h3 className="text-base font-sans font-semibold">{cat.name}</h3>
               </div>
             </Link>
           ))}
