@@ -9,7 +9,7 @@ export default function ShopPage() {
   return (
     <div className="min-h-screen bg-canvas text-ink flex flex-col overflow-x-hidden">
       <Navbar />
-      <Suspense fallback={<div className="py-32 text-center mono text-ink-soft">Loading the Edit…</div>}>
+      <Suspense fallback={<div className="py-32 text-center mono text-ink-soft">Loading the Shop…</div>}>
         <ShopContent />
       </Suspense>
       <Footer />

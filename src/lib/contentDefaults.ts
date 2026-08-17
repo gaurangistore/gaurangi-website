@@ -252,7 +252,7 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
     reviewsTitle: 'Style notes',
   },
   dressMaterialsPageContent: {
-    bannerTitle: 'The Gaurangi Edit',
+    bannerTitle: 'Shop',
     bannerSubtitle: 'Suit sets, dupattas and home textiles — every piece built on hand-cut Pipili appliqué.',
     fabrics: ['All', 'Suit Sets', 'Dupattas', 'Home & Bedding'],
   },
@@ -510,7 +510,7 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
     pageTitle: 'Shopping Bag',
     emptyTitle: 'Your bag is empty',
     emptySubtitle: 'Looks like you haven\u2019t found your piece yet.',
-    emptyCtaText: 'Browse the Edit',
+    emptyCtaText: 'Browse the Shop',
     emptyCtaLink: '/shop',
     summaryTitle: 'Order Summary',
     shippingText: 'Free shipping across India',

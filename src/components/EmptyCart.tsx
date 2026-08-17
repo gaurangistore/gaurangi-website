@@ -21,7 +21,7 @@ export const EmptyCart: React.FC = () => {
         {cart?.emptySubtitle || "Looks like you haven\u2019t found your piece yet."}
       </p>
       <Link href={cart?.emptyCtaLink || '/shop'} className="btn-primary">
-        {cart?.emptyCtaText || 'Browse the Edit'}
+        {cart?.emptyCtaText || 'Browse the Shop'}
       </Link>
     </div>
   );

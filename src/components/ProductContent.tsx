@@ -47,7 +47,7 @@ export const ProductContent: React.FC = () => {
             It may have been sold or removed. Browse the full edit to find another favourite.
           </p>
           <Link href="/shop" className="btn-outline">
-            Back to the Edit
+            Back to Shop
           </Link>
         </main>
         <Footer />

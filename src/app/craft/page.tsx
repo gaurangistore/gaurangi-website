@@ -100,7 +100,7 @@ export default function CraftPage() {
             <div className="mt-10">
               <span className="mono text-ink-soft block mb-4">{craft?.ctaTitle}</span>
               <Link href="/shop" className="btn-primary">
-                {craft?.ctaLinkText || 'Explore the Edit'}
+                {craft?.ctaLinkText || 'Explore the Craft'}
               </Link>
             </div>
           </div>

@@ -42,7 +42,7 @@ export const HeroSection: React.FC = () => {
 
           <div className="cta-row mt-8 flex flex-wrap items-center gap-4">
             <Link href="/shop" className="btn-primary">
-              Shop the Edit
+              Shop Now
             </Link>
             <Link href="/craft" className="link-under">
               See how it&rsquo;s made ↓

@@ -262,7 +262,7 @@ export default function AdminDashboard() {
                 activePageTab === 'catalogPage' ? 'bg-[#7A1C30] text-white' : 'hover:bg-[#FAF6EE] text-[#1F1F1F]'
               }`}
             >
-              <ShoppingBag size={16} /> 🛍️ Shop / The Edit (/shop)
+              <ShoppingBag size={16} /> 🛍️ Shop (/shop)
             </button>
 
             {/* PAGE 3: PRODUCT DETAILS PAGE */}
@@ -797,7 +797,7 @@ export default function AdminDashboard() {
                   </div>
 
                   <p className="text-xs text-gray-600">
-                    Manage full product list under <strong>Shop / The Edit</strong>. Up to 8 products are featured on the homepage.
+                    Manage full product list under <strong>Shop</strong>. Up to 8 products are featured on the homepage.
                   </p>
                 </div>
               )}
@@ -1049,7 +1049,7 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between pb-4 border-b border-[#EAE5D9]">
                 <div>
                   <h2 className="font-serif-editorial text-2xl text-[#7A1C30] font-medium">
-                    Shop / The Edit (/shop) Editor
+                    Shop (/shop) Editor
                   </h2>
                   <p className="text-xs text-gray-500 font-light mt-1">
                     Author the edit banner, category filters, technique chips, and the full product catalog.
@@ -1077,7 +1077,7 @@ export default function AdminDashboard() {
                         },
                       });
                     }}
-                    placeholder="e.g. The Gaurangi Edit"
+                    placeholder="e.g. Shop"
                     className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
                   />
                 </div>
@@ -1235,7 +1235,7 @@ export default function AdminDashboard() {
               <div className="space-y-6">
                 <div className="pb-2 border-b border-[#EAE5D9] flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <div>
-                    <h3 className="font-serif-editorial text-xl text-[#7A1C30]">The Edit Product Manager</h3>
+                    <h3 className="font-serif-editorial text-xl text-[#7A1C30]">Shop Product Manager</h3>
                     <p className="text-xs text-gray-500 font-light mt-0.5">Manage, reorder, or bulk import products for your store.</p>
                   </div>
 
@@ -2510,7 +2510,7 @@ export default function AdminDashboard() {
                         const next = { ...formData.cartPageContent, emptyCtaText: e.target.value };
                         setFormData({ ...formData, cartPageContent: next });
                       }}
-                      placeholder="e.g. Browse the Edit"
+                      placeholder="e.g. Browse the Shop"
                       className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
                     />
                   </div>

@@ -18,7 +18,7 @@ export default function NotFound() {
             Back Home
           </Link>
           <Link href="/shop" className="btn-primary">
-            Visit the Edit
+            Visit the Shop
           </Link>
         </div>
       </main>

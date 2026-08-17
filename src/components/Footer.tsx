@@ -25,7 +25,7 @@ export const Footer: React.FC = () => {
           <div>
             <h4 className="mono text-ink mb-3.5">Shop</h4>
             <ul className="list-none p-0 m-0 flex flex-col gap-2.5">
-              <li><Link href="/shop" className="hover:text-rose">The Edit</Link></li>
+              <li><Link href="/shop" className="hover:text-rose">Shop</Link></li>
               <li><Link href="/shop?category=Dress+Materials" className="hover:text-rose">Dress Materials</Link></li>
               <li><Link href="/shop?category=Dupattas" className="hover:text-rose">Dupattas</Link></li>
               <li><Link href="/shop?category=Sarees" className="hover:text-rose">Sarees</Link></li>

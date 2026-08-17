@@ -62,9 +62,9 @@ export const ShopContent: React.FC = () => {
       <div className="wrap">
         {/* Page Header Banner */}
         <div className="mb-10 md:mb-14">
-          <span className="mono text-rose block mb-2.5">The Gaurangi Edit</span>
+          <span className="mono text-rose block mb-2.5">Shop</span>
           <h1 className="font-display italic text-[clamp(32px,4.5vw,52px)] leading-tight">
-            {banner?.bannerTitle || 'The Gaurangi Edit'}
+            {banner?.bannerTitle || 'Shop'}
           </h1>
           <p className="max-w-[520px] mt-3 text-ink-soft text-[15px]">
             {banner?.bannerSubtitle ||
