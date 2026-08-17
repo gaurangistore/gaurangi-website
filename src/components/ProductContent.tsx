@@ -121,7 +121,6 @@ export const ProductContent: React.FC = () => {
                   <span className="font-sans text-3xl font-bold tracking-tight text-ink">
                     {product.price}
                   </span>
-                  <span className="mono text-rose text-[10.5px]">est. pricing</span>
                 </div>
               )}
 

@@ -1223,6 +1223,23 @@ export default function AdminDashboard() {
                         </div>
 
                         <div>
+                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Badge (e.g. New, Sold Out)</label>
+                          <input
+                            type="text"
+                            value={prod.badge || ''}
+                            onChange={(e) => {
+                              const updated = [...formData.products];
+                              updated[idx].badge = e.target.value;
+                              setFormData({ ...formData, products: updated });
+                            }}
+                            placeholder="e.g. New"
+                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
                           <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Fabric Type</label>
                           <input
                             type="text"
@@ -1238,7 +1255,7 @@ export default function AdminDashboard() {
                         </div>
 
                         <div>
-                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Category Badge</label>
+                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Category</label>
                           <input
                             type="text"
                             value={prod.category || ''}
@@ -1247,7 +1264,7 @@ export default function AdminDashboard() {
                               updated[idx].category = e.target.value;
                               setFormData({ ...formData, products: updated });
                             }}
-                            placeholder="e.g. Suit Sets"
+                            placeholder="e.g. Dress Materials"
                             className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
                           />
                         </div>
@@ -1269,6 +1286,126 @@ export default function AdminDashboard() {
                             ))}
                           </select>
                         </div>
+
+                        <div>
+                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Wash Care</label>
+                          <input
+                            type="text"
+                            value={prod.washCare || ''}
+                            onChange={(e) => {
+                              const updated = [...formData.products];
+                              updated[idx].washCare = e.target.value;
+                              setFormData({ ...formData, products: updated });
+                            }}
+                            placeholder="e.g. Dry Clean Only"
+                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Craft Details</label>
+                          <input
+                            type="text"
+                            value={prod.craft || ''}
+                            onChange={(e) => {
+                              const updated = [...formData.products];
+                              updated[idx].craft = e.target.value;
+                              setFormData({ ...formData, products: updated });
+                            }}
+                            placeholder="e.g. Hand-cut Pipili appliqué"
+                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Top / Kurta Metres</label>
+                          <input
+                            type="text"
+                            value={prod.topMetres || ''}
+                            onChange={(e) => {
+                              const updated = [...formData.products];
+                              updated[idx].topMetres = e.target.value;
+                              setFormData({ ...formData, products: updated });
+                            }}
+                            placeholder="e.g. 2.5 Metres"
+                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Bottom / Salwar Fabric</label>
+                          <input
+                            type="text"
+                            value={prod.bottomFabric || ''}
+                            onChange={(e) => {
+                              const updated = [...formData.products];
+                              updated[idx].bottomFabric = e.target.value;
+                              setFormData({ ...formData, products: updated });
+                            }}
+                            placeholder="e.g. Cotton"
+                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Bottom / Salwar Metres</label>
+                          <input
+                            type="text"
+                            value={prod.bottomMetres || ''}
+                            onChange={(e) => {
+                              const updated = [...formData.products];
+                              updated[idx].bottomMetres = e.target.value;
+                              setFormData({ ...formData, products: updated });
+                            }}
+                            placeholder="e.g. 2.5 Metres"
+                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Dupatta Fabric</label>
+                          <input
+                            type="text"
+                            value={prod.dupattaFabric || ''}
+                            onChange={(e) => {
+                              const updated = [...formData.products];
+                              updated[idx].dupattaFabric = e.target.value;
+                              setFormData({ ...formData, products: updated });
+                            }}
+                            placeholder="e.g. Kota Doria"
+                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Dupatta Metres</label>
+                          <input
+                            type="text"
+                            value={prod.dupattaMetres || ''}
+                            onChange={(e) => {
+                              const updated = [...formData.products];
+                              updated[idx].dupattaMetres = e.target.value;
+                              setFormData({ ...formData, products: updated });
+                            }}
+                            placeholder="e.g. 2.25 Metres"
+                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Product Description</label>
+                        <textarea
+                          value={prod.description || ''}
+                          onChange={(e) => {
+                            const updated = [...formData.products];
+                            updated[idx].description = e.target.value;
+                            setFormData({ ...formData, products: updated });
+                          }}
+                          rows={3}
+                          placeholder="Describe the product, its heritage and details..."
+                          className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                        />
                       </div>
 
                       <div>
