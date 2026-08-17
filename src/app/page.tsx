@@ -1,11 +1,10 @@
 import { Navbar } from '@/components/Navbar';
 import { HeroSection } from '@/components/HeroSection';
-import { ShopByTechnique } from '@/components/ShopByTechnique';
+import { ShopByCategory } from '@/components/ShopByCategory';
 import { CraftSection } from '@/components/CraftSection';
 import { NewArrivals } from '@/components/NewArrivals';
 import { WhyGaurangi } from '@/components/WhyGaurangi';
-import { ArtisansSection } from '@/components/ArtisansSection';
-import { StyleNotes } from '@/components/StyleNotes';
+import { StyleInspiration } from '@/components/StyleInspiration';
 import { Newsletter } from '@/components/Newsletter';
 import { Footer } from '@/components/Footer';
 
@@ -18,28 +17,25 @@ export default function Home() {
       {/* 2. Hero Banner */}
       <HeroSection />
 
-      {/* 3. Shop by Technique */}
-      <ShopByTechnique />
+      {/* 3. Shop by Category */}
+      <ShopByCategory />
 
-      {/* 4. The Craft */}
-      <CraftSection />
-
-      {/* 5. New Arrivals (8 Featured Products Grid) */}
+      {/* 4. New Arrivals */}
       <NewArrivals />
 
-      {/* 6. Why Gaurangi (4 Scannable Trust Pillars) */}
+      {/* 5. Why Gaurangi */}
       <WhyGaurangi />
 
-      {/* 7. Artisans */}
-      <ArtisansSection />
+      {/* 6. The Craft (merged with Artisan story) */}
+      <CraftSection />
 
-      {/* 8. Style Notes */}
-      <StyleNotes />
+      {/* 7. Style Inspiration — wear it your way */}
+      <StyleInspiration />
 
-      {/* 9. Newsletter Subscription */}
+      {/* 8. Newsletter Subscription */}
       <Newsletter />
 
-      {/* 10. Boutique Footer */}
+      {/* 9. Footer */}
       <Footer />
     </main>
   );
