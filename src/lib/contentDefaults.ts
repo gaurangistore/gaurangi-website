@@ -53,9 +53,8 @@ export interface OccasionItem {
 export interface CategoryItem {
   id: string;
   name: string;
-  count: string;
   image: string;
-  description: string;
+  description?: string;
 }
 
 export interface CustomerStoryItem {
@@ -190,6 +189,7 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
     newsletter: false,
     craftSection: false,
     artisansSection: false,
+    styleInspiration: false,
   },
   whyGaurangiPillars: [
     {

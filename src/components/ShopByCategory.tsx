@@ -1,35 +1,43 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import Link from 'next/link';
 import { useContent } from '@/context/ContentContext';
 import { getImageUrl } from '@/lib/constants';
+import { DUMMY_IMAGE } from '@/lib/constants';
 
 export const ShopByCategory: React.FC = () => {
   const { data } = useContent();
   const products = data.products || [];
 
-  if (data.hiddenSections?.featuredCategories || products.length === 0) return null;
+  if (data.hiddenSections?.featuredCategories) return null;
 
   const header = data.sectionHeaders || {};
 
-  // Extract unique categories with product count and first product image
-  const categoryMap = new Map<string, { count: number; image: string }>();
-  products.forEach((p) => {
-    if (!p.category) return;
-    const existing = categoryMap.get(p.category);
-    if (existing) {
-      existing.count += 1;
-    } else {
-      categoryMap.set(p.category, { count: 1, image: p.image });
-    }
-  });
+  // Use authored categories if available, otherwise auto-derive from products
+  const authoredCategories = data.categories || [];
+  const hasAuthored = authoredCategories.length > 0;
 
-  const categories = Array.from(categoryMap.entries()).map(([name, meta]) => ({
-    name,
-    count: meta.count,
-    image: meta.image,
-  }));
+  const autoCategories = useMemo(() => {
+    if (hasAuthored) return [];
+    const map = new Map<string, { count: number; image: string }>();
+    products.forEach((p) => {
+      if (!p.category) return;
+      const existing = map.get(p.category);
+      if (existing) {
+        existing.count += 1;
+      } else {
+        map.set(p.category, { count: 1, image: p.image });
+      }
+    });
+    return Array.from(map.entries()).map(([name, meta]) => ({
+      id: name,
+      name,
+      image: meta.image,
+    }));
+  }, [products, hasAuthored]);
+
+  const categories = hasAuthored ? authoredCategories : autoCategories;
 
   if (categories.length === 0) return null;
 
@@ -53,13 +61,13 @@ export const ShopByCategory: React.FC = () => {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
           {categories.map((cat) => (
             <Link
-              key={cat.name}
+              key={cat.id}
               href={`/shop?category=${encodeURIComponent(cat.name)}`}
               className="category-card group bg-paper border border-border-hair overflow-hidden transition-transform duration-200 hover:-translate-y-[3px] hover:shadow-[0_12px_24px_-14px_rgba(36,16,25,0.3)]"
             >
               <div className="aspect-[4/3] overflow-hidden bg-[#EFE3DC]">
                 <img
-                  src={getImageUrl(cat.image)}
+                  src={getImageUrl(cat.image || DUMMY_IMAGE)}
                   alt={cat.name}
                   className="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
                   loading="lazy"

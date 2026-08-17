@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useContent, HomepageData, ProductItem, CraftPageContent } from '@/context/ContentContext';
 import { Sparkles, Save, Plus, Trash2, CheckCircle, AlertTriangle, Loader2, Home, ShoppingBag, PhoneCall, Info, Package, GripVertical, ArrowUp, ArrowDown, Download, Upload } from 'lucide-react';
 import Link from 'next/link';
-import { DUMMY_IMAGE, TECHNIQUES } from '@/lib/constants';
+import { DUMMY_IMAGE, TECHNIQUES, getImageUrl } from '@/lib/constants';
 
 export default function AdminDashboard() {
   const { rawData, saveData, uploadImage } = useContent();
@@ -623,41 +623,143 @@ export default function AdminDashboard() {
                   </div>
 
                   <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
-                    <h3 className="font-serif-editorial text-base text-[#7A1C30]">Current Product Categories</h3>
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-serif-editorial text-base text-[#7A1C30]">Categories Manager</h3>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newCategory = {
+                            id: `cat-${Date.now()}`,
+                            name: 'New Category',
+                            image: DUMMY_IMAGE,
+                          };
+                          setFormData({ ...formData, categories: [...(formData.categories || []), newCategory] });
+                        }}
+                        className="bg-[#0A2A54] text-[#FFFBF3] hover:bg-[#C9962F] text-xs px-4 py-2 rounded-full flex items-center gap-1.5"
+                      >
+                        <Plus size={14} /> Add Category
+                      </button>
+                    </div>
                     <p className="text-xs text-gray-500 leading-relaxed">
-                      Categories are automatically derived from your products. Add new products with a category to expand this section.
+                      Add, edit or remove homepage category cards. These appear in the &ldquo;Find your piece&rdquo; section.
+                      Leave empty to auto-derive categories from products.
                     </p>
-                    <div className="flex flex-wrap gap-2">
-                      {Array.from(new Set((formData.products || []).map(p => p.category).filter(Boolean))).map(cat => (
-                        <span key={cat} className="px-3 py-1.5 bg-white border border-[#EAE5D9] rounded-full text-xs font-medium text-[#1F1F1F]">
-                          {cat}
-                          <span className="ml-1.5 text-gray-400">
-                            ({(formData.products || []).filter(p => p.category === cat).length})
-                          </span>
-                        </span>
+
+                    {(formData.categories || []).length === 0 && (
+                      <div className="py-6 text-center border-2 border-dashed border-[#EAE5D9] rounded-lg">
+                        <p className="text-xs text-gray-400 italic mb-3">No categories authored yet — auto-deriving from products.</p>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const autoCategories = Array.from(
+                              new Set((formData.products || []).map(p => p.category).filter(Boolean))
+                            ).map((cat, idx) => ({
+                              id: `cat-${Date.now()}-${idx}`,
+                              name: cat!,
+                              image: (formData.products || []).find(p => p.category === cat)?.image || DUMMY_IMAGE,
+                            }));
+                            setFormData({ ...formData, categories: autoCategories });
+                          }}
+                          className="px-4 py-2 bg-white border border-[#EAE5D9] rounded-lg text-xs font-medium text-[#1F1F1F] hover:bg-[#EAE5D9] transition-colors"
+                        >
+                          Auto-fill from products
+                        </button>
+                      </div>
+                    )}
+
+                    <div className="grid grid-cols-1 gap-4">
+                      {(formData.categories || []).map((cat, idx) => (
+                        <div key={cat.id || idx} className="flex items-start gap-4 p-4 bg-white border border-[#EAE5D9] rounded-xl">
+                          <div className="w-16 h-12 rounded-lg overflow-hidden bg-[#EFE3DC] flex-shrink-0">
+                            <img
+                              src={getImageUrl(cat.image || DUMMY_IMAGE)}
+                              alt={cat.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                              <label className="text-[10px] uppercase font-medium text-gray-500 block mb-1">Category Name</label>
+                              <input
+                                type="text"
+                                value={cat.name}
+                                onChange={(e) => {
+                                  const updated = [...(formData.categories || [])];
+                                  updated[idx] = { ...updated[idx], name: e.target.value };
+                                  setFormData({ ...formData, categories: updated });
+                                }}
+                                className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-[10px] uppercase font-medium text-gray-500 block mb-1">Image</label>
+                              <div className="flex items-center gap-2">
+                                <input
+                                  type="text"
+                                  value={cat.image || ''}
+                                  onChange={(e) => {
+                                    const updated = [...(formData.categories || [])];
+                                    updated[idx] = { ...updated[idx], image: e.target.value };
+                                    setFormData({ ...formData, categories: updated });
+                                  }}
+                                  placeholder="img:... or URL"
+                                  className="flex-1 px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                                />
+                                <label className="px-2.5 py-2 bg-[#7A1C30] text-white rounded-lg text-xs font-medium cursor-pointer whitespace-nowrap">
+                                  Upload
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={(e) =>
+                                      handleImageFileChange(e, (url) => {
+                                        const updated = [...(formData.categories || [])];
+                                        updated[idx] = { ...updated[idx], image: url };
+                                        setFormData({ ...formData, categories: updated });
+                                      })
+                                    }
+                                  />
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => {
+                              const updated = (formData.categories || []).filter((_, i) => i !== idx);
+                              setFormData({ ...formData, categories: updated });
+                            }}
+                            className="text-red-500 hover:text-red-700 p-1 mt-4 flex-shrink-0"
+                            title="Remove category"
+                          >
+                            <Trash2 size={15} />
+                          </button>
+                        </div>
                       ))}
-                      {(formData.products || []).filter(p => p.category).length === 0 && (
-                        <span className="text-xs text-gray-400 italic">No products with categories yet</span>
-                      )}
                     </div>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const newTechnique = {
-                        id: `technique-${Date.now()}`,
-                        title: 'New Technique',
-                        subtitle: 'Subtitle for this technique',
-                        image: DUMMY_IMAGE,
-                        tag: 'Suit Sets',
-                      };
-                      setFormData({ ...formData, collections: [...(formData.collections || []), newTechnique] });
-                    }}
-                    className="bg-[#0A2A54] text-[#FFFBF3] hover:bg-[#C9962F] text-xs px-6 py-2.5 rounded-full flex items-center gap-2"
-                  >
-                    <Plus size={15} /> Add New Technique
-                  </button>
+                  <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
+                    <h3 className="font-serif-editorial text-base text-[#7A1C30]">Legacy Techniques (Collections)</h3>
+                    <p className="text-xs text-gray-500 leading-relaxed">
+                      Technique cards used on the Shop page. This data is kept for backward compatibility.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const newTechnique = {
+                          id: `technique-${Date.now()}`,
+                          title: 'New Technique',
+                          subtitle: 'Subtitle for this technique',
+                          image: DUMMY_IMAGE,
+                          tag: 'Suit Sets',
+                        };
+                        setFormData({ ...formData, collections: [...(formData.collections || []), newTechnique] });
+                      }}
+                      className="bg-[#0A2A54] text-[#FFFBF3] hover:bg-[#C9962F] text-xs px-6 py-2.5 rounded-full flex items-center gap-2"
+                    >
+                      <Plus size={15} /> Add New Technique
+                    </button>
+                  </div>
                 </div>
               )}
 
