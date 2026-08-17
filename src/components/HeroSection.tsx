@@ -51,12 +51,12 @@ export const HeroSection: React.FC = () => {
         </div>
 
         {/* Right Column: Motif Stage */}
-        <div className="motif-stage stitch aspect-square bg-paper flex items-center justify-center relative p-8">
+        <div className="motif-stage stitch aspect-square bg-paper flex items-center justify-center relative overflow-hidden">
           {!isLoading && active.image && (
             <img
               src={getImageUrl(active.image)}
               alt={active.title || 'Gaurangi'}
-              className="max-h-full max-w-full object-contain"
+              className="w-full h-full object-cover object-top"
             />
           )}
           <div className="motif-caption mono absolute bottom-4 left-4 right-4 flex justify-between text-[10.5px] text-ink-soft">
