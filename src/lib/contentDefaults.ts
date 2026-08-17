@@ -191,6 +191,8 @@ export interface HomepageData {
   aboutPageContent?: AboutPageContent;
   craftPageContent?: CraftPageContent;
   cartPageContent?: CartPageContent;
+  shopCategories?: string[];
+  shopTechniques?: { id: string; name: string }[];
 }
 
 // Default Fallback Initial Content
@@ -517,4 +519,12 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
     trustBadge3: 'Easy 7-day returns',
     whatsappButtonText: 'Order via WhatsApp',
   },
+  shopCategories: ['Suit Sets', 'Dupattas', 'Home & Bedding'],
+  shopTechniques: [
+    { id: 'floral-vine', name: 'Floral Vine' },
+    { id: 'cutwork', name: 'Cutwork' },
+    { id: 'floral-wreath', name: 'Floral Wreath' },
+    { id: 'beaded-trail', name: 'Beaded Trail' },
+    { id: 'paisley-cutwork', name: 'Paisley Cutwork' },
+  ],
 };

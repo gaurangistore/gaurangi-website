@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useContent, HomepageData, ProductItem, CraftPageContent } from '@/context/ContentContext';
 import { Sparkles, Save, Plus, Trash2, CheckCircle, AlertTriangle, Loader2, Home, ShoppingBag, PhoneCall, Info, Package, GripVertical, ArrowUp, ArrowDown, Download, Upload } from 'lucide-react';
 import Link from 'next/link';
-import { DUMMY_IMAGE, TECHNIQUES, getImageUrl } from '@/lib/constants';
+import { DUMMY_IMAGE, getImageUrl } from '@/lib/constants';
 
 export default function AdminDashboard() {
   const { rawData, saveData, uploadImage } = useContent();
@@ -36,10 +36,6 @@ export default function AdminDashboard() {
 
 
   // Technique options for the product form — includes techniques added in the admin
-  const techniqueOptions = (formData.collections || []).length
-    ? (formData.collections || []).map((c) => ({ id: c.id, label: c.title }))
-    : TECHNIQUES.map((t) => ({ id: t.id, label: t.name }));
-
   // CSV Export Helper for Content Authors
   const handleExportCSV = () => {
     const products = formData.products || [];
@@ -1108,6 +1104,133 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
+              {/* Manage Categories */}
+              <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-serif-editorial text-base text-[#7A1C30]">Manage Categories</h3>
+                    <p className="text-xs text-gray-500 font-light mt-0.5">Add, rename or remove product categories. Renaming updates all products using that category.</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const name = prompt('New category name:');
+                      if (!name || !name.trim()) return;
+                      const trimmed = name.trim();
+                      const existing = formData.shopCategories || [];
+                      if (existing.includes(trimmed)) return;
+                      const newCategories = [...existing, trimmed];
+                      const updatedProducts = (formData.products || []).map((p) => p);
+                      setFormData({ ...formData, shopCategories: newCategories, products: updatedProducts });
+                    }}
+                    className="px-3 py-1.5 rounded-lg bg-[#C5A059] text-white hover:bg-[#B38F48] text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-sm"
+                  >
+                    <Plus size={14} /> Add Category
+                  </button>
+                </div>
+                <div className="space-y-2">
+                  {(formData.shopCategories || []).length === 0 && (
+                    <p className="text-xs text-gray-400 italic">No categories yet. Add one to get started.</p>
+                  )}
+                  {(formData.shopCategories || []).map((cat, idx) => (
+                    <div key={idx} className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={cat}
+                        onChange={(e) => {
+                          const newCat = e.target.value;
+                          const oldCat = (formData.shopCategories || [])[idx];
+                          const newCategories = [...(formData.shopCategories || [])];
+                          newCategories[idx] = newCat;
+                          const updatedProducts = (formData.products || []).map((p) =>
+                            p.category === oldCat ? { ...p, category: newCat } : p
+                          );
+                          setFormData({ ...formData, shopCategories: newCategories, products: updatedProducts });
+                        }}
+                        className="flex-1 px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const oldCat = (formData.shopCategories || [])[idx];
+                          if (!confirm(`Remove "${oldCat}"? Products in this category will keep their tag but it will no longer appear as a filter.`)) return;
+                          const newCategories = (formData.shopCategories || []).filter((_, i) => i !== idx);
+                          setFormData({ ...formData, shopCategories: newCategories });
+                        }}
+                        className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                        title="Remove category"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Manage Techniques */}
+              <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-serif-editorial text-base text-[#7A1C30]">Manage Techniques</h3>
+                    <p className="text-xs text-gray-500 font-light mt-0.5">Add, rename or remove techniques. Renaming updates all products using that technique.</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const name = prompt('New technique name:');
+                      if (!name || !name.trim()) return;
+                      const trimmed = name.trim();
+                      const id = trimmed.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+                      const existing = formData.shopTechniques || [];
+                      if (existing.some((t) => t.id === id)) return;
+                      const newTechniques = [...existing, { id, name: trimmed }];
+                      setFormData({ ...formData, shopTechniques: newTechniques });
+                    }}
+                    className="px-3 py-1.5 rounded-lg bg-[#C5A059] text-white hover:bg-[#B38F48] text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-sm"
+                  >
+                    <Plus size={14} /> Add Technique
+                  </button>
+                </div>
+                <div className="space-y-2">
+                  {(formData.shopTechniques || []).length === 0 && (
+                    <p className="text-xs text-gray-400 italic">No techniques yet. Add one to get started.</p>
+                  )}
+                  {(formData.shopTechniques || []).map((tech, idx) => (
+                    <div key={idx} className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={tech.name}
+                        onChange={(e) => {
+                          const newName = e.target.value;
+                          const oldId = (formData.shopTechniques || [])[idx]?.id;
+                          const newTechniques = [...(formData.shopTechniques || [])];
+                          newTechniques[idx] = { ...newTechniques[idx], name: newName };
+                          const updatedProducts = (formData.products || []).map((p) =>
+                            p.technique === oldId ? { ...p, technique: oldId } : p
+                          );
+                          setFormData({ ...formData, shopTechniques: newTechniques, products: updatedProducts });
+                        }}
+                        className="flex-1 px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                      />
+                      <span className="text-[10px] text-gray-400 font-mono shrink-0 w-24 text-right">{tech.id}</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const oldTech = (formData.shopTechniques || [])[idx];
+                          if (!confirm(`Remove "${oldTech.name}"? Products using this technique will keep their tag but it will no longer appear as a filter.`)) return;
+                          const newTechniques = (formData.shopTechniques || []).filter((_, i) => i !== idx);
+                          setFormData({ ...formData, shopTechniques: newTechniques });
+                        }}
+                        className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                        title="Remove technique"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               {/* Product Catalog List */}
               <div className="space-y-6">
                 <div className="pb-2 border-b border-[#EAE5D9] flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -1266,17 +1389,20 @@ export default function AdminDashboard() {
 
                         <div>
                           <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Category</label>
-                          <input
-                            type="text"
+                          <select
                             value={prod.category || ''}
                             onChange={(e) => {
                               const updated = [...formData.products];
                               updated[idx].category = e.target.value;
                               setFormData({ ...formData, products: updated });
                             }}
-                            placeholder="e.g. Dress Materials"
-                            className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
-                          />
+                            className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none bg-white"
+                          >
+                            <option value="">None</option>
+                            {(formData.shopCategories || []).map((cat) => (
+                              <option key={cat} value={cat}>{cat}</option>
+                            ))}
+                          </select>
                         </div>
 
                         <div>
@@ -1291,8 +1417,8 @@ export default function AdminDashboard() {
                             className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none bg-white"
                           >
                             <option value="">None</option>
-                            {techniqueOptions.map((t) => (
-                              <option key={t.id} value={t.id}>{t.label}</option>
+                            {(formData.shopTechniques || []).map((t) => (
+                              <option key={t.id} value={t.id}>{t.name}</option>
                             ))}
                           </select>
                         </div>
@@ -1833,17 +1959,20 @@ export default function AdminDashboard() {
 
                         <div>
                           <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Category Badge</label>
-                          <input
-                            type="text"
+                          <select
                             value={prod.category || ''}
                             onChange={(e) => {
                               const updated = [...formData.products];
                               updated[idx].category = e.target.value;
                               setFormData({ ...formData, products: updated });
                             }}
-                            placeholder="e.g. Festive Wear"
-                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
-                          />
+                            className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none bg-white"
+                          >
+                            <option value="">None</option>
+                            {(formData.shopCategories || []).map((cat) => (
+                              <option key={cat} value={cat}>{cat}</option>
+                            ))}
+                          </select>
                         </div>
 
                         <div>

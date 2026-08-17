@@ -31,9 +31,13 @@ export const ShopContent: React.FC = () => {
 
   const banner = data.dressMaterialsPageContent;
 
-  const techList = (data.collections || []).length
-    ? (data.collections || []).map((c) => ({ id: c.id, name: c.title }))
-    : TECHNIQUES;
+  const categoryFilters = (data.shopCategories?.length)
+    ? ['All', ...data.shopCategories]
+    : CATEGORY_FILTERS;
+
+  const techList = (data.shopTechniques?.length)
+    ? data.shopTechniques
+    : TECHNIQUES.map((t) => ({ id: t.id, name: t.name }));
 
   const filtered = useMemo(() => {
     const products = data.products || [];
@@ -66,14 +70,11 @@ export const ShopContent: React.FC = () => {
             {banner?.bannerSubtitle ||
               'Suit sets, dupattas and home textiles — every piece built on hand-cut Pipili appliqué.'}
           </p>
-          <p className="mono text-rose mt-3">
-            * Estimated pricing from comparable market listings — pending your actual costs.
-          </p>
         </div>
 
         {/* Category Tabs */}
         <div className="flex flex-wrap gap-2 mb-6">
-          {CATEGORY_FILTERS.map((cat) => (
+          {categoryFilters.map((cat) => (
             <button
               key={cat}
               onClick={() => setCategory(cat)}
