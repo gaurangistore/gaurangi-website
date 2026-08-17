@@ -51,7 +51,7 @@ export const HeroSection: React.FC = () => {
         </div>
 
         {/* Right Column: Motif Stage */}
-        <div className="motif-stage aspect-[3/4] flex items-center justify-center relative overflow-hidden">
+        <div className="motif-stage aspect-[4/3] sm:aspect-[5/4] lg:aspect-[4/3] max-h-[460px] lg:max-h-[500px] w-full flex items-center justify-center relative overflow-hidden rounded-sm">
           {!isLoading && active.image && (
             <img
               src={getImageUrl(active.image)}
