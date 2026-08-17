@@ -10,7 +10,7 @@ export default function AdminDashboard() {
   const { rawData, saveData, uploadImage } = useContent();
   const [formData, setFormData] = useState<HomepageData>(rawData);
   const [activePageTab, setActivePageTab] = useState<'homepage' | 'catalogPage' | 'productDetailsPage' | 'aboutPage' | 'contactFooter'>('homepage');
-  const [activeHomeSubtab, setActiveHomeSubtab] = useState<'hero' | 'categories' | 'products' | 'whyGaurangi' | 'stories'>('hero');
+  const [activeHomeSubtab, setActiveHomeSubtab] = useState<'hero' | 'categories' | 'products' | 'whyGaurangi' | 'stories' | 'newsletter'>('hero');
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -361,6 +361,14 @@ export default function AdminDashboard() {
                   }`}
                 >
                   🎨 5. Style Inspiration
+                </button>
+                <button
+                  onClick={() => setActiveHomeSubtab('newsletter')}
+                  className={`px-4 py-2 rounded-lg text-xs uppercase font-medium transition-colors min-h-[44px] ${
+                    activeHomeSubtab === 'newsletter' ? 'bg-[#7A1C30] text-white' : 'bg-[#FAF6EE] text-[#1F1F1F]'
+                  }`}
+                >
+                  📬 6. Newsletter
                 </button>
               </div>
 
@@ -864,17 +872,17 @@ export default function AdminDashboard() {
                           ...formData,
                           hiddenSections: {
                             ...formData.hiddenSections,
-                            newArrivals: !formData.hiddenSections?.newArrivals,
+                            styleInspiration: !formData.hiddenSections?.styleInspiration,
                           },
                         });
                       }}
                       className={`px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider border ${
-                        formData.hiddenSections?.newArrivals
+                        formData.hiddenSections?.styleInspiration
                           ? 'bg-red-50 text-red-600 border-red-200'
                           : 'bg-emerald-50 text-emerald-700 border-emerald-200'
                       }`}
                     >
-                      {formData.hiddenSections?.newArrivals ? '🔴 Hidden on Homepage' : '🟢 Visible on Homepage'}
+                      {formData.hiddenSections?.styleInspiration ? '🔴 Hidden on Homepage' : '🟢 Visible on Homepage'}
                     </button>
                   </div>
                   <div className="p-5 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-3">
@@ -882,6 +890,42 @@ export default function AdminDashboard() {
                     <p className="text-xs text-gray-500 leading-relaxed">
                       &ldquo;One piece. Different occasions&rdquo; — shows a single product styled for Everyday, Work, Festive and Wedding.
                       This section uses the first product image as a placeholder. Replace with real styled photography for each occasion.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Subtab 6: Newsletter */}
+              {activeHomeSubtab === 'newsletter' && (
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between bg-[#FAF6EE] p-4 rounded-xl border border-[#EAE5D9]">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-[#7A1C30]">
+                      Newsletter Section Control
+                    </span>
+                    <button
+                      onClick={() => {
+                        setFormData({
+                          ...formData,
+                          hiddenSections: {
+                            ...formData.hiddenSections,
+                            newsletter: !formData.hiddenSections?.newsletter,
+                          },
+                        });
+                      }}
+                      className={`px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider border ${
+                        formData.hiddenSections?.newsletter
+                          ? 'bg-red-50 text-red-600 border-red-200'
+                          : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                      }`}
+                    >
+                      {formData.hiddenSections?.newsletter ? '🔴 Hidden on Homepage' : '🟢 Visible on Homepage'}
+                    </button>
+                  </div>
+                  <div className="p-5 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-3">
+                    <h3 className="font-serif-editorial text-base text-[#7A1C30]">About This Section</h3>
+                    <p className="text-xs text-gray-500 leading-relaxed">
+                      &ldquo;Join the Gaurangi circle&rdquo; — email capture section with &ldquo;Notify me&rdquo; button.
+                      Appears near the bottom of the homepage, above the footer.
                     </p>
                   </div>
                 </div>

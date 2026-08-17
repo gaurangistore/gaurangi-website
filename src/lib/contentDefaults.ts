@@ -85,6 +85,7 @@ export interface SectionVisibility {
   newsletter?: boolean;
   craftSection?: boolean;
   artisansSection?: boolean;
+  styleInspiration?: boolean;
 }
 
 export interface DressMaterialsPageContent {

@@ -16,7 +16,7 @@ export const StyleInspiration: React.FC = () => {
   const { data } = useContent();
   const products = data.products || [];
 
-  if (data.hiddenSections?.newArrivals || products.length === 0) return null;
+  if (data.hiddenSections?.styleInspiration || products.length === 0) return null;
 
   // Use the first product image as a hero shot for the section
   const heroImage = products[0]?.image;
