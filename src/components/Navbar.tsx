@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Search, ShoppingBag, Menu, X, Heart, User } from 'lucide-react';
 import { useContent } from '@/context/ContentContext';
+import { useCart } from '@/context/CartContext';
 
 export const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -14,6 +15,7 @@ export const Navbar: React.FC = () => {
   const pathname = usePathname();
   const router = useRouter();
   const { data } = useContent();
+  const { itemCount } = useCart();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 40);
@@ -118,16 +120,19 @@ export const Navbar: React.FC = () => {
               <User size={20} strokeWidth={1.6} />
             </button>
 
-            <button
+            <Link
+              href="/cart"
               className="relative p-2.5 rounded-full transition-transform hover:scale-105 bg-ink text-paper shadow-sm min-w-[44px] min-h-[44px] flex items-center justify-center"
               title="Bag"
               aria-label="Bag"
             >
               <ShoppingBag size={18} strokeWidth={1.8} />
-              <span className="absolute -top-1 -right-1 bg-rose text-white text-[0.65rem] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                0
-              </span>
-            </button>
+              {itemCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-rose text-white text-[0.65rem] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                  {itemCount > 99 ? '99+' : itemCount}
+                </span>
+              )}
+            </Link>
           </div>
         </div>
 

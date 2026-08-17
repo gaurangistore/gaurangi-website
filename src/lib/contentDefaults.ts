@@ -136,6 +136,20 @@ export interface CraftPageContent {
   ctaLinkText: string;
 }
 
+export interface CartPageContent {
+  pageTitle?: string;
+  emptyTitle?: string;
+  emptySubtitle?: string;
+  emptyCtaText?: string;
+  emptyCtaLink?: string;
+  summaryTitle?: string;
+  shippingText?: string;
+  trustBadge1?: string;
+  trustBadge2?: string;
+  trustBadge3?: string;
+  whatsappButtonText?: string;
+}
+
 export interface SectionHeaderConfig {
   categoriesBadge?: string;
   categoriesTitle?: string;
@@ -176,6 +190,7 @@ export interface HomepageData {
   productPageSettings?: ProductPageSettings;
   aboutPageContent?: AboutPageContent;
   craftPageContent?: CraftPageContent;
+  cartPageContent?: CartPageContent;
 }
 
 // Default Fallback Initial Content
@@ -488,5 +503,18 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
     phone: '+91 98765 43210',
     email: 'hello@gaurangi.in',
     instagram: '@gaurangi',
+  },
+  cartPageContent: {
+    pageTitle: 'Shopping Bag',
+    emptyTitle: 'Your bag is empty',
+    emptySubtitle: 'Looks like you haven\u2019t found your piece yet.',
+    emptyCtaText: 'Browse the Edit',
+    emptyCtaLink: '/shop',
+    summaryTitle: 'Order Summary',
+    shippingText: 'Free shipping across India',
+    trustBadge1: 'Hand-cut, not laser-cut',
+    trustBadge2: 'Free shipping across India',
+    trustBadge3: 'Easy 7-day returns',
+    whatsappButtonText: 'Order via WhatsApp',
   },
 };

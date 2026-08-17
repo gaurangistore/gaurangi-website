@@ -9,7 +9,7 @@ import { DUMMY_IMAGE, TECHNIQUES, getImageUrl } from '@/lib/constants';
 export default function AdminDashboard() {
   const { rawData, saveData, uploadImage } = useContent();
   const [formData, setFormData] = useState<HomepageData>(rawData);
-  const [activePageTab, setActivePageTab] = useState<'homepage' | 'catalogPage' | 'productDetailsPage' | 'aboutPage' | 'contactFooter'>('homepage');
+  const [activePageTab, setActivePageTab] = useState<'homepage' | 'catalogPage' | 'productDetailsPage' | 'cartPage' | 'aboutPage' | 'contactFooter'>('homepage');
   const [activeHomeSubtab, setActiveHomeSubtab] = useState<'hero' | 'categories' | 'products' | 'whyGaurangi' | 'stories' | 'newsletter'>('hero');
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState(false);
@@ -289,7 +289,17 @@ export default function AdminDashboard() {
               <Info size={16} /> 🎨 The Craft (/craft)
             </button>
 
-            {/* PAGE 5: CONTACT & FOOTER */}
+            {/* PAGE 5: CART */}
+            <button
+              onClick={() => setActivePageTab('cartPage')}
+              className={`flex-1 lg:w-full shrink-0 text-left lg:text-left px-4 py-3 rounded-xl text-xs uppercase tracking-wider font-semibold flex items-center gap-3 transition-colors min-h-[48px] ${
+                activePageTab === 'cartPage' ? 'bg-[#7A1C30] text-white' : 'hover:bg-[#FAF6EE] text-[#1F1F1F]'
+              }`}
+            >
+              <ShoppingBag size={16} /> 🛒 Cart Page (/cart)
+            </button>
+
+            {/* PAGE 6: CONTACT & FOOTER */}
             <button
               onClick={() => setActivePageTab('contactFooter')}
               className={`flex-1 lg:w-full shrink-0 text-left lg:text-left px-4 py-3 rounded-xl text-xs uppercase tracking-wider font-semibold flex items-center gap-3 transition-colors min-h-[48px] ${
@@ -2299,7 +2309,194 @@ export default function AdminDashboard() {
           )}
 
           {/* ========================================== */}
-          {/* PAGE 5: CONTACT & FOOTER                   */}
+          {/* PAGE 5: CART PAGE                          */}
+          {/* ========================================== */}
+          {activePageTab === 'cartPage' && (
+            <div className="space-y-8">
+              <div className="flex items-center justify-between pb-4 border-b border-[#EAE5D9]">
+                <div>
+                  <h2 className="font-serif-editorial text-2xl text-[#7A1C30] font-medium">
+                    Cart Page (/cart) Editor
+                  </h2>
+                  <p className="text-xs text-gray-500 font-light mt-1">
+                    Author the shopping bag page — empty state, order summary, trust badges, and WhatsApp checkout.
+                  </p>
+                </div>
+              </div>
+
+              {/* Page Title */}
+              <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
+                <h3 className="font-serif-editorial text-base text-[#7A1C30]">Page Title</h3>
+                <div>
+                  <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Title</label>
+                  <input
+                    type="text"
+                    value={formData.cartPageContent?.pageTitle || ''}
+                    onChange={(e) => {
+                      const next = { ...formData.cartPageContent, pageTitle: e.target.value };
+                      setFormData({ ...formData, cartPageContent: next });
+                    }}
+                    placeholder="e.g. Shopping Bag"
+                    className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Empty State */}
+              <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
+                <h3 className="font-serif-editorial text-base text-[#7A1C30]">Empty State</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Title</label>
+                    <input
+                      type="text"
+                      value={formData.cartPageContent?.emptyTitle || ''}
+                      onChange={(e) => {
+                        const next = { ...formData.cartPageContent, emptyTitle: e.target.value };
+                        setFormData({ ...formData, cartPageContent: next });
+                      }}
+                      placeholder="e.g. Your bag is empty"
+                      className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Subtitle</label>
+                    <input
+                      type="text"
+                      value={formData.cartPageContent?.emptySubtitle || ''}
+                      onChange={(e) => {
+                        const next = { ...formData.cartPageContent, emptySubtitle: e.target.value };
+                        setFormData({ ...formData, cartPageContent: next });
+                      }}
+                      placeholder="e.g. Looks like you haven't found your piece yet."
+                      className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs uppercase font-medium text-gray-600 block mb-1">CTA Button Text</label>
+                    <input
+                      type="text"
+                      value={formData.cartPageContent?.emptyCtaText || ''}
+                      onChange={(e) => {
+                        const next = { ...formData.cartPageContent, emptyCtaText: e.target.value };
+                        setFormData({ ...formData, cartPageContent: next });
+                      }}
+                      placeholder="e.g. Browse the Edit"
+                      className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs uppercase font-medium text-gray-600 block mb-1">CTA Link URL</label>
+                    <input
+                      type="text"
+                      value={formData.cartPageContent?.emptyCtaLink || ''}
+                      onChange={(e) => {
+                        const next = { ...formData.cartPageContent, emptyCtaLink: e.target.value };
+                        setFormData({ ...formData, cartPageContent: next });
+                      }}
+                      placeholder="e.g. /shop"
+                      className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Order Summary */}
+              <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
+                <h3 className="font-serif-editorial text-base text-[#7A1C30]">Order Summary</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Summary Title</label>
+                    <input
+                      type="text"
+                      value={formData.cartPageContent?.summaryTitle || ''}
+                      onChange={(e) => {
+                        const next = { ...formData.cartPageContent, summaryTitle: e.target.value };
+                        setFormData({ ...formData, cartPageContent: next });
+                      }}
+                      placeholder="e.g. Order Summary"
+                      className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Shipping Text</label>
+                    <input
+                      type="text"
+                      value={formData.cartPageContent?.shippingText || ''}
+                      onChange={(e) => {
+                        const next = { ...formData.cartPageContent, shippingText: e.target.value };
+                        setFormData({ ...formData, cartPageContent: next });
+                      }}
+                      placeholder="e.g. Free shipping across India"
+                      className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="text-xs uppercase font-medium text-gray-600 block mb-1">WhatsApp Button Text</label>
+                    <input
+                      type="text"
+                      value={formData.cartPageContent?.whatsappButtonText || ''}
+                      onChange={(e) => {
+                        const next = { ...formData.cartPageContent, whatsappButtonText: e.target.value };
+                        setFormData({ ...formData, cartPageContent: next });
+                      }}
+                      placeholder="e.g. Order via WhatsApp"
+                      className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Trust Badges */}
+              <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
+                <h3 className="font-serif-editorial text-base text-[#7A1C30]">Trust Badges</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Badge 1</label>
+                    <input
+                      type="text"
+                      value={formData.cartPageContent?.trustBadge1 || ''}
+                      onChange={(e) => {
+                        const next = { ...formData.cartPageContent, trustBadge1: e.target.value };
+                        setFormData({ ...formData, cartPageContent: next });
+                      }}
+                      placeholder="e.g. Hand-cut, not laser-cut"
+                      className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Badge 2</label>
+                    <input
+                      type="text"
+                      value={formData.cartPageContent?.trustBadge2 || ''}
+                      onChange={(e) => {
+                        const next = { ...formData.cartPageContent, trustBadge2: e.target.value };
+                        setFormData({ ...formData, cartPageContent: next });
+                      }}
+                      placeholder="e.g. Free shipping across India"
+                      className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Badge 3</label>
+                    <input
+                      type="text"
+                      value={formData.cartPageContent?.trustBadge3 || ''}
+                      onChange={(e) => {
+                        const next = { ...formData.cartPageContent, trustBadge3: e.target.value };
+                        setFormData({ ...formData, cartPageContent: next });
+                      }}
+                      placeholder="e.g. Easy 7-day returns"
+                      className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================== */}
+          {/* PAGE 6: CONTACT & FOOTER                   */}
           {/* ========================================== */}
           {activePageTab === 'contactFooter' && (
             <div className="space-y-8">

@@ -3,31 +3,23 @@
 import React, { useMemo } from 'react';
 import Link from 'next/link';
 import { useContent } from '@/context/ContentContext';
-import { getImageUrl } from '@/lib/constants';
-import { DUMMY_IMAGE } from '@/lib/constants';
+import { getImageUrl, DUMMY_IMAGE } from '@/lib/constants';
 
 export const ShopByCategory: React.FC = () => {
   const { data } = useContent();
   const products = data.products || [];
-
-  if (data.hiddenSections?.featuredCategories) return null;
-
   const header = data.sectionHeaders || {};
 
-  // Use authored categories if available, otherwise auto-derive from products
   const authoredCategories = data.categories || [];
   const hasAuthored = authoredCategories.length > 0;
 
   const autoCategories = useMemo(() => {
     if (hasAuthored) return [];
-    const map = new Map<string, { count: number; image: string }>();
+    const map = new Map<string, { image: string }>();
     products.forEach((p) => {
       if (!p.category) return;
-      const existing = map.get(p.category);
-      if (existing) {
-        existing.count += 1;
-      } else {
-        map.set(p.category, { count: 1, image: p.image });
+      if (!map.has(p.category)) {
+        map.set(p.category, { image: p.image });
       }
     });
     return Array.from(map.entries()).map(([name, meta]) => ({
@@ -39,6 +31,7 @@ export const ShopByCategory: React.FC = () => {
 
   const categories = hasAuthored ? authoredCategories : autoCategories;
 
+  if (data.hiddenSections?.featuredCategories) return null;
   if (categories.length === 0) return null;
 
   return (

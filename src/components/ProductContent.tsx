@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Heart, ShoppingBag, Truck, RefreshCw, ShieldCheck, CheckCircle2, MessageCircle } from 'lucide-react';
@@ -8,12 +8,15 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { ProductCard } from '@/components/ProductCard';
 import { useContent } from '@/context/ContentContext';
+import { useCart } from '@/context/CartContext';
 import { getImageUrl } from '@/lib/constants';
 import { getTechniqueName } from '@/lib/constants';
 
 export const ProductContent: React.FC = () => {
   const { data, isLoading } = useContent();
+  const { addItem } = useCart();
   const searchParams = useSearchParams();
+  const [added, setAdded] = useState(false);
   const id = searchParams.get('id');
 
   const products = data.products || [];
@@ -152,8 +155,29 @@ export const ProductContent: React.FC = () => {
             {/* Action CTAs */}
             <div className="space-y-4 pt-2">
               <div className="flex items-center gap-4">
-                <button className="flex-1 btn-primary justify-center py-4 text-sm font-semibold tracking-wider">
-                  <ShoppingBag size={18} /> Add to Bag
+                <button
+                  onClick={() => {
+                    if (!product) return;
+                    addItem(product.id);
+                    setAdded(true);
+                    setTimeout(() => setAdded(false), 2000);
+                  }}
+                  disabled={added}
+                  className={`flex-1 justify-center py-4 text-sm font-semibold tracking-wider flex items-center gap-2 ${
+                    added
+                      ? 'bg-emerald-600 text-paper cursor-default'
+                      : 'btn-primary'
+                  }`}
+                >
+                  {added ? (
+                    <>
+                      <CheckCircle2 size={18} /> Added ✓
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingBag size={18} /> Add to Bag
+                    </>
+                  )}
                 </button>
                 <button
                   className="w-14 h-14 shrink-0 rounded-full border border-ink flex items-center justify-center text-ink hover:bg-ink hover:text-paper transition-colors"
