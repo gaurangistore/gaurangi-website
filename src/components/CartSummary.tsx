@@ -59,6 +59,15 @@ export const CartSummary: React.FC = () => {
       </div>
 
       <button
+        onClick={() => {
+          alert('Payment gateway coming soon! Use WhatsApp to place your order for now.');
+        }}
+        className="w-full py-3.5 px-4 rounded-full bg-ink text-paper hover:bg-rose transition-all text-xs font-semibold uppercase tracking-widest flex items-center justify-center gap-2"
+      >
+        Proceed to Payment
+      </button>
+
+      <button
         onClick={handleWhatsApp}
         className="w-full py-3.5 px-4 rounded-full border border-emerald text-emerald hover:bg-emerald hover:text-paper transition-all text-xs font-semibold uppercase tracking-widest flex items-center justify-center gap-2"
       >
