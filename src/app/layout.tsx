@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { ContentProvider } from '@/context/ContentContext';
 import { CartProvider } from '@/context/CartContext';
+import { AuthProvider } from '@/context/AuthContext';
 
 export const metadata: Metadata = {
   title: 'Gaurangi — Modern Appliqué, Worn Today',
@@ -29,7 +30,9 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-canvas text-ink font-sans antialiased selection:bg-rose selection:text-paper">
-        <ContentProvider><CartProvider>{children}</CartProvider></ContentProvider>
+        <AuthProvider>
+          <ContentProvider><CartProvider>{children}</CartProvider></ContentProvider>
+        </AuthProvider>
       </body>
     </html>
   );

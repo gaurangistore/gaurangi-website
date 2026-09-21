@@ -6,6 +6,9 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Search, ShoppingBag, Menu, X, Heart, User } from 'lucide-react';
 import { useContent } from '@/context/ContentContext';
 import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
+import { auth } from '@/lib/firebase';
+import { signOut } from 'firebase/auth';
 
 export const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -16,6 +19,7 @@ export const Navbar: React.FC = () => {
   const router = useRouter();
   const { data } = useContent();
   const { itemCount } = useCart();
+  const { user, profile } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 40);
@@ -112,13 +116,32 @@ export const Navbar: React.FC = () => {
               <Heart size={20} strokeWidth={1.6} />
             </button>
 
-            <button
-              className="hidden md:flex p-2 rounded-full transition-transform hover:scale-105 text-ink hover:text-rose items-center justify-center"
-              title="Account"
-              aria-label="Account"
-            >
-              <User size={20} strokeWidth={1.6} />
-            </button>
+            {user ? (
+              <div className="hidden md:flex items-center gap-4">
+                {profile?.role === 'admin' && (
+                  <Link href="/admin" className="text-sm font-medium hover:text-rose">
+                    Admin
+                  </Link>
+                )}
+                <Link
+                  href="/account"
+                  className="p-2 rounded-full transition-transform hover:scale-105 text-ink hover:text-rose items-center justify-center"
+                  title="Account"
+                  aria-label="Account"
+                >
+                  <User size={20} strokeWidth={1.6} />
+                </Link>
+              </div>
+            ) : (
+              <Link
+                href="/auth"
+                className="hidden md:flex p-2 rounded-full transition-transform hover:scale-105 text-ink hover:text-rose items-center justify-center"
+                title="Sign In"
+                aria-label="Sign In"
+              >
+                <User size={20} strokeWidth={1.6} />
+              </Link>
+            )}
 
             <Link
               href="/cart"
@@ -214,13 +237,34 @@ export const Navbar: React.FC = () => {
                 >
                   <Heart size={16} /> Wishlist
                 </Link>
-                <Link
-                  href="/shop"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="py-3 text-sm tracking-widest uppercase font-medium min-h-[44px] flex items-center gap-3 text-ink hover:text-rose"
-                >
-                  <User size={16} /> Account
-                </Link>
+                {user ? (
+                  <>
+                    {profile?.role === 'admin' && (
+                      <Link
+                        href="/admin"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="py-3 text-sm tracking-widest uppercase font-medium min-h-[44px] flex items-center gap-3 text-ink hover:text-rose"
+                      >
+                        <User size={16} /> Admin Panel
+                      </Link>
+                    )}
+                    <Link
+                      href="/account"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="py-3 text-sm tracking-widest uppercase font-medium min-h-[44px] flex items-center gap-3 text-ink hover:text-rose"
+                    >
+                      <User size={16} /> My Account
+                    </Link>
+                  </>
+                ) : (
+                  <Link
+                    href="/auth"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="py-3 text-sm tracking-widest uppercase font-medium min-h-[44px] flex items-center gap-3 text-ink hover:text-rose"
+                  >
+                    <User size={16} /> Sign In
+                  </Link>
+                )}
               </nav>
             </div>
 
