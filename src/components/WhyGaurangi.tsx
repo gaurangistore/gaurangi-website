@@ -2,10 +2,13 @@
 
 import React from 'react';
 import { useContent } from '@/context/ContentContext';
+import { DEFAULT_HOMEPAGE_DATA } from '@/lib/contentDefaults';
 
 export const WhyGaurangi: React.FC = () => {
   const { data } = useContent();
-  const pillars = data.whyGaurangiPillars || [];
+  // If whyGaurangiPillars is undefined (e.g. older Firestore doc), use defaults.
+  // If it's an empty array, it means the user intentionally deleted all of them.
+  const pillars = data.whyGaurangiPillars ?? DEFAULT_HOMEPAGE_DATA.whyGaurangiPillars ?? [];
 
   if (pillars.length === 0) return null;
 
