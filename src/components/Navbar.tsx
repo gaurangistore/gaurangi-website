@@ -35,7 +35,6 @@ export const Navbar: React.FC = () => {
   const navItems = [
     { name: 'Home', href: '/' },
     { name: 'Shop', href: '/shop' },
-    { name: 'The Craft', href: '/craft' },
   ];
 
   const submitSearch = (e: React.FormEvent) => {

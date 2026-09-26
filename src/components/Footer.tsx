@@ -35,8 +35,6 @@ export const Footer: React.FC = () => {
           <div>
             <h4 className="mono text-ink mb-3.5">About</h4>
             <ul className="list-none p-0 m-0 flex flex-col gap-2.5">
-              <li><Link href="/craft" className="hover:text-rose">The Craft</Link></li>
-              <li><Link href="/craft#artisans" className="hover:text-rose">Artisans</Link></li>
               <li><Link href="/shop" className="hover:text-rose">Fit Guide</Link></li>
               <li><Link href="/shop" className="hover:text-rose">Returns</Link></li>
             </ul>

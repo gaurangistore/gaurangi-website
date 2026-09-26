@@ -7,7 +7,7 @@ export const WhyGaurangi: React.FC = () => {
   const { data } = useContent();
   const pillars = data.whyGaurangiPillars || [];
 
-  if (data.hiddenSections?.whyGaurangi || pillars.length === 0) return null;
+  if (pillars.length === 0) return null;
 
   const header = data.sectionHeaders || {};
 

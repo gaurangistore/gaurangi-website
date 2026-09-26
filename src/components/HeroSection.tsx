@@ -44,9 +44,6 @@ export const HeroSection: React.FC = () => {
             <Link href="/shop" className="btn-primary">
               Shop Now
             </Link>
-            <Link href="/craft" className="link-under">
-              See how it&rsquo;s made ↓
-            </Link>
           </div>
         </div>
 
