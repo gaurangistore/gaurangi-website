@@ -2,15 +2,16 @@
 
 import React, { useState } from 'react';
 import { useContent, HomepageData, ProductItem, CraftPageContent } from '@/context/ContentContext';
-import { Sparkles, Save, Plus, Trash2, CheckCircle, AlertTriangle, Loader2, Home, ShoppingBag, PhoneCall, Info, Package, GripVertical, ArrowUp, ArrowDown, Download, Upload } from 'lucide-react';
+import { Sparkles, Save, Plus, Trash2, CheckCircle, AlertTriangle, Loader2, Home, ShoppingBag, PhoneCall, Info, Package, GripVertical, ArrowUp, ArrowDown, Download, Upload, Image as ImageIcon } from 'lucide-react';
+import { MediaLibrary } from '@/components/admin/MediaLibrary';
 import Link from 'next/link';
 import { DUMMY_IMAGE, getImageUrl } from '@/lib/constants';
 
 export default function AdminDashboard() {
   const { rawData, saveData, uploadImage } = useContent();
   const [formData, setFormData] = useState<HomepageData>(rawData);
-  const [activePageTab, setActivePageTab] = useState<'homepage' | 'catalogPage' | 'productDetailsPage' | 'cartPage' | 'aboutPage' | 'contactFooter'>('homepage');
-  const [activeHomeSubtab, setActiveHomeSubtab] = useState<'hero' | 'categories' | 'products' | 'whyGaurangi' | 'stories' | 'newsletter'>('hero');
+  const [activePageTab, setActivePageTab] = useState<'homepage' | 'catalogPage' | 'productDetailsPage' | 'cartPage' | 'contactFooter' | 'mediaLibrary'>('homepage');
+  const [activeHomeSubtab, setActiveHomeSubtab] = useState<'hero' | 'categories' | 'products' | 'whyGaurangi'>('hero');
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -275,16 +276,6 @@ export default function AdminDashboard() {
               <Package size={16} /> 🛍️ Product Details (/product/[id])
             </button>
 
-            {/* PAGE 4: THE CRAFT */}
-            <button
-              onClick={() => setActivePageTab('aboutPage')}
-              className={`flex-1 lg:w-full shrink-0 text-left lg:text-left px-4 py-3 rounded-xl text-xs uppercase tracking-wider font-semibold flex items-center gap-3 transition-colors min-h-[48px] ${
-                activePageTab === 'aboutPage' ? 'bg-[#7A1C30] text-white' : 'hover:bg-[#FAF6EE] text-[#1F1F1F]'
-              }`}
-            >
-              <Info size={16} /> 🎨 The Craft (/craft)
-            </button>
-
             {/* PAGE 5: CART */}
             <button
               onClick={() => setActivePageTab('cartPage')}
@@ -303,6 +294,16 @@ export default function AdminDashboard() {
               }`}
             >
               <PhoneCall size={16} /> 📞 Contact & Footer
+            </button>
+
+            {/* PAGE 7: MEDIA LIBRARY */}
+            <button
+              onClick={() => setActivePageTab('mediaLibrary')}
+              className={`flex-1 lg:w-full shrink-0 text-left lg:text-left px-4 py-3 rounded-xl text-xs uppercase tracking-wider font-semibold flex items-center gap-3 transition-colors min-h-[48px] ${
+                activePageTab === 'mediaLibrary' ? 'bg-[#7A1C30] text-white' : 'hover:bg-[#FAF6EE] text-[#1F1F1F]'
+              }`}
+            >
+              <ImageIcon size={16} /> 🖼️ Media Library
             </button>
           </div>
         </aside>
@@ -360,22 +361,6 @@ export default function AdminDashboard() {
                 >
                   🛡️ 4. Why Gaurangi (Trust)
                 </button>
-                <button
-                  onClick={() => setActiveHomeSubtab('stories')}
-                  className={`px-4 py-2 rounded-lg text-xs uppercase font-medium transition-colors min-h-[44px] ${
-                    activeHomeSubtab === 'stories' ? 'bg-[#7A1C30] text-white' : 'bg-[#FAF6EE] text-[#1F1F1F]'
-                  }`}
-                >
-                  🎨 5. Style Inspiration
-                </button>
-                <button
-                  onClick={() => setActiveHomeSubtab('newsletter')}
-                  className={`px-4 py-2 rounded-lg text-xs uppercase font-medium transition-colors min-h-[44px] ${
-                    activeHomeSubtab === 'newsletter' ? 'bg-[#7A1C30] text-white' : 'bg-[#FAF6EE] text-[#1F1F1F]'
-                  }`}
-                >
-                  📬 6. Newsletter
-                </button>
               </div>
 
               {/* Subtab 1: Hero Banner */}
@@ -407,7 +392,19 @@ export default function AdminDashboard() {
 
                   {(formData.heroSlides || []).map((slide, idx) => (
                     <div key={slide.id || idx} className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
-                      <h3 className="font-serif-editorial text-lg text-[#7A1C30]">Hero Slide #{idx + 1}</h3>
+                      <div className="flex justify-between items-center">
+                        <h3 className="font-serif-editorial text-lg text-[#7A1C30]">Hero Slide #{idx + 1}</h3>
+                        <button
+                          onClick={() => {
+                            const updated = [...formData.heroSlides];
+                            updated.splice(idx, 1);
+                            setFormData({ ...formData, heroSlides: updated });
+                          }}
+                          className="text-red-500 hover:bg-red-50 p-2 rounded-md transition-colors"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -488,6 +485,16 @@ export default function AdminDashboard() {
                       </div>
                     </div>
                   ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newSlide = { id: Date.now().toString(), badge: 'New Badge', title: 'New Title', tagline: 'New Tagline', image: '' };
+                      setFormData({ ...formData, heroSlides: [...(formData.heroSlides || []), newSlide] });
+                    }}
+                    className="w-full py-4 border-2 border-dashed border-[#EAE5D9] rounded-xl text-[#7A1C30] font-semibold text-xs uppercase tracking-wider hover:bg-[#FAF6EE] flex items-center justify-center gap-2"
+                  >
+                    <Plus size={16} /> Add Hero Slide
+                  </button>
                 </div>
               )}
 
@@ -963,78 +970,6 @@ export default function AdminDashboard() {
                     >
                       <Plus size={15} /> Add New Trust Pillar
                     </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Subtab 5: Customer Reviews */}
-              {activeHomeSubtab === 'stories' && (
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between bg-[#FAF6EE] p-4 rounded-xl border border-[#EAE5D9]">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-[#7A1C30]">
-                      Style Inspiration Section Control
-                    </span>
-                    <button
-                      onClick={() => {
-                        setFormData({
-                          ...formData,
-                          hiddenSections: {
-                            ...formData.hiddenSections,
-                            styleInspiration: !formData.hiddenSections?.styleInspiration,
-                          },
-                        });
-                      }}
-                      className={`px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider border ${
-                        formData.hiddenSections?.styleInspiration
-                          ? 'bg-red-50 text-red-600 border-red-200'
-                          : 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                      }`}
-                    >
-                      {formData.hiddenSections?.styleInspiration ? '🔴 Hidden on Homepage' : '🟢 Visible on Homepage'}
-                    </button>
-                  </div>
-                  <div className="p-5 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-3">
-                    <h3 className="font-serif-editorial text-base text-[#7A1C30]">About This Section</h3>
-                    <p className="text-xs text-gray-500 leading-relaxed">
-                      &ldquo;One piece. Different occasions&rdquo; — shows a single product styled for Everyday, Work, Festive and Wedding.
-                      This section uses the first product image as a placeholder. Replace with real styled photography for each occasion.
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Subtab 6: Newsletter */}
-              {activeHomeSubtab === 'newsletter' && (
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between bg-[#FAF6EE] p-4 rounded-xl border border-[#EAE5D9]">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-[#7A1C30]">
-                      Newsletter Section Control
-                    </span>
-                    <button
-                      onClick={() => {
-                        setFormData({
-                          ...formData,
-                          hiddenSections: {
-                            ...formData.hiddenSections,
-                            newsletter: !formData.hiddenSections?.newsletter,
-                          },
-                        });
-                      }}
-                      className={`px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider border ${
-                        formData.hiddenSections?.newsletter
-                          ? 'bg-red-50 text-red-600 border-red-200'
-                          : 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                      }`}
-                    >
-                      {formData.hiddenSections?.newsletter ? '🔴 Hidden on Homepage' : '🟢 Visible on Homepage'}
-                    </button>
-                  </div>
-                  <div className="p-5 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-3">
-                    <h3 className="font-serif-editorial text-base text-[#7A1C30]">About This Section</h3>
-                    <p className="text-xs text-gray-500 leading-relaxed">
-                      &ldquo;Join the Gaurangi circle&rdquo; — email capture section with &ldquo;Notify me&rdquo; button.
-                      Appears near the bottom of the homepage, above the footer.
-                    </p>
                   </div>
                 </div>
               )}
@@ -2692,6 +2627,13 @@ export default function AdminDashboard() {
                 </div>
               </div>
             </div>
+          )}
+
+          {/* ========================================== */}
+          {/* PAGE 7: MEDIA LIBRARY                      */}
+          {/* ========================================== */}
+          {activePageTab === 'mediaLibrary' && (
+            <MediaLibrary />
           )}
 
         </main>
