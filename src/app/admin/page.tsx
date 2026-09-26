@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useContent, HomepageData, ProductItem, CraftPageContent } from '@/context/ContentContext';
 import { Sparkles, Save, Plus, Trash2, CheckCircle, AlertTriangle, Loader2, Home, ShoppingBag, PhoneCall, Info, Package, GripVertical, ArrowUp, ArrowDown, Download, Upload, Image as ImageIcon } from 'lucide-react';
 import { MediaLibrary } from '@/components/admin/MediaLibrary';
+import { ImageInput } from '@/components/admin/ImageInput';
 import Link from 'next/link';
 import { DUMMY_IMAGE, getImageUrl } from '@/lib/constants';
 
@@ -455,33 +456,14 @@ export default function AdminDashboard() {
 
                       <div>
                         <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Hero Image</label>
-                        <div className="flex items-center gap-3">
-                          <input
-                            type="text"
-                            value={slide.image || ''}
-                            onChange={(e) => {
-                              const updated = [...formData.heroSlides];
-                              updated[idx].image = e.target.value;
-                              setFormData({ ...formData, heroSlides: updated });
-                            }}
-                            className="flex-1 px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
-                          />
-                          <label className="px-4 py-2 bg-[#7A1C30] text-white rounded-lg text-xs font-medium cursor-pointer">
-                            Upload Photo
-                            <input
-                              type="file"
-                              accept="image/*"
-                              className="hidden"
-                              onChange={(e) =>
-                                handleImageFileChange(e, (url) => {
-                                  const updated = [...formData.heroSlides];
-                                  updated[idx].image = url;
-                                  setFormData({ ...formData, heroSlides: updated });
-                                })
-                              }
-                            />
-                          </label>
-                        </div>
+                        <ImageInput
+                          value={slide.image || ''}
+                          onChange={(url) => {
+                            const updated = [...formData.heroSlides];
+                            updated[idx].image = url;
+                            setFormData({ ...formData, heroSlides: updated });
+                          }}
+                        />
                       </div>
                     </div>
                   ))}
@@ -716,34 +698,14 @@ export default function AdminDashboard() {
                             </div>
                             <div>
                               <label className="text-[10px] uppercase font-medium text-gray-500 block mb-1">Image</label>
-                              <div className="flex items-center gap-2">
-                                <input
-                                  type="text"
-                                  value={cat.image || ''}
-                                  onChange={(e) => {
-                                    const updated = [...(formData.categories || [])];
-                                    updated[idx] = { ...updated[idx], image: e.target.value };
-                                    setFormData({ ...formData, categories: updated });
-                                  }}
-                                  placeholder="img:... or URL"
-                                  className="flex-1 px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
-                                />
-                                <label className="px-2.5 py-2 bg-[#7A1C30] text-white rounded-lg text-xs font-medium cursor-pointer whitespace-nowrap">
-                                  Upload
-                                  <input
-                                    type="file"
-                                    accept="image/*"
-                                    className="hidden"
-                                    onChange={(e) =>
-                                      handleImageFileChange(e, (url) => {
-                                        const updated = [...(formData.categories || [])];
-                                        updated[idx] = { ...updated[idx], image: url };
-                                        setFormData({ ...formData, categories: updated });
-                                      })
-                                    }
-                                  />
-                                </label>
-                              </div>
+                              <ImageInput
+                                value={cat.image || ''}
+                                onChange={(url) => {
+                                  const updated = [...(formData.categories || [])];
+                                  updated[idx] = { ...updated[idx], image: url };
+                                  setFormData({ ...formData, categories: updated });
+                                }}
+                              />
                             </div>
                           </div>
                           <button
@@ -1491,33 +1453,14 @@ export default function AdminDashboard() {
 
                       <div>
                         <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Product Photo</label>
-                        <div className="flex items-center gap-3">
-                          <input
-                            type="text"
-                            value={prod.image || ''}
-                            onChange={(e) => {
-                              const updated = [...formData.products];
-                              updated[idx].image = e.target.value;
-                              setFormData({ ...formData, products: updated });
-                            }}
-                            className="flex-1 px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
-                          />
-                          <label className="px-4 py-2 bg-[#7A1C30] text-white rounded-lg text-xs font-medium cursor-pointer">
-                            Upload Photo
-                            <input
-                              type="file"
-                              accept="image/*"
-                              className="hidden"
-                              onChange={(e) =>
-                                handleImageFileChange(e, (url) => {
-                                  const updated = [...formData.products];
-                                  updated[idx].image = url;
-                                  setFormData({ ...formData, products: updated });
-                                })
-                              }
-                            />
-                          </label>
-                        </div>
+                        <ImageInput
+                          value={prod.image || ''}
+                          onChange={(url) => {
+                            const updated = [...formData.products];
+                            updated[idx].image = url;
+                            setFormData({ ...formData, products: updated });
+                          }}
+                        />
                       </div>
                     </div>
                   ))}
@@ -2043,33 +1986,14 @@ export default function AdminDashboard() {
 
                       <div>
                         <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Product Photo</label>
-                        <div className="flex items-center gap-3">
-                          <input
-                            type="text"
-                            value={prod.image || ''}
-                            onChange={(e) => {
-                              const updated = [...formData.products];
-                              updated[idx].image = e.target.value;
-                              setFormData({ ...formData, products: updated });
-                            }}
-                            className="flex-1 px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
-                          />
-                          <label className="px-4 py-2 bg-[#7A1C30] text-white rounded-lg text-xs font-medium cursor-pointer">
-                            Upload Photo
-                            <input
-                              type="file"
-                              accept="image/*"
-                              className="hidden"
-                              onChange={(e) =>
-                                handleImageFileChange(e, (url) => {
-                                  const updated = [...formData.products];
-                                  updated[idx].image = url;
-                                  setFormData({ ...formData, products: updated });
-                                })
-                              }
-                            />
-                          </label>
-                        </div>
+                        <ImageInput
+                          value={prod.image || ''}
+                          onChange={(url) => {
+                            const updated = [...formData.products];
+                            updated[idx].image = url;
+                            setFormData({ ...formData, products: updated });
+                          }}
+                        />
                       </div>
 
                       <div>

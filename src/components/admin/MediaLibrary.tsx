@@ -13,7 +13,7 @@ interface MediaItem {
   createdAt: string;
 }
 
-export const MediaLibrary: React.FC = () => {
+export const MediaLibrary: React.FC<{ onSelect?: (ref: string) => void }> = ({ onSelect }) => {
   const [images, setImages] = useState<MediaItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
@@ -199,16 +199,25 @@ export const MediaLibrary: React.FC = () => {
                 </div>
                 
                 <div className="text-center">
-                  <button 
-                    onClick={() => copyToClipboard(img.id)}
-                    className="w-full py-1.5 bg-white text-gray-900 text-xs font-medium rounded-md hover:bg-gray-100 transition-colors flex items-center justify-center gap-1.5"
-                  >
-                    {copiedId === img.id ? (
-                      <><Check size={12} className="text-green-600" /> Copied!</>
-                    ) : (
-                      <><Copy size={12} /> Copy Ref</>
-                    )}
-                  </button>
+                  {onSelect ? (
+                    <button 
+                      onClick={() => onSelect(`img:${img.id}`)}
+                      className="w-full py-1.5 bg-[#C5A059] text-white text-xs font-medium rounded-md hover:bg-[#A9894C] transition-colors"
+                    >
+                      Select Image
+                    </button>
+                  ) : (
+                    <button 
+                      onClick={() => copyToClipboard(img.id)}
+                      className="w-full py-1.5 bg-white text-gray-900 text-xs font-medium rounded-md hover:bg-gray-100 transition-colors flex items-center justify-center gap-1.5"
+                    >
+                      {copiedId === img.id ? (
+                        <><Check size={12} className="text-green-600" /> Copied!</>
+                      ) : (
+                        <><Copy size={12} /> Copy Ref</>
+                      )}
+                    </button>
+                  )}
                 </div>
               </div>
               
