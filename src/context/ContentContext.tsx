@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect, useRef } from 'r
 import { db } from '@/lib/firebase';
 import { doc, getDoc, setDoc, collection, getDocs, addDoc } from 'firebase/firestore';
 import { HomepageData, DEFAULT_HOMEPAGE_DATA } from '@/lib/contentDefaults';
+import { normalizeContent } from '@/lib/normalizeContent';
 
 export * from '@/lib/contentDefaults';
 
@@ -70,6 +71,13 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
           localStorage.setItem('gaurangi_homepage_content', JSON.stringify(raw));
         }
 
+        // Normalize once, here, so every consumer receives the same shape:
+        // numeric prices, guaranteed ids, complete visibility flags. Legacy
+        // documents that still store "₹ 2,800" keep working without a manual
+        // migration. Both the resolved and raw trees are normalized, so the
+        // admin editor never sees a mixed shape and cannot write one back.
+        raw = normalizeContent(raw);
+
         // Fetch all stored images into a lookup map
         const images: Record<string, string> = {};
         try {
@@ -89,8 +97,9 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setData(resolveImageRefs(raw, images) as HomepageData);
       } catch (err) {
         console.warn('Using default fallback content:', err);
-        setRawData(DEFAULT_HOMEPAGE_DATA);
-        setData(DEFAULT_HOMEPAGE_DATA);
+        const fallback = normalizeContent(DEFAULT_HOMEPAGE_DATA);
+        setRawData(fallback);
+        setData(fallback);
       } finally {
         setIsLoading(false);
       }
@@ -103,13 +112,18 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   // `newData` uses `img:<docId>` references so the main document stays small.
   const saveData = async (newData: HomepageData): Promise<boolean> => {
     try {
-      setRawData(newData);
-      setData(resolveImageRefs(newData, imageMapRef.current) as HomepageData);
-      localStorage.setItem('gaurangi_homepage_content', JSON.stringify(newData));
+      // Normalize before writing so a legacy-shaped document (for example one
+      // still holding a price string) is upgraded in Firestore on its next save
+      // rather than lingering indefinitely.
+      const normalized = normalizeContent(newData);
+
+      setRawData(normalized);
+      setData(resolveImageRefs(normalized, imageMapRef.current) as HomepageData);
+      localStorage.setItem('gaurangi_homepage_content', JSON.stringify(normalized));
 
       // Sync with Firestore
       const docRef = doc(db, 'content', 'homepage');
-      await setDoc(docRef, newData, { merge: true });
+      await setDoc(docRef, normalized, { merge: true });
       return true;
     } catch (err) {
       console.error('Error saving content to Firestore:', err);

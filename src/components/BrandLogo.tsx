@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { getImageUrl } from '@/lib/constants';
+import { SITE_NAME } from '@/lib/seo';
 
 /**
  * Brand logo.
@@ -43,9 +44,24 @@ const MONOGRAM_TONE: Record<'ink' | 'gold', string> = {
   gold: 'border-gold/60 text-gold',
 };
 
-/** "Gaurangi" -> "GAURANGI", with "Gaurangi Collections" -> "GAURANGI COLLECTIONS". */
-const toWordmark = (storeName?: string): string =>
-  (storeName || 'Gaurangi').trim().toUpperCase();
+/**
+ * Derives the logo wordmark from the store name.
+ *
+ * The site name is "Gaurangi Collection", but the lockup already carries a
+ * separate "Collections" caption underneath, so the collection suffix is
+ * stripped to avoid rendering "GAURANGI COLLECTION / Collections". Works for
+ * both the old "Gaurangi" and new "Gaurangi Collection" store names.
+ *
+ * "Gaurangi Collection" -> "GAURANGI" -> monogram "G"
+ * "Gaurangi"            -> "GAURANGI" -> monogram "G"
+ */
+const toWordmark = (storeName?: string): string => {
+  const name = (storeName || SITE_NAME).trim();
+  const trimmed = name.replace(/\s+collections?\s*$/i, '').trim();
+  return (trimmed || name).toUpperCase();
+};
+
+const toAccessibleName = (storeName?: string): string => storeName || SITE_NAME;
 
 export const BrandLogo: React.FC<BrandLogoProps> = ({
   brand,
@@ -69,14 +85,14 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
       return (
         <img
           src={getImageUrl(iconSrc)}
-          alt={brand?.storeName || 'Gaurangi'}
+          alt={toAccessibleName(brand?.storeName)}
           className={`h-9 w-auto ${className}`}
         />
       );
     }
     return (
       <span
-        aria-label={brand?.storeName || 'Gaurangi'}
+        aria-label={toAccessibleName(brand?.storeName)}
         role="img"
         className={`inline-flex h-10 w-10 items-center justify-center rounded-full border font-display text-[0.95rem] font-medium tracking-[0.08em] ${MONOGRAM_TONE[tone]} ${className}`}
       >
@@ -92,7 +108,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
         title="Placeholder logo — replace with the master logo asset"
       >
         <span
-          aria-label={brand?.storeName || 'Gaurangi'}
+          aria-label={toAccessibleName(brand?.storeName)}
           role="img"
           className={`inline-flex h-14 w-14 items-center justify-center rounded-full border font-display text-lg font-medium tracking-[0.08em] ${MONOGRAM_TONE[tone]}`}
         >
@@ -108,7 +124,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
     return (
       <img
         src={getImageUrl(horizontalSrc)}
-        alt={brand?.storeName || 'Gaurangi'}
+        alt={toAccessibleName(brand?.storeName)}
         className={`h-8 w-auto md:h-9 ${className}`}
       />
     );

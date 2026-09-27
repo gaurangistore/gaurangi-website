@@ -9,8 +9,10 @@ import { Footer } from '@/components/Footer';
 import { ProductCard } from '@/components/ProductCard';
 import { useContent } from '@/context/ContentContext';
 import { useCart } from '@/context/CartContext';
+import { useWishlist } from '@/context/WishlistContext';
 import { getImageUrl } from '@/lib/constants';
 import { getTechniqueName } from '@/lib/constants';
+import { formatINR, resolvePrice, resolveMrp, discountPercent } from '@/lib/price';
 
 export const ProductContent: React.FC = () => {
   const { data, isLoading } = useContent();
@@ -21,6 +23,17 @@ export const ProductContent: React.FC = () => {
 
   const products = data.products || [];
   const product = id ? products.find((p) => p.id === id) : undefined;
+  const price = resolvePrice(product);
+  const mrp = resolveMrp(product);
+  const saving = discountPercent(price, mrp) ?? 0;
+
+  const { hasItem, toggleItem } = useWishlist();
+  const isWishlisted = product ? hasItem(product.id) : false;
+
+  const handleWishlistToggle = () => {
+    if (!product) return;
+    toggleItem(product.id);
+  };
 
   if (isLoading) {
     return (
@@ -119,11 +132,21 @@ export const ProductContent: React.FC = () => {
                 </h1>
               )}
 
-              {product.price && (
-                <div className="flex items-center gap-3 pt-2">
+              {price > 0 && (
+                <div className="flex flex-wrap items-center gap-3 pt-2">
                   <span className="font-sans text-3xl font-bold tracking-tight text-ink">
-                    {product.price}
+                    {formatINR(price)}
                   </span>
+                  {saving > 0 && (
+                    <>
+                      <span className="font-sans text-lg text-ink-soft line-through">
+                        {formatINR(mrp)}
+                      </span>
+                      <span className="mono text-[11px] text-burgundy border border-burgundy px-2 py-1">
+                        {saving}% off
+                      </span>
+                    </>
+                  )}
                 </div>
               )}
 
@@ -180,16 +203,22 @@ export const ProductContent: React.FC = () => {
                   )}
                 </button>
                 <button
-                  className="w-14 h-14 shrink-0 rounded-full border border-ink flex items-center justify-center text-ink hover:bg-ink hover:text-paper transition-colors"
-                  title="Wishlist"
-                  aria-label="Wishlist"
+                  onClick={handleWishlistToggle}
+                  aria-pressed={isWishlisted}
+                  className={`w-14 h-14 shrink-0 rounded-full border flex items-center justify-center transition-colors ${
+                    isWishlisted
+                      ? 'border-burgundy text-burgundy bg-burgundy/5'
+                      : 'border-ink text-ink hover:bg-ink hover:text-paper'
+                  }`}
+                  title={isWishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
+                  aria-label={isWishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
                 >
-                  <Heart size={20} />
+                  <Heart size={20} fill={isWishlisted ? 'currentColor' : 'none'} />
                 </button>
               </div>
 
               <a
-                href={`https://wa.me/${whatsAppNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Hi Gaurangi! I want to inquire about ${product.name} (${product.price || ''}).`)}`}
+                href={`https://wa.me/${whatsAppNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Hi Gaurangi Collection! I want to inquire about ${product.name} (${formatINR(price)}).`)}`}
                 target="_blank"
                 rel="noreferrer"
                 className="w-full py-3.5 px-4 rounded-full border border-success text-success hover:bg-success hover:text-paper transition-all text-xs font-semibold uppercase tracking-widest flex items-center justify-center gap-2"

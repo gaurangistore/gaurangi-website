@@ -3,6 +3,7 @@ import { HeroSection } from '@/components/HeroSection';
 import { ShopByCategory } from '@/components/ShopByCategory';
 import { NewArrivals } from '@/components/NewArrivals';
 import { WhyGaurangi } from '@/components/WhyGaurangi';
+import { Newsletter } from '@/components/Newsletter';
 import { Footer } from '@/components/Footer';
 
 export default function Home() {
@@ -23,7 +24,10 @@ export default function Home() {
       {/* 5. Why Gaurangi */}
       <WhyGaurangi />
 
-      {/* 6. Footer */}
+      {/* 6. Newsletter */}
+      <Newsletter />
+
+      {/* 7. Footer */}
       <Footer />
     </main>
   );

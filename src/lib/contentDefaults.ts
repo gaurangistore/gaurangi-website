@@ -25,7 +25,11 @@ export interface ProductItem {
   id: string;
   name: string;
   fabric: string;
-  price: string;
+  /** Numeric selling price in INR. Legacy string values ("₹ 2,800") are
+   *  converted on load by `normalizeProduct`, so this is always a number. */
+  price: number;
+  /** Numeric struck-through MRP. Optional; set it to show a saving. */
+  mrp?: number;
   image: string;
   category: string;
   technique?: string;
@@ -73,6 +77,10 @@ export interface SiteContactInfo {
   phone: string;
   email: string;
   instagram: string;
+  /** Uploaded master logo, stored as an `img:<docId>` reference or data URL. */
+  logoImage?: string;
+  /** Square mark used by the mobile drawer and favicon-like placements. */
+  logoIcon?: string;
 }
 
 export interface SectionVisibility {
@@ -85,6 +93,16 @@ export interface SectionVisibility {
   craftSection?: boolean;
   artisansSection?: boolean;
   styleInspiration?: boolean;
+  /** Homepage sections added by the Phase 2 redesign. */
+  featuredCollection?: boolean;
+  services?: boolean;
+}
+
+export interface SectionSchedule {
+  /** ISO date (YYYY-MM-DD); inclusive. Blank means unbounded. */
+  startDate?: string;
+  /** ISO date (YYYY-MM-DD); inclusive. Blank means unbounded. */
+  endDate?: string;
 }
 
 export interface DressMaterialsPageContent {
@@ -352,7 +370,8 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
       id: 'sky-blue-floral-applique-suit-set',
       name: 'Sky Blue Floral Appliqué Suit Set',
       fabric: 'Cotton',
-      price: '₹ 2,800',
+      price: 2800,
+      mrp: 3400,
       image: DUMMY_IMAGE,
       category: 'Suit Sets',
       technique: 'floral-vine',
@@ -368,7 +387,7 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
       id: 'mauve-floral-applique-suit-set',
       name: 'Mauve Floral Appliqué Suit Set',
       fabric: 'Kota cotton',
-      price: '₹ 3,400',
+      price: 3400,
       image: DUMMY_IMAGE,
       category: 'Suit Sets',
       technique: 'floral-vine',
@@ -384,7 +403,7 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
       id: 'butter-yellow-beaded-applique-suit-set',
       name: 'Butter Yellow Beaded Appliqué Suit Set',
       fabric: 'Cotton',
-      price: '₹ 3,200',
+      price: 3200,
       image: DUMMY_IMAGE,
       category: 'Suit Sets',
       technique: 'beaded-trail',
@@ -400,7 +419,7 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
       id: 'ivory-tonal-cutwork-suit-set',
       name: 'Ivory Tonal Cutwork Suit Set',
       fabric: 'Kota cotton',
-      price: '₹ 3,000',
+      price: 3000,
       image: DUMMY_IMAGE,
       category: 'Suit Sets',
       technique: 'cutwork',
@@ -416,7 +435,8 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
       id: 'pale-yellow-sequin-applique-suit-set',
       name: 'Pale Yellow Sequin Appliqué Suit Set',
       fabric: 'Cotton',
-      price: '₹ 3,300',
+      price: 3300,
+      mrp: 4200,
       image: DUMMY_IMAGE,
       category: 'Suit Sets',
       technique: 'beaded-trail',
@@ -432,7 +452,7 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
       id: 'pink-teal-cutwork-dupatta-set',
       name: 'Pink & Teal Cutwork Dupatta Set',
       fabric: 'Kota cotton',
-      price: '₹ 1,600',
+      price: 1600,
       image: DUMMY_IMAGE,
       category: 'Dupattas',
       technique: 'cutwork',
@@ -447,7 +467,7 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
       id: 'navy-floral-applique-bedsheet-set',
       name: 'Navy Floral Appliqué Bedsheet Set',
       fabric: 'Satin cotton, king size',
-      price: '₹ 3,600',
+      price: 3600,
       image: DUMMY_IMAGE,
       category: 'Home & Bedding',
       technique: 'floral-wreath',
@@ -460,7 +480,7 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
       id: 'tan-floral-applique-bedsheet-set',
       name: 'Tan Floral Appliqué Bedsheet Set',
       fabric: 'Satin cotton, king size',
-      price: '₹ 3,800',
+      price: 3800,
       image: DUMMY_IMAGE,
       category: 'Home & Bedding',
       technique: 'floral-wreath',

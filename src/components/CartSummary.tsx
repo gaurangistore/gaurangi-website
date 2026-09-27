@@ -4,6 +4,7 @@ import React from 'react';
 import { MessageCircle, Truck, ShieldCheck, RefreshCw } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useContent } from '@/context/ContentContext';
+import { formatINR, resolvePrice } from '@/lib/price';
 
 export const CartSummary: React.FC = () => {
   const { items, subtotal } = useCart();
@@ -15,11 +16,11 @@ export const CartSummary: React.FC = () => {
   const whatsAppNumber = settings?.whatsAppNumber || '+919876543210';
 
   const buildOrderMessage = () => {
-    const lines = ['Hi Gaurangi! I\'d like to order:', ''];
+    const lines = ['Hi Gaurangi Collection! I\'d like to order:', ''];
     items.forEach((entry) => {
       const product = products.find((p) => p.id === entry.productId);
       if (product) {
-        lines.push(`1. ${product.name} × ${entry.quantity} — ${product.price}`);
+        lines.push(`1. ${product.name} × ${entry.quantity} — ${formatINR(resolvePrice(product))}`);
       }
     });
     lines.push('');

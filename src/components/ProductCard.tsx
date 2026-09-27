@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ProductItem, useContent } from '@/context/ContentContext';
 import { getImageUrl } from '@/lib/constants';
 import { getTechniqueName } from '@/lib/constants';
+import { PriceTag } from '@/components/PriceTag';
 
 interface ProductCardProps {
   product: ProductItem;
@@ -45,7 +46,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           )}
         </div>
         <div className="price-row flex items-center justify-between pt-3 border-t border-hairline">
-          <span className="mono text-[13.5px] text-ink">{product.price}</span>
+          <PriceTag product={product} className="mono text-[13.5px]" />
           <span className="view-link text-[11.5px] font-semibold text-gold-ink border-b border-gold pb-[1px]">
             View
           </span>

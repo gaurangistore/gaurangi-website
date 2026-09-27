@@ -5,6 +5,7 @@ import { Trash2, Minus, Plus } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useContent } from '@/context/ContentContext';
 import { getImageUrl } from '@/lib/constants';
+import { formatINR, resolvePrice } from '@/lib/price';
 import Link from 'next/link';
 
 interface CartItemProps {
@@ -50,7 +51,7 @@ export const CartItem: React.FC<CartItemProps> = ({ productId, quantity }) => {
             )}
           </div>
           <span className="font-sans text-sm font-semibold text-ink whitespace-nowrap">
-            {product.price}
+            {formatINR(resolvePrice(product))}
           </span>
         </div>
 

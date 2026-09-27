@@ -7,7 +7,7 @@ export const SITE_PATH = '/gaurangi-website';
 
 export const SITE_URL = `${GITHUB_ORIGIN}${SITE_PATH}`;
 
-export const SITE_NAME = 'Gaurangi';
+export const SITE_NAME = 'Gaurangi Collection';
 
 export const BRAND_TAGLINE = 'Crafted with Tradition. Styled for Today.';
 

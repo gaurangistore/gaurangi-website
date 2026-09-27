@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { useContent } from '@/context/ContentContext';
+import { resolvePrice } from '@/lib/price';
 
 interface CartEntry {
   productId: string;
@@ -29,12 +30,6 @@ const CartContext = createContext<CartContextType>({
 });
 
 const STORAGE_KEY = 'gaurangi_cart';
-
-function parsePrice(price: string): number {
-  if (!price) return 0;
-  const cleaned = price.replace(/[^0-9.]/g, '');
-  return parseFloat(cleaned) || 0;
-}
 
 function loadCart(): CartEntry[] {
   if (typeof window === 'undefined') return [];
@@ -93,9 +88,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const itemCount = items.reduce((sum, e) => sum + e.quantity, 0);
 
+  // resolvePrice keeps this correct for documents that predate the numeric
+  // price migration, so totals never silently drop to zero mid-rollout.
   const subtotal = items.reduce((sum, e) => {
     const product = products.find((p) => p.id === e.productId);
-    return sum + parsePrice(product?.price || '0') * e.quantity;
+    return sum + resolvePrice(product) * e.quantity;
   }, 0);
 
   return (

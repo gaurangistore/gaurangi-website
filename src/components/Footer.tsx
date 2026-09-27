@@ -4,11 +4,12 @@ import React from 'react';
 import Link from 'next/link';
 import { useContent } from '@/context/ContentContext';
 import { BrandLogo } from '@/components/BrandLogo';
+import { SITE_NAME } from '@/lib/seo';
 
 export const Footer: React.FC = () => {
   const { data } = useContent();
   const contact = data.contactInfo || {
-    storeName: 'Gaurangi',
+    storeName: SITE_NAME,
     tagline: 'Contemporary womenswear built on hand-cut Pipili appliqué.',
     address: 'Bhubaneswar · Delhi',
     email: 'hello@gaurangi.in',

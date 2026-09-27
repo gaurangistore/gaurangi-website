@@ -7,9 +7,11 @@ import { Search, ShoppingBag, Menu, X, Heart, User } from 'lucide-react';
 import { useContent } from '@/context/ContentContext';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
+import { useWishlist } from '@/context/WishlistContext';
 import { BrandLogo } from '@/components/BrandLogo';
 import { auth } from '@/lib/firebase';
 import { signOut } from 'firebase/auth';
+import { SITE_NAME } from '@/lib/seo';
 
 export const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -46,7 +48,8 @@ export const Navbar: React.FC = () => {
     setSearchQuery('');
   };
 
-  const brand = data.contactInfo?.storeName || 'Gaurangi';
+  const brand = data.contactInfo?.storeName || SITE_NAME;
+  const { itemCount: wishlistCount } = useWishlist();
 
   return (
     <>
@@ -106,13 +109,22 @@ export const Navbar: React.FC = () => {
               <Search size={20} strokeWidth={1.6} />
             </button>
 
-            <button
-              className="hidden md:flex p-2 rounded-full transition-transform hover:scale-105 text-ink hover:text-gold-ink items-center justify-center"
+            <Link
+              href="/wishlist"
+              className="hidden md:flex p-2 rounded-full transition-transform hover:scale-105 text-ink hover:text-gold-ink items-center justify-center relative"
               title="Wishlist"
-              aria-label="Wishlist"
+              aria-label={wishlistCount > 0 ? `Wishlist, ${wishlistCount} saved` : 'Wishlist'}
             >
               <Heart size={20} strokeWidth={1.6} />
-            </button>
+              {wishlistCount > 0 && (
+                <span
+                  className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-burgundy text-paper mono text-[10px] flex items-center justify-center"
+                  suppressHydrationWarning
+                >
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
 
             {user ? (
               <div className="hidden md:flex items-center gap-4">
@@ -229,11 +241,14 @@ export const Navbar: React.FC = () => {
                 <div className="my-4 border-t border-hairline" />
 
                 <Link
-                  href="/shop"
+                  href="/wishlist"
                   onClick={() => setMobileMenuOpen(false)}
                   className="py-3 text-sm tracking-widest uppercase font-medium min-h-[44px] flex items-center gap-3 text-ink hover:text-gold-ink"
                 >
                   <Heart size={16} /> Wishlist
+                  {wishlistCount > 0 && (
+                    <span className="mono text-[10px] text-gold-ink">({wishlistCount})</span>
+                  )}
                 </Link>
                 {user ? (
                   <>

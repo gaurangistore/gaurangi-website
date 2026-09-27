@@ -749,6 +749,35 @@ export default function AdminDashboard() {
               {/* Subtab 4: Why Gaurangi */}
               {activeHomeSubtab === 'whyGaurangi' && (
                 <div className="space-y-6">
+                  <div className="flex flex-wrap items-center justify-between gap-3 bg-[#F8F4ED] p-4 rounded-xl border border-[#D8CBB9]">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-[#741F2B]">
+                      Newsletter Section Control
+                    </span>
+                    <button
+                      onClick={() => {
+                        setFormData({
+                          ...formData,
+                          hiddenSections: {
+                            ...formData.hiddenSections,
+                            newsletter: !formData.hiddenSections?.newsletter,
+                          },
+                        });
+                      }}
+                      className={`px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider border ${
+                        formData.hiddenSections?.newsletter
+                          ? 'bg-red-50 text-red-600 border-red-200'
+                          : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                      }`}
+                    >
+                      {formData.hiddenSections?.newsletter ? '🔴 Hidden on Homepage' : '🟢 Visible on Homepage'}
+                    </button>
+                  </div>
+
+                  <p className="text-xs text-gray-600">
+                    Signups are written to the <strong>newsletter</strong> Firestore collection. They are not
+                    publicly readable; open the Firebase console to export or review them.
+                  </p>
+
                   <div className="flex items-center justify-between bg-[#F8F4ED] p-4 rounded-xl border border-[#D8CBB9]">
                     <span className="text-xs font-semibold uppercase tracking-wider text-[#741F2B]">
                       Why Gaurangi Trust Section Control
@@ -1213,16 +1242,48 @@ export default function AdminDashboard() {
                         </div>
 
                         <div>
-                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Product Price</label>
+                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">
+                            Selling Price (₹)
+                          </label>
                           <input
-                            type="text"
-                            value={prod.price || ''}
+                            type="number"
+                            inputMode="numeric"
+                            min={0}
+                            step={1}
+                            value={Number.isFinite(prod.price) ? prod.price : ''}
                             onChange={(e) => {
                               const updated = [...formData.products];
-                              updated[idx].price = e.target.value;
+                              // Store the number, not the raw input string, so an
+                              // empty or half-typed field never persists as text.
+                              updated[idx].price = e.target.value === '' ? 0 : Number(e.target.value);
                               setFormData({ ...formData, products: updated });
                             }}
-                            placeholder="e.g. ₹ 14,500"
+                            placeholder="14500"
+                            className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">
+                            MRP (₹, optional)
+                          </label>
+                          <input
+                            type="number"
+                            inputMode="numeric"
+                            min={0}
+                            step={1}
+                            value={prod.mrp ?? ''}
+                            onChange={(e) => {
+                              const updated = [...formData.products];
+                              const next = e.target.value === '' ? undefined : Number(e.target.value);
+                              if (next === undefined) {
+                                delete updated[idx].mrp;
+                              } else {
+                                updated[idx].mrp = next;
+                              }
+                              setFormData({ ...formData, products: updated });
+                            }}
+                            placeholder="18000"
                             className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                           />
                         </div>
@@ -1438,7 +1499,7 @@ export default function AdminDashboard() {
                       id: `prod-${Date.now()}`,
                       name: 'New Appliqué Suit Set',
                       fabric: 'Cotton',
-                      price: '₹ 2,500',
+                      price: 2500,
                       image: DUMMY_IMAGE,
                       category: 'Suit Sets',
                       technique: 'floral-vine',
@@ -1782,13 +1843,18 @@ export default function AdminDashboard() {
                         </div>
 
                         <div>
-                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Product Price</label>
+                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">
+                            Selling Price (₹)
+                          </label>
                           <input
-                            type="text"
-                            value={prod.price || ''}
+                            type="number"
+                            inputMode="numeric"
+                            min={0}
+                            step={1}
+                            value={Number.isFinite(prod.price) ? prod.price : ''}
                             onChange={(e) => {
                               const updated = [...formData.products];
-                              updated[idx].price = e.target.value;
+                              updated[idx].price = e.target.value === '' ? 0 : Number(e.target.value);
                               setFormData({ ...formData, products: updated });
                             }}
                             className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
@@ -1986,7 +2052,7 @@ export default function AdminDashboard() {
                       id: `prod-${Date.now()}`,
                       name: 'New Appliqué Suit Set',
                       fabric: 'Cotton',
-                      price: '₹ 2,500',
+                      price: 2500,
                       image: DUMMY_IMAGE,
                       category: 'Suit Sets',
                       technique: 'floral-vine',
@@ -2233,7 +2299,7 @@ export default function AdminDashboard() {
                           contactInfo: { ...formData.contactInfo, email: e.target.value },
                         });
                       }}
-                      placeholder="e.g. contact@gaurangifashions.com"
+                      placeholder="e.g. contact@gaurangicollection.com"
                       className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                     />
                   </div>

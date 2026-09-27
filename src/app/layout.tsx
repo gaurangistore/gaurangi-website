@@ -3,8 +3,9 @@ import { Playfair_Display, Noto_Sans } from 'next/font/google';
 import './globals.css';
 import { ContentProvider } from '@/context/ContentContext';
 import { CartProvider } from '@/context/CartContext';
+import { WishlistProvider } from '@/context/WishlistContext';
 import { AuthProvider } from '@/context/AuthContext';
-import { SITE_URL, BRAND_TAGLINE } from '@/lib/seo';
+import { SITE_URL, SITE_NAME, BRAND_TAGLINE } from '@/lib/seo';
 
 // Playfair Display carries the editorial voice (hero + section headings).
 // Noto Sans covers all product/UI text and includes Devanagari so Indian
@@ -24,11 +25,11 @@ const notoSans = Noto_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'Gaurangi | Crafted Indian Fashion & Lifestyle Collections',
-    template: '%s | Gaurangi',
+    default: `${SITE_NAME} | Crafted Indian Fashion & Lifestyle`,
+    template: `%s | ${SITE_NAME}`,
   },
   description:
-    "Discover thoughtfully crafted sarees, dress materials, home textiles and more at Gaurangi — inspired by Indian textile traditions and styled for today.",
+    "Discover thoughtfully crafted sarees, dress materials, home textiles and more at Gaurangi Collection — inspired by Indian textile traditions and styled for today.",
   keywords: [
     'crafted Indian fashion',
     'sarees',
@@ -38,20 +39,20 @@ export const metadata: Metadata = {
     'home textiles',
     'Indian textile heritage',
   ],
-  authors: [{ name: 'Gaurangi' }],
-  creator: 'Gaurangi',
+  authors: [{ name: SITE_NAME }],
+  creator: SITE_NAME,
   openGraph: {
     type: 'website',
-    siteName: 'Gaurangi',
+    siteName: SITE_NAME,
     locale: 'en_IN',
-    title: 'Gaurangi | Crafted Indian Fashion & Lifestyle Collections',
+    title: `${SITE_NAME} | Crafted Indian Fashion & Lifestyle`,
     description:
-      "Discover thoughtfully crafted sarees, dress materials, home textiles and more at Gaurangi — inspired by Indian textile traditions and styled for today.",
+      "Discover thoughtfully crafted sarees, dress materials, home textiles and more at Gaurangi Collection — inspired by Indian textile traditions and styled for today.",
     url: SITE_URL,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Gaurangi | Crafted Indian Fashion & Lifestyle Collections',
+    title: `${SITE_NAME} | Crafted Indian Fashion & Lifestyle`,
     description: BRAND_TAGLINE,
   },
   robots: {
@@ -71,18 +72,18 @@ const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   '@id': `${SITE_URL}/#organization`,
-  name: 'Gaurangi',
+  name: SITE_NAME,
   url: SITE_URL,
   slogan: BRAND_TAGLINE,
   description:
-    "Gaurangi brings together thoughtfully crafted fashion and lifestyle collections inspired by India's rich textile heritage and styled for today.",
+    "Gaurangi Collection brings together thoughtfully crafted fashion and lifestyle collections inspired by India's rich textile heritage and styled for today.",
 };
 
 const websiteJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   '@id': `${SITE_URL}/#website`,
-  name: 'Gaurangi',
+  name: SITE_NAME,
   url: SITE_URL,
   publisher: { '@id': `${SITE_URL}/#organization` },
   potentialAction: {
@@ -115,7 +116,12 @@ export default function RootLayout({
         />
         <AuthProvider>
           <ContentProvider>
-            <CartProvider>{children}</CartProvider>
+            {/* Cart and Wishlist both read product data, so they sit inside
+                ContentProvider. Wishlist nests inside Cart so cart totals and
+                saved pieces are always rendered from one consistent catalog. */}
+            <CartProvider>
+              <WishlistProvider>{children}</WishlistProvider>
+            </CartProvider>
           </ContentProvider>
         </AuthProvider>
       </body>
