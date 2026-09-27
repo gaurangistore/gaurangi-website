@@ -24,7 +24,7 @@ export const ProductContent: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-canvas text-ink flex flex-col overflow-x-hidden">
+      <div className="min-h-screen bg-ivory text-ink flex flex-col overflow-x-hidden">
         <Navbar />
         <div className="flex-1 flex items-center justify-center py-32">
           <span className="mono text-ink-soft">Loading the piece…</span>
@@ -36,10 +36,10 @@ export const ProductContent: React.FC = () => {
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-canvas text-ink flex flex-col overflow-x-hidden">
+      <div className="min-h-screen bg-ivory text-ink flex flex-col overflow-x-hidden">
         <Navbar />
         <main className="flex-1 flex flex-col items-center justify-center text-center py-32 px-6">
-          <span className="mono text-rose mb-3">Piece unavailable</span>
+          <span className="mono text-gold-ink mb-3">Piece unavailable</span>
           <h1 className="font-display italic text-3xl md:text-4xl mb-2">
             This piece is no longer available
           </h1>
@@ -69,17 +69,17 @@ export const ProductContent: React.FC = () => {
   ].filter((s) => Boolean(s.value));
 
   return (
-    <div className="min-h-screen bg-canvas text-ink flex flex-col overflow-x-hidden">
+    <div className="min-h-screen bg-ivory text-ink flex flex-col overflow-x-hidden">
       <Navbar />
 
       {/* Breadcrumb Navigation */}
-      <div className="bg-paper border-b border-border-hair py-3">
+      <div className="bg-paper border-b border-hairline py-3">
         <div className="wrap flex items-center gap-2 text-xs text-ink-soft">
-          <Link href="/" className="hover:text-rose">Home</Link>
+          <Link href="/" className="hover:text-gold-ink">Home</Link>
           <span>/</span>
-          <Link href="/shop" className="hover:text-rose">Shop</Link>
+          <Link href="/shop" className="hover:text-gold-ink">Shop</Link>
           <span>/</span>
-          <span className="text-rose font-medium truncate max-w-[200px] md:max-w-none">{product.name}</span>
+          <span className="text-gold-ink font-medium truncate max-w-[200px] md:max-w-none">{product.name}</span>
         </div>
       </div>
 
@@ -88,14 +88,14 @@ export const ProductContent: React.FC = () => {
         <div className="wrap grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
           {/* Left Column: Product Photo Display */}
           <div className="lg:col-span-6 space-y-4">
-            <div className="relative aspect-[4/5] w-full overflow-hidden bg-paper border border-border-hair stitch">
+            <div className="relative aspect-[4/5] w-full overflow-hidden bg-paper border border-hairline stitch">
               <img
                 src={getImageUrl(product.image)}
                 alt={product.name}
                 className="w-full h-full object-cover object-top"
               />
               {product.badge && (
-                <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-paper/90 backdrop-blur-md text-[0.68rem] tracking-widest uppercase font-semibold text-ink border border-border-hair">
+                <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-paper/90 backdrop-blur-md text-[0.68rem] tracking-widest uppercase font-semibold text-ink border border-hairline">
                   {product.badge}
                 </span>
               )}
@@ -104,10 +104,10 @@ export const ProductContent: React.FC = () => {
 
           {/* Right Column: Product Meta, Price, Fabric Specs & CTAs */}
           <div className="lg:col-span-6 space-y-7">
-            <div className="space-y-3 pb-6 border-b border-border-hair">
+            <div className="space-y-3 pb-6 border-b border-hairline">
               {product.category && (
                 <div className="flex items-center gap-3">
-                  <span className="mono text-rose block">{product.category}</span>
+                  <span className="mono text-gold-ink block">{product.category}</span>
                   {techniqueLabel && (
                     <span className="mono text-ink-soft block">{techniqueLabel}</span>
                   )}
@@ -136,14 +136,14 @@ export const ProductContent: React.FC = () => {
 
             {/* Specifications Box */}
             {specs.length > 0 && (
-              <div className="bg-paper p-5 md:p-6 border border-border-hair space-y-3">
+              <div className="bg-paper p-5 md:p-6 border border-hairline space-y-3">
                 <h3 className="font-display text-lg text-ink flex items-center gap-2">
-                  <CheckCircle2 size={16} className="text-rose" /> {specsSectionTitle}
+                  <CheckCircle2 size={16} className="text-gold-ink" /> {specsSectionTitle}
                 </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-sans">
                   {specs.map((spec) => (
-                    <div key={spec.label} className="border border-border-hair p-3.5">
+                    <div key={spec.label} className="border border-hairline p-3.5">
                       <span className="mono text-ink-soft block mb-0.5">{spec.label}</span>
                       <span className="text-ink font-medium block">{spec.value}</span>
                     </div>
@@ -165,7 +165,7 @@ export const ProductContent: React.FC = () => {
                   disabled={added}
                   className={`flex-1 justify-center py-4 text-sm font-semibold tracking-wider flex items-center gap-2 ${
                     added
-                      ? 'bg-emerald-600 text-paper cursor-default'
+                      ? 'bg-success text-paper cursor-default'
                       : 'btn-primary'
                   }`}
                 >
@@ -192,24 +192,24 @@ export const ProductContent: React.FC = () => {
                 href={`https://wa.me/${whatsAppNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Hi Gaurangi! I want to inquire about ${product.name} (${product.price || ''}).`)}`}
                 target="_blank"
                 rel="noreferrer"
-                className="w-full py-3.5 px-4 rounded-full border border-emerald text-emerald hover:bg-emerald hover:text-paper transition-all text-xs font-semibold uppercase tracking-widest flex items-center justify-center gap-2"
+                className="w-full py-3.5 px-4 rounded-full border border-success text-success hover:bg-success hover:text-paper transition-all text-xs font-semibold uppercase tracking-widest flex items-center justify-center gap-2"
               >
                 <MessageCircle size={16} /> Order via WhatsApp
               </a>
             </div>
 
             {/* Trust Badges */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-border-hair text-center text-xs text-ink-soft">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-hairline text-center text-xs text-ink-soft">
               <div className="flex flex-col items-center gap-1.5 py-2">
-                <Truck size={20} className="text-rose" />
+                <Truck size={20} className="text-gold-ink" />
                 <span>Free shipping across India</span>
               </div>
               <div className="flex flex-col items-center gap-1.5 py-2">
-                <ShieldCheck size={20} className="text-rose" />
+                <ShieldCheck size={20} className="text-gold-ink" />
                 <span>Hand-cut, not laser-cut</span>
               </div>
               <div className="flex flex-col items-center gap-1.5 py-2">
-                <RefreshCw size={20} className="text-rose" />
+                <RefreshCw size={20} className="text-gold-ink" />
                 <span>Easy 7-day returns</span>
               </div>
             </div>
@@ -218,10 +218,10 @@ export const ProductContent: React.FC = () => {
 
         {/* Similar Pieces Section */}
         {similarProducts.length > 0 && (
-          <section className="wrap mt-16 md:mt-24 pt-12 md:pt-16 border-t border-border-hair">
+          <section className="wrap mt-16 md:mt-24 pt-12 md:pt-16 border-t border-hairline">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
               <div>
-                <span className="mono text-rose block mb-1">You May Also Like</span>
+                <span className="mono text-gold-ink block mb-1">You May Also Like</span>
                 <h2 className="font-display italic text-2xl md:text-3xl text-ink">
                   More from the edit
                 </h2>

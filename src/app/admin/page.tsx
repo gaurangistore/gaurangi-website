@@ -7,6 +7,7 @@ import { MediaLibrary } from '@/components/admin/MediaLibrary';
 import { ImageInput } from '@/components/admin/ImageInput';
 import Link from 'next/link';
 import { DUMMY_IMAGE, getImageUrl } from '@/lib/constants';
+import { compressImage, readFileAsDataUrl } from '@/lib/imageUtils';
 
 export default function AdminDashboard() {
   const { rawData, saveData, uploadImage } = useContent();
@@ -112,38 +113,6 @@ export default function AdminDashboard() {
     }
   };
 
-  // Compress/downscale a data URL image in the browser so uploads stay fast
-  // and small enough to survive the Firebase Storage / Firestore limits.
-  const compressImage = (dataUrl: string, maxDim = 1200, quality = 0.85): Promise<string> => {
-    return new Promise((resolve) => {
-      const img = new Image();
-      img.onload = () => {
-        try {
-          const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
-          const w = Math.max(1, Math.round(img.width * scale));
-          const h = Math.max(1, Math.round(img.height * scale));
-          const canvas = document.createElement('canvas');
-          canvas.width = w;
-          canvas.height = h;
-          const ctx = canvas.getContext('2d');
-          if (!ctx) {
-            resolve(dataUrl);
-            return;
-          }
-          ctx.fillStyle = '#FFFFFF';
-          ctx.fillRect(0, 0, w, h);
-          ctx.drawImage(img, 0, 0, w, h);
-          resolve(canvas.toDataURL('image/jpeg', quality));
-        } catch (err) {
-          console.error('Image compression failed:', err);
-          resolve(dataUrl);
-        }
-      };
-      img.onerror = () => resolve(dataUrl);
-      img.src = dataUrl;
-    });
-  };
-
   // Image Upload Handler helper
   const handleImageFileChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -153,31 +122,27 @@ export default function AdminDashboard() {
     if (!file) return;
     setUploadMessage(null);
     setIsUploading(true);
-    const reader = new FileReader();
-    reader.onloadend = async () => {
-      const base64 = reader.result as string;
-      try {
-        const compressed = await compressImage(base64);
-        const uploadedUrl = await uploadImage(compressed, file.name);
-        onUploadComplete(uploadedUrl);
-        setUploadMessage({ ok: true, text: `Photo uploaded successfully (${file.name}).` });
-      } catch (err) {
-        console.error('Image upload failed:', err);
-        setUploadMessage({ ok: false, text: `Photo upload failed: ${err instanceof Error ? err.message : 'unknown error'}` });
-      } finally {
-        setIsUploading(false);
-      }
-    };
-    reader.readAsDataURL(file);
+    try {
+      const base64 = await readFileAsDataUrl(file);
+      const compressed = await compressImage(base64);
+      const uploadedUrl = await uploadImage(compressed, file.name);
+      onUploadComplete(uploadedUrl);
+      setUploadMessage({ ok: true, text: `Photo uploaded successfully (${file.name}).` });
+    } catch (err) {
+      console.error('Image upload failed:', err);
+      setUploadMessage({ ok: false, text: `Photo upload failed: ${err instanceof Error ? err.message : 'unknown error'}` });
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF6EE] text-[#1F1F1F] flex flex-col font-sans">
+    <div className="min-h-screen bg-[#F8F4ED] text-[#241D18] flex flex-col font-sans">
       
       {/* Top Admin Navigation Header */}
-      <header className="bg-[#0A2A54] text-white py-3 px-4 md:px-12 flex flex-wrap items-center justify-between gap-3 shadow-md sticky top-0 z-50">
+      <header className="bg-[#241D18] text-white py-3 px-4 md:px-12 flex flex-wrap items-center justify-between gap-3 shadow-md sticky top-0 z-50">
         <div className="flex items-center gap-3">
-          <Sparkles className="w-5 h-5 text-[#E3B463] shrink-0" />
+          <Sparkles className="w-5 h-5 text-[#B8873D] shrink-0" />
           <h1 className="font-serif-editorial text-base md:text-2xl font-medium tracking-wider uppercase leading-tight">
             Gaurangi Page-Based CMS Portal
           </h1>
@@ -194,7 +159,7 @@ export default function AdminDashboard() {
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="bg-[#E3B463] text-[#0A2A54] hover:bg-white text-xs px-5 py-2.5 rounded-full font-semibold uppercase tracking-wider flex items-center gap-2 shadow-lg min-h-[44px]"
+            className="bg-[#B8873D] text-[#241D18] hover:bg-white text-xs px-5 py-2.5 rounded-full font-semibold uppercase tracking-wider flex items-center gap-2 shadow-lg min-h-[44px]"
           >
             <Save size={15} /> {isSaving ? 'Publishing...' : 'Publish Changes'}
           </button>
@@ -219,7 +184,7 @@ export default function AdminDashboard() {
 
       {/* Upload In Progress Banner */}
       {isUploading && (
-        <div className="bg-[#C5A059] text-white px-6 py-3 text-center text-sm font-medium flex items-center justify-center gap-2 shadow-sm">
+        <div className="bg-[#8A6427] text-white px-6 py-3 text-center text-sm font-medium flex items-center justify-center gap-2 shadow-sm">
           <Loader2 size={18} className="animate-spin" />
           Uploading photo, please wait...
         </div>
@@ -241,8 +206,8 @@ export default function AdminDashboard() {
       <div className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-12 lg:grid lg:grid-cols-12 gap-8">
         
         {/* Page Selector Navigation — top tab rail on mobile, sidebar on desktop */}
-        <aside className="lg:col-span-3 bg-white p-4 md:p-6 rounded-2xl border border-[#EAE5D9] shadow-sm mb-4 lg:mb-0">
-          <span className="text-[0.65rem] tracking-[0.25em] uppercase text-[#C5A059] font-semibold mb-2 block lg:block">
+        <aside className="lg:col-span-3 bg-white p-4 md:p-6 rounded-2xl border border-[#D8CBB9] shadow-sm mb-4 lg:mb-0">
+          <span className="text-[0.65rem] tracking-[0.25em] uppercase text-[#8A6427] font-semibold mb-2 block lg:block">
             Select Website Page to Author
           </span>
 
@@ -251,7 +216,7 @@ export default function AdminDashboard() {
             <button
               onClick={() => setActivePageTab('homepage')}
               className={`flex-1 lg:w-full shrink-0 text-left lg:text-left px-4 py-3 rounded-xl text-xs uppercase tracking-wider font-semibold flex items-center gap-3 transition-colors min-h-[48px] ${
-                activePageTab === 'homepage' ? 'bg-[#7A1C30] text-white' : 'hover:bg-[#FAF6EE] text-[#1F1F1F]'
+                activePageTab === 'homepage' ? 'bg-[#741F2B] text-white' : 'hover:bg-[#F8F4ED] text-[#241D18]'
               }`}
             >
               <Home size={16} /> 🏠 Homepage (/)
@@ -261,7 +226,7 @@ export default function AdminDashboard() {
             <button
               onClick={() => setActivePageTab('catalogPage')}
               className={`flex-1 lg:w-full shrink-0 text-left lg:text-left px-4 py-3 rounded-xl text-xs uppercase tracking-wider font-semibold flex items-center gap-3 transition-colors min-h-[48px] ${
-                activePageTab === 'catalogPage' ? 'bg-[#7A1C30] text-white' : 'hover:bg-[#FAF6EE] text-[#1F1F1F]'
+                activePageTab === 'catalogPage' ? 'bg-[#741F2B] text-white' : 'hover:bg-[#F8F4ED] text-[#241D18]'
               }`}
             >
               <ShoppingBag size={16} /> 🛍️ Shop (/shop)
@@ -271,7 +236,7 @@ export default function AdminDashboard() {
             <button
               onClick={() => setActivePageTab('productDetailsPage')}
               className={`flex-1 lg:w-full shrink-0 text-left lg:text-left px-4 py-3 rounded-xl text-xs uppercase tracking-wider font-semibold flex items-center gap-3 transition-colors min-h-[48px] ${
-                activePageTab === 'productDetailsPage' ? 'bg-[#7A1C30] text-white' : 'hover:bg-[#FAF6EE] text-[#1F1F1F]'
+                activePageTab === 'productDetailsPage' ? 'bg-[#741F2B] text-white' : 'hover:bg-[#F8F4ED] text-[#241D18]'
               }`}
             >
               <Package size={16} /> 🛍️ Product Details (/product/[id])
@@ -281,7 +246,7 @@ export default function AdminDashboard() {
             <button
               onClick={() => setActivePageTab('cartPage')}
               className={`flex-1 lg:w-full shrink-0 text-left lg:text-left px-4 py-3 rounded-xl text-xs uppercase tracking-wider font-semibold flex items-center gap-3 transition-colors min-h-[48px] ${
-                activePageTab === 'cartPage' ? 'bg-[#7A1C30] text-white' : 'hover:bg-[#FAF6EE] text-[#1F1F1F]'
+                activePageTab === 'cartPage' ? 'bg-[#741F2B] text-white' : 'hover:bg-[#F8F4ED] text-[#241D18]'
               }`}
             >
               <ShoppingBag size={16} /> 🛒 Cart Page (/cart)
@@ -291,7 +256,7 @@ export default function AdminDashboard() {
             <button
               onClick={() => setActivePageTab('contactFooter')}
               className={`flex-1 lg:w-full shrink-0 text-left lg:text-left px-4 py-3 rounded-xl text-xs uppercase tracking-wider font-semibold flex items-center gap-3 transition-colors min-h-[48px] ${
-                activePageTab === 'contactFooter' ? 'bg-[#7A1C30] text-white' : 'hover:bg-[#FAF6EE] text-[#1F1F1F]'
+                activePageTab === 'contactFooter' ? 'bg-[#741F2B] text-white' : 'hover:bg-[#F8F4ED] text-[#241D18]'
               }`}
             >
               <PhoneCall size={16} /> 📞 Contact & Footer
@@ -301,7 +266,7 @@ export default function AdminDashboard() {
             <button
               onClick={() => setActivePageTab('mediaLibrary')}
               className={`flex-1 lg:w-full shrink-0 text-left lg:text-left px-4 py-3 rounded-xl text-xs uppercase tracking-wider font-semibold flex items-center gap-3 transition-colors min-h-[48px] ${
-                activePageTab === 'mediaLibrary' ? 'bg-[#7A1C30] text-white' : 'hover:bg-[#FAF6EE] text-[#1F1F1F]'
+                activePageTab === 'mediaLibrary' ? 'bg-[#741F2B] text-white' : 'hover:bg-[#F8F4ED] text-[#241D18]'
               }`}
             >
               <ImageIcon size={16} /> 🖼️ Media Library
@@ -310,16 +275,16 @@ export default function AdminDashboard() {
         </aside>
 
         {/* Tab Content Editor Form Area */}
-        <main className="lg:col-span-9 bg-white p-4 md:p-8 rounded-2xl border border-[#EAE5D9] shadow-sm">
+        <main className="lg:col-span-9 bg-white p-4 md:p-8 rounded-2xl border border-[#D8CBB9] shadow-sm">
           
           {/* ========================================== */}
           {/* PAGE 1: HOMEPAGE AUTHORING                 */}
           {/* ========================================== */}
           {activePageTab === 'homepage' && (
             <div className="space-y-8">
-              <div className="flex items-center justify-between pb-4 border-b border-[#EAE5D9]">
+              <div className="flex items-center justify-between pb-4 border-b border-[#D8CBB9]">
                 <div>
-                  <h2 className="font-serif-editorial text-2xl text-[#7A1C30] font-medium">
+                  <h2 className="font-serif-editorial text-2xl text-[#741F2B] font-medium">
                     Page 1: Homepage (/) Editor
                   </h2>
                   <p className="text-xs text-gray-500 font-light mt-1">
@@ -329,11 +294,11 @@ export default function AdminDashboard() {
               </div>
 
               {/* Sub-tabs for Homepage Sections */}
-              <div className="flex flex-wrap gap-2 border-b border-[#EAE5D9] pb-4">
+              <div className="flex flex-wrap gap-2 border-b border-[#D8CBB9] pb-4">
                 <button
                   onClick={() => setActiveHomeSubtab('hero')}
                   className={`px-4 py-2 rounded-lg text-xs uppercase font-medium transition-colors min-h-[44px] ${
-                    activeHomeSubtab === 'hero' ? 'bg-[#7A1C30] text-white' : 'bg-[#FAF6EE] text-[#1F1F1F]'
+                    activeHomeSubtab === 'hero' ? 'bg-[#741F2B] text-white' : 'bg-[#F8F4ED] text-[#241D18]'
                   }`}
                 >
                   👑 1. Hero Banner
@@ -341,7 +306,7 @@ export default function AdminDashboard() {
                 <button
                   onClick={() => setActiveHomeSubtab('categories')}
                   className={`px-4 py-2 rounded-lg text-xs uppercase font-medium transition-colors min-h-[44px] ${
-                    activeHomeSubtab === 'categories' ? 'bg-[#7A1C30] text-white' : 'bg-[#FAF6EE] text-[#1F1F1F]'
+                    activeHomeSubtab === 'categories' ? 'bg-[#741F2B] text-white' : 'bg-[#F8F4ED] text-[#241D18]'
                   }`}
                 >
                   🏷️ 2. Shop by Category
@@ -349,7 +314,7 @@ export default function AdminDashboard() {
                 <button
                   onClick={() => setActiveHomeSubtab('products')}
                   className={`px-4 py-2 rounded-lg text-xs uppercase font-medium transition-colors min-h-[44px] ${
-                    activeHomeSubtab === 'products' ? 'bg-[#7A1C30] text-white' : 'bg-[#FAF6EE] text-[#1F1F1F]'
+                    activeHomeSubtab === 'products' ? 'bg-[#741F2B] text-white' : 'bg-[#F8F4ED] text-[#241D18]'
                   }`}
                 >
                   👗 3. New Arrivals
@@ -357,7 +322,7 @@ export default function AdminDashboard() {
                 <button
                   onClick={() => setActiveHomeSubtab('whyGaurangi')}
                   className={`px-4 py-2 rounded-lg text-xs uppercase font-medium transition-colors min-h-[44px] ${
-                    activeHomeSubtab === 'whyGaurangi' ? 'bg-[#7A1C30] text-white' : 'bg-[#FAF6EE] text-[#1F1F1F]'
+                    activeHomeSubtab === 'whyGaurangi' ? 'bg-[#741F2B] text-white' : 'bg-[#F8F4ED] text-[#241D18]'
                   }`}
                 >
                   🛡️ 4. Why Gaurangi (Trust)
@@ -367,8 +332,8 @@ export default function AdminDashboard() {
               {/* Subtab 1: Hero Banner */}
               {activeHomeSubtab === 'hero' && (
                 <div className="space-y-6">
-                  <div className="flex items-center justify-between bg-[#FAF6EE] p-4 rounded-xl border border-[#EAE5D9]">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-[#7A1C30]">
+                  <div className="flex items-center justify-between bg-[#F8F4ED] p-4 rounded-xl border border-[#D8CBB9]">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-[#741F2B]">
                       Hero Banner Visibility Control
                     </span>
                     <button
@@ -392,9 +357,9 @@ export default function AdminDashboard() {
                   </div>
 
                   {(formData.heroSlides || []).map((slide, idx) => (
-                    <div key={slide.id || idx} className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
+                    <div key={slide.id || idx} className="p-6 bg-[#F8F4ED] rounded-xl border border-[#D8CBB9] space-y-4">
                       <div className="flex justify-between items-center">
-                        <h3 className="font-serif-editorial text-lg text-[#7A1C30]">Hero Slide #{idx + 1}</h3>
+                        <h3 className="font-serif-editorial text-lg text-[#741F2B]">Hero Slide #{idx + 1}</h3>
                         <button
                           onClick={() => {
                             const updated = [...formData.heroSlides];
@@ -419,7 +384,7 @@ export default function AdminDashboard() {
                               setFormData({ ...formData, heroSlides: updated });
                             }}
                             placeholder="e.g. Unstitched Handloom Edit • 2026"
-                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                            className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                           />
                         </div>
 
@@ -434,7 +399,7 @@ export default function AdminDashboard() {
                               setFormData({ ...formData, heroSlides: updated });
                             }}
                             placeholder="e.g. Applied, not printed."
-                            className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                            className="w-full px-3 py-2 text-base md:text-xs border border-[#D8CBB9] rounded-lg outline-none"
                           />
                         </div>
                       </div>
@@ -450,7 +415,7 @@ export default function AdminDashboard() {
                             setFormData({ ...formData, heroSlides: updated });
                           }}
                           placeholder="e.g. Crafted for celebrations, designed for everyday elegance."
-                          className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                         />
                       </div>
 
@@ -483,7 +448,7 @@ export default function AdminDashboard() {
                       };
                       setFormData({ ...formData, heroSlides: [...(formData.heroSlides || []), newSlide] });
                     }}
-                    className="w-full py-4 border-2 border-dashed border-[#EAE5D9] rounded-xl text-[#7A1C30] font-semibold text-xs uppercase tracking-wider hover:bg-[#FAF6EE] flex items-center justify-center gap-2"
+                    className="w-full py-4 border-2 border-dashed border-[#D8CBB9] rounded-xl text-[#741F2B] font-semibold text-xs uppercase tracking-wider hover:bg-[#F8F4ED] flex items-center justify-center gap-2"
                   >
                     <Plus size={16} /> Add Hero Slide
                   </button>
@@ -493,8 +458,8 @@ export default function AdminDashboard() {
               {/* Subtab 2: Shop by Category */}
               {activeHomeSubtab === 'categories' && (
                 <div className="space-y-6">
-                  <div className="flex items-center justify-between bg-[#FAF6EE] p-4 rounded-xl border border-[#EAE5D9]">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-[#7A1C30]">
+                  <div className="flex items-center justify-between bg-[#F8F4ED] p-4 rounded-xl border border-[#D8CBB9]">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-[#741F2B]">
                       Shop by Category Visibility Control
                     </span>
                     <button
@@ -519,8 +484,8 @@ export default function AdminDashboard() {
 
                   {/* Craft Section Visibility */}
                   <div className="grid grid-cols-1 gap-3">
-                    <div className="flex items-center justify-between bg-[#FAF6EE] p-4 rounded-xl border border-[#EAE5D9]">
-                      <span className="text-xs font-semibold uppercase tracking-wider text-[#7A1C30]">The Craft Section</span>
+                    <div className="flex items-center justify-between bg-[#F8F4ED] p-4 rounded-xl border border-[#D8CBB9]">
+                      <span className="text-xs font-semibold uppercase tracking-wider text-[#741F2B]">The Craft Section</span>
                       <button
                         onClick={() => {
                           setFormData({
@@ -543,8 +508,8 @@ export default function AdminDashboard() {
                   </div>
 
                   {/* Authorable Section Header & Link Settings */}
-                  <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
-                    <h3 className="font-serif-editorial text-base text-[#7A1C30]">Section Header & Link Settings</h3>
+                  <div className="p-6 bg-[#F8F4ED] rounded-xl border border-[#D8CBB9] space-y-4">
+                    <h3 className="font-serif-editorial text-base text-[#741F2B]">Section Header & Link Settings</h3>
                     <p className="text-xs text-gray-500 leading-relaxed">
                       Categories are auto-derived from products. Customize the section header and visibility here.
                     </p>
@@ -564,7 +529,7 @@ export default function AdminDashboard() {
                             });
                           }}
                           placeholder="e.g. Browse"
-                          className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                         />
                       </div>
 
@@ -583,7 +548,7 @@ export default function AdminDashboard() {
                             });
                           }}
                           placeholder="e.g. Find your piece"
-                          className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          className="w-full px-3 py-2 text-base md:text-xs border border-[#D8CBB9] rounded-lg outline-none"
                         />
                       </div>
 
@@ -602,7 +567,7 @@ export default function AdminDashboard() {
                             });
                           }}
                           placeholder="e.g. View all →"
-                          className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          className="w-full px-3 py-2 text-base md:text-xs border border-[#D8CBB9] rounded-lg outline-none"
                         />
                       </div>
 
@@ -621,15 +586,15 @@ export default function AdminDashboard() {
                             });
                           }}
                           placeholder="e.g. /shop"
-                          className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          className="w-full px-3 py-2 text-base md:text-xs border border-[#D8CBB9] rounded-lg outline-none"
                         />
                       </div>
                     </div>
                   </div>
 
-                  <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
+                  <div className="p-6 bg-[#F8F4ED] rounded-xl border border-[#D8CBB9] space-y-4">
                     <div className="flex items-center justify-between">
-                      <h3 className="font-serif-editorial text-base text-[#7A1C30]">Categories Manager</h3>
+                      <h3 className="font-serif-editorial text-base text-[#741F2B]">Categories Manager</h3>
                       <button
                         type="button"
                         onClick={() => {
@@ -640,7 +605,7 @@ export default function AdminDashboard() {
                           };
                           setFormData({ ...formData, categories: [...(formData.categories || []), newCategory] });
                         }}
-                        className="bg-[#0A2A54] text-[#FFFBF3] hover:bg-[#C9962F] text-xs px-4 py-2 rounded-full flex items-center gap-1.5"
+                        className="bg-[#241D18] text-[#FFFBF3] hover:bg-[#C9962F] text-xs px-4 py-2 rounded-full flex items-center gap-1.5"
                       >
                         <Plus size={14} /> Add Category
                       </button>
@@ -651,7 +616,7 @@ export default function AdminDashboard() {
                     </p>
 
                     {(formData.categories || []).length === 0 && (
-                      <div className="py-6 text-center border-2 border-dashed border-[#EAE5D9] rounded-lg">
+                      <div className="py-6 text-center border-2 border-dashed border-[#D8CBB9] rounded-lg">
                         <p className="text-xs text-gray-400 italic mb-3">No categories authored yet — auto-deriving from products.</p>
                         <button
                           type="button"
@@ -665,7 +630,7 @@ export default function AdminDashboard() {
                             }));
                             setFormData({ ...formData, categories: autoCategories });
                           }}
-                          className="px-4 py-2 bg-white border border-[#EAE5D9] rounded-lg text-xs font-medium text-[#1F1F1F] hover:bg-[#EAE5D9] transition-colors"
+                          className="px-4 py-2 bg-white border border-[#D8CBB9] rounded-lg text-xs font-medium text-[#241D18] hover:bg-[#D8CBB9] transition-colors"
                         >
                           Auto-fill from products
                         </button>
@@ -674,8 +639,8 @@ export default function AdminDashboard() {
 
                     <div className="grid grid-cols-1 gap-4">
                       {(formData.categories || []).map((cat, idx) => (
-                        <div key={cat.id || idx} className="flex items-start gap-4 p-4 bg-white border border-[#EAE5D9] rounded-xl">
-                          <div className="w-16 h-12 rounded-lg overflow-hidden bg-[#EFE3DC] flex-shrink-0">
+                        <div key={cat.id || idx} className="flex items-start gap-4 p-4 bg-white border border-[#D8CBB9] rounded-xl">
+                          <div className="w-16 h-12 rounded-lg overflow-hidden bg-[#EFE7DA] flex-shrink-0">
                             <img
                               src={getImageUrl(cat.image || DUMMY_IMAGE)}
                               alt={cat.name}
@@ -693,7 +658,7 @@ export default function AdminDashboard() {
                                   updated[idx] = { ...updated[idx], name: e.target.value };
                                   setFormData({ ...formData, categories: updated });
                                 }}
-                                className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                                className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                               />
                             </div>
                             <div>
@@ -723,8 +688,8 @@ export default function AdminDashboard() {
                     </div>
                   </div>
 
-                  <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
-                    <h3 className="font-serif-editorial text-base text-[#7A1C30]">Legacy Techniques (Collections)</h3>
+                  <div className="p-6 bg-[#F8F4ED] rounded-xl border border-[#D8CBB9] space-y-4">
+                    <h3 className="font-serif-editorial text-base text-[#741F2B]">Legacy Techniques (Collections)</h3>
                     <p className="text-xs text-gray-500 leading-relaxed">
                       Technique cards used on the Shop page. This data is kept for backward compatibility.
                     </p>
@@ -740,7 +705,7 @@ export default function AdminDashboard() {
                         };
                         setFormData({ ...formData, collections: [...(formData.collections || []), newTechnique] });
                       }}
-                      className="bg-[#0A2A54] text-[#FFFBF3] hover:bg-[#C9962F] text-xs px-6 py-2.5 rounded-full flex items-center gap-2"
+                      className="bg-[#241D18] text-[#FFFBF3] hover:bg-[#C9962F] text-xs px-6 py-2.5 rounded-full flex items-center gap-2"
                     >
                       <Plus size={15} /> Add New Technique
                     </button>
@@ -751,8 +716,8 @@ export default function AdminDashboard() {
               {/* Subtab 3: Featured Products */}
               {activeHomeSubtab === 'products' && (
                 <div className="space-y-6">
-                  <div className="flex items-center justify-between bg-[#FAF6EE] p-4 rounded-xl border border-[#EAE5D9]">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-[#7A1C30]">
+                  <div className="flex items-center justify-between bg-[#F8F4ED] p-4 rounded-xl border border-[#D8CBB9]">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-[#741F2B]">
                       Homepage New Arrivals Section Control
                     </span>
                     <button
@@ -784,8 +749,8 @@ export default function AdminDashboard() {
               {/* Subtab 4: Why Gaurangi */}
               {activeHomeSubtab === 'whyGaurangi' && (
                 <div className="space-y-6">
-                  <div className="flex items-center justify-between bg-[#FAF6EE] p-4 rounded-xl border border-[#EAE5D9]">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-[#7A1C30]">
+                  <div className="flex items-center justify-between bg-[#F8F4ED] p-4 rounded-xl border border-[#D8CBB9]">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-[#741F2B]">
                       Why Gaurangi Trust Section Control
                     </span>
                     <button
@@ -809,8 +774,8 @@ export default function AdminDashboard() {
                   </div>
 
                   {/* Section Header Controls */}
-                  <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
-                    <h3 className="font-serif-editorial text-base text-[#7A1C30]">Section Header Settings</h3>
+                  <div className="p-6 bg-[#F8F4ED] rounded-xl border border-[#D8CBB9] space-y-4">
+                    <h3 className="font-serif-editorial text-base text-[#741F2B]">Section Header Settings</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Top Badge Text</label>
@@ -827,7 +792,7 @@ export default function AdminDashboard() {
                             });
                           }}
                           placeholder="e.g. The Gaurangi Promise"
-                          className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                         />
                       </div>
 
@@ -846,7 +811,7 @@ export default function AdminDashboard() {
                             });
                           }}
                           placeholder="e.g. Why Choose Our Boutique"
-                          className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                         />
                       </div>
                     </div>
@@ -854,13 +819,13 @@ export default function AdminDashboard() {
 
                   {/* Trust Pillars Item Manager */}
                   <div className="space-y-4">
-                    <h3 className="font-serif-editorial text-lg text-[#7A1C30]">Trust Pillars Manager</h3>
+                    <h3 className="font-serif-editorial text-lg text-[#741F2B]">Trust Pillars Manager</h3>
 
                     <div className="grid grid-cols-1 gap-6">
                       {(formData.whyGaurangiPillars || []).map((pillar, idx) => (
-                        <div key={pillar.id || idx} className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
+                        <div key={pillar.id || idx} className="p-6 bg-[#F8F4ED] rounded-xl border border-[#D8CBB9] space-y-4">
                           <div className="flex items-center justify-between">
-                            <h4 className="font-serif-editorial text-base text-[#7A1C30]">Pillar #{idx + 1}</h4>
+                            <h4 className="font-serif-editorial text-base text-[#741F2B]">Pillar #{idx + 1}</h4>
                             <button
                               onClick={() => {
                                 const updated = (formData.whyGaurangiPillars || []).filter((_, i) => i !== idx);
@@ -884,7 +849,7 @@ export default function AdminDashboard() {
                                   setFormData({ ...formData, whyGaurangiPillars: updated });
                                 }}
                                 placeholder="e.g. Premium Fabrics"
-                                className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                                className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                               />
                             </div>
 
@@ -897,7 +862,7 @@ export default function AdminDashboard() {
                                   updated[idx].iconName = e.target.value;
                                   setFormData({ ...formData, whyGaurangiPillars: updated });
                                 }}
-                                className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none bg-white"
+                                className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none bg-white"
                               >
                                 <option value="Sparkles">Sparkles (Quality/Fabrics)</option>
                                 <option value="HeartHandshake">Heart Handshake (Craftsmanship)</option>
@@ -918,7 +883,7 @@ export default function AdminDashboard() {
                                 setFormData({ ...formData, whyGaurangiPillars: updated });
                               }}
                               placeholder="Pillar description..."
-                              className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                              className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                             />
                           </div>
                         </div>
@@ -938,7 +903,7 @@ export default function AdminDashboard() {
                           whyGaurangiPillars: [...(formData.whyGaurangiPillars || []), newPillar],
                         });
                       }}
-                      className="bg-[#0A2A54] text-[#FFFBF3] hover:bg-[#C9962F] text-xs px-6 py-2.5 rounded-full flex items-center gap-2"
+                      className="bg-[#241D18] text-[#FFFBF3] hover:bg-[#C9962F] text-xs px-6 py-2.5 rounded-full flex items-center gap-2"
                     >
                       <Plus size={15} /> Add New Trust Pillar
                     </button>
@@ -953,9 +918,9 @@ export default function AdminDashboard() {
           {/* ========================================== */}
           {activePageTab === 'catalogPage' && (
             <div className="space-y-8">
-              <div className="flex items-center justify-between pb-4 border-b border-[#EAE5D9]">
+              <div className="flex items-center justify-between pb-4 border-b border-[#D8CBB9]">
                 <div>
-                  <h2 className="font-serif-editorial text-2xl text-[#7A1C30] font-medium">
+                  <h2 className="font-serif-editorial text-2xl text-[#741F2B] font-medium">
                     Shop (/shop) Editor
                   </h2>
                   <p className="text-xs text-gray-500 font-light mt-1">
@@ -965,8 +930,8 @@ export default function AdminDashboard() {
               </div>
 
               {/* Catalog Banner Titles */}
-              <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
-                <h3 className="font-serif-editorial text-base text-[#7A1C30]">Page Header Banner</h3>
+              <div className="p-6 bg-[#F8F4ED] rounded-xl border border-[#D8CBB9] space-y-4">
+                <h3 className="font-serif-editorial text-base text-[#741F2B]">Page Header Banner</h3>
                 
                 <div>
                   <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Page Title</label>
@@ -985,7 +950,7 @@ export default function AdminDashboard() {
                       });
                     }}
                     placeholder="e.g. Shop"
-                    className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                    className="w-full px-3 py-2 text-base md:text-xs border border-[#D8CBB9] rounded-lg outline-none"
                   />
                 </div>
 
@@ -1006,16 +971,16 @@ export default function AdminDashboard() {
                       });
                     }}
                     placeholder="Page subtitle..."
-                    className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                    className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                   />
                 </div>
               </div>
 
               {/* Manage Categories */}
-              <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
+              <div className="p-6 bg-[#F8F4ED] rounded-xl border border-[#D8CBB9] space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="font-serif-editorial text-base text-[#7A1C30]">Manage Categories</h3>
+                    <h3 className="font-serif-editorial text-base text-[#741F2B]">Manage Categories</h3>
                     <p className="text-xs text-gray-500 font-light mt-0.5">Add, rename or remove product categories. Renaming updates all products using that category.</p>
                   </div>
                   <button
@@ -1030,7 +995,7 @@ export default function AdminDashboard() {
                       const updatedProducts = (formData.products || []).map((p) => p);
                       setFormData({ ...formData, shopCategories: newCategories, products: updatedProducts });
                     }}
-                    className="px-3 py-1.5 rounded-lg bg-[#C5A059] text-white hover:bg-[#B38F48] text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-sm"
+                    className="px-3 py-1.5 rounded-lg bg-[#8A6427] text-white hover:bg-[#B38F48] text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-sm"
                   >
                     <Plus size={14} /> Add Category
                   </button>
@@ -1054,7 +1019,7 @@ export default function AdminDashboard() {
                           );
                           setFormData({ ...formData, shopCategories: newCategories, products: updatedProducts });
                         }}
-                        className="flex-1 px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                        className="flex-1 px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                       />
                       <button
                         type="button"
@@ -1075,10 +1040,10 @@ export default function AdminDashboard() {
               </div>
 
               {/* Manage Techniques */}
-              <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
+              <div className="p-6 bg-[#F8F4ED] rounded-xl border border-[#D8CBB9] space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="font-serif-editorial text-base text-[#7A1C30]">Manage Techniques</h3>
+                    <h3 className="font-serif-editorial text-base text-[#741F2B]">Manage Techniques</h3>
                     <p className="text-xs text-gray-500 font-light mt-0.5">Add, rename or remove techniques. Renaming updates all products using that technique.</p>
                   </div>
                   <button
@@ -1093,7 +1058,7 @@ export default function AdminDashboard() {
                       const newTechniques = [...existing, { id, name: trimmed }];
                       setFormData({ ...formData, shopTechniques: newTechniques });
                     }}
-                    className="px-3 py-1.5 rounded-lg bg-[#C5A059] text-white hover:bg-[#B38F48] text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-sm"
+                    className="px-3 py-1.5 rounded-lg bg-[#8A6427] text-white hover:bg-[#B38F48] text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-sm"
                   >
                     <Plus size={14} /> Add Technique
                   </button>
@@ -1117,7 +1082,7 @@ export default function AdminDashboard() {
                           );
                           setFormData({ ...formData, shopTechniques: newTechniques, products: updatedProducts });
                         }}
-                        className="flex-1 px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                        className="flex-1 px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                       />
                       <span className="text-[10px] text-gray-400 font-mono shrink-0 w-24 text-right">{tech.id}</span>
                       <button
@@ -1140,9 +1105,9 @@ export default function AdminDashboard() {
 
               {/* Product Catalog List */}
               <div className="space-y-6">
-                <div className="pb-2 border-b border-[#EAE5D9] flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div className="pb-2 border-b border-[#D8CBB9] flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <div>
-                    <h3 className="font-serif-editorial text-xl text-[#7A1C30]">Shop Product Manager</h3>
+                    <h3 className="font-serif-editorial text-xl text-[#741F2B]">Shop Product Manager</h3>
                     <p className="text-xs text-gray-500 font-light mt-0.5">Manage, reorder, or bulk import products for your store.</p>
                   </div>
 
@@ -1151,13 +1116,13 @@ export default function AdminDashboard() {
                     <button
                       type="button"
                       onClick={handleExportCSV}
-                      className="px-3.5 py-1.5 rounded-lg border border-[#C5A059] text-[#7A1C30] hover:bg-[#C5A059]/10 text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-sm"
+                      className="px-3.5 py-1.5 rounded-lg border border-[#8A6427] text-[#741F2B] hover:bg-[#8A6427]/10 text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-sm"
                       title="Export all products to CSV for editing in Excel / Google Sheets"
                     >
                       <Download size={14} /> Export CSV
                     </button>
 
-                    <label className="px-3.5 py-1.5 rounded-lg bg-[#C5A059] text-white hover:bg-[#B38F48] text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-colors shadow-sm">
+                    <label className="px-3.5 py-1.5 rounded-lg bg-[#8A6427] text-white hover:bg-[#B38F48] text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-colors shadow-sm">
                       <Upload size={14} /> Bulk Import CSV
                       <input
                         type="file"
@@ -1183,24 +1148,24 @@ export default function AdminDashboard() {
                           setDraggedIndex(null);
                         }
                       }}
-                      className={`p-6 bg-[#FAF6EE] rounded-xl border ${draggedIndex === idx ? 'border-2 border-[#7A1C30] opacity-50' : 'border-[#EAE5D9]'} space-y-4 shadow-sm transition-all`}
+                      className={`p-6 bg-[#F8F4ED] rounded-xl border ${draggedIndex === idx ? 'border-2 border-[#741F2B] opacity-50' : 'border-[#D8CBB9]'} space-y-4 shadow-sm transition-all`}
                     >
-                      <div className="flex items-center justify-between pb-2 border-b border-[#EAE5D9]">
+                      <div className="flex items-center justify-between pb-2 border-b border-[#D8CBB9]">
                         <div className="flex items-center gap-2">
-                          <span className="cursor-grab text-gray-400 hover:text-[#7A1C30]" title="Drag to reorder">
+                          <span className="cursor-grab text-gray-400 hover:text-[#741F2B]" title="Drag to reorder">
                             <GripVertical size={18} />
                           </span>
-                          <h4 className="font-serif-editorial text-base text-[#7A1C30]">Product #{idx + 1}: {prod.name}</h4>
+                          <h4 className="font-serif-editorial text-base text-[#741F2B]">Product #{idx + 1}: {prod.name}</h4>
                         </div>
 
                         <div className="flex items-center gap-3">
                           {/* Reorder Buttons */}
-                          <div className="flex items-center gap-1 bg-white border border-[#EAE5D9] rounded-lg p-0.5">
+                          <div className="flex items-center gap-1 bg-white border border-[#D8CBB9] rounded-lg p-0.5">
                             <button
                               type="button"
                               disabled={idx === 0}
                               onClick={() => moveProduct(idx, idx - 1)}
-                              className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center text-gray-600 hover:text-[#7A1C30] disabled:opacity-30 disabled:hover:text-gray-600"
+                              className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center text-gray-600 hover:text-[#741F2B] disabled:opacity-30 disabled:hover:text-gray-600"
                               title="Move Up"
                               aria-label="Move product up"
                             >
@@ -1210,7 +1175,7 @@ export default function AdminDashboard() {
                               type="button"
                               disabled={idx === (formData.products || []).length - 1}
                               onClick={() => moveProduct(idx, idx + 1)}
-                              className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center text-gray-600 hover:text-[#7A1C30] disabled:opacity-30 disabled:hover:text-gray-600"
+                              className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center text-gray-600 hover:text-[#741F2B] disabled:opacity-30 disabled:hover:text-gray-600"
                               title="Move Down"
                               aria-label="Move product down"
                             >
@@ -1243,7 +1208,7 @@ export default function AdminDashboard() {
                               setFormData({ ...formData, products: updated });
                             }}
                             placeholder="Product Title"
-                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                            className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                           />
                         </div>
 
@@ -1258,7 +1223,7 @@ export default function AdminDashboard() {
                               setFormData({ ...formData, products: updated });
                             }}
                             placeholder="e.g. ₹ 14,500"
-                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                            className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                           />
                         </div>
 
@@ -1273,7 +1238,7 @@ export default function AdminDashboard() {
                               setFormData({ ...formData, products: updated });
                             }}
                             placeholder="e.g. New"
-                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                            className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                           />
                         </div>
                       </div>
@@ -1290,7 +1255,7 @@ export default function AdminDashboard() {
                               setFormData({ ...formData, products: updated });
                             }}
                             placeholder="e.g. Pure Handloom Silk"
-                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                            className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                           />
                         </div>
 
@@ -1303,7 +1268,7 @@ export default function AdminDashboard() {
                               updated[idx].category = e.target.value;
                               setFormData({ ...formData, products: updated });
                             }}
-                            className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none bg-white"
+                            className="w-full px-3 py-2 text-base md:text-xs border border-[#D8CBB9] rounded-lg outline-none bg-white"
                           >
                             <option value="">None</option>
                             {(formData.shopCategories || []).map((cat) => (
@@ -1321,7 +1286,7 @@ export default function AdminDashboard() {
                               updated[idx].technique = e.target.value;
                               setFormData({ ...formData, products: updated });
                             }}
-                            className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none bg-white"
+                            className="w-full px-3 py-2 text-base md:text-xs border border-[#D8CBB9] rounded-lg outline-none bg-white"
                           >
                             <option value="">None</option>
                             {(formData.shopTechniques || []).map((t) => (
@@ -1341,7 +1306,7 @@ export default function AdminDashboard() {
                               setFormData({ ...formData, products: updated });
                             }}
                             placeholder="e.g. Dry Clean Only"
-                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                            className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                           />
                         </div>
 
@@ -1356,7 +1321,7 @@ export default function AdminDashboard() {
                               setFormData({ ...formData, products: updated });
                             }}
                             placeholder="e.g. Hand-cut Pipili appliqué"
-                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                            className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                           />
                         </div>
 
@@ -1371,7 +1336,7 @@ export default function AdminDashboard() {
                               setFormData({ ...formData, products: updated });
                             }}
                             placeholder="e.g. 2.5 Metres"
-                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                            className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                           />
                         </div>
 
@@ -1386,7 +1351,7 @@ export default function AdminDashboard() {
                               setFormData({ ...formData, products: updated });
                             }}
                             placeholder="e.g. Cotton"
-                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                            className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                           />
                         </div>
 
@@ -1401,7 +1366,7 @@ export default function AdminDashboard() {
                               setFormData({ ...formData, products: updated });
                             }}
                             placeholder="e.g. 2.5 Metres"
-                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                            className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                           />
                         </div>
 
@@ -1416,7 +1381,7 @@ export default function AdminDashboard() {
                               setFormData({ ...formData, products: updated });
                             }}
                             placeholder="e.g. Kota Doria"
-                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                            className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                           />
                         </div>
 
@@ -1431,7 +1396,7 @@ export default function AdminDashboard() {
                               setFormData({ ...formData, products: updated });
                             }}
                             placeholder="e.g. 2.25 Metres"
-                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                            className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                           />
                         </div>
                       </div>
@@ -1447,7 +1412,7 @@ export default function AdminDashboard() {
                           }}
                           rows={3}
                           placeholder="Describe the product, its heritage and details..."
-                          className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                         />
                       </div>
 
@@ -1493,9 +1458,9 @@ export default function AdminDashboard() {
           {/* ========================================== */}
           {activePageTab === 'productDetailsPage' && (
             <div className="space-y-8">
-              <div className="flex items-center justify-between pb-4 border-b border-[#EAE5D9]">
+              <div className="flex items-center justify-between pb-4 border-b border-[#D8CBB9]">
                 <div>
-                  <h2 className="font-serif-editorial text-2xl text-[#7A1C30] font-medium">
+                  <h2 className="font-serif-editorial text-2xl text-[#741F2B] font-medium">
                     Page 3: Product Details (/product/[id]) Editor
                   </h2>
                   <p className="text-xs text-gray-500 font-light mt-1">
@@ -1504,7 +1469,7 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
+              <div className="p-6 bg-[#F8F4ED] rounded-xl border border-[#D8CBB9] space-y-4">
                 <div>
                   <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Specifications Box Section Title</label>
                   <input
@@ -1526,7 +1491,7 @@ export default function AdminDashboard() {
                         },
                       });
                     }}
-                    className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none font-serif-editorial text-base text-[#7A1C30]"
+                    className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none font-serif-editorial text-base text-[#741F2B]"
                   />
                 </div>
 
@@ -1551,7 +1516,7 @@ export default function AdminDashboard() {
                           },
                         });
                       }}
-                      className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                      className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                     />
                   </div>
 
@@ -1575,7 +1540,7 @@ export default function AdminDashboard() {
                           },
                         });
                       }}
-                      className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                      className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                     />
                   </div>
 
@@ -1599,7 +1564,7 @@ export default function AdminDashboard() {
                           },
                         });
                       }}
-                      className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                      className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                     />
                   </div>
                 </div>
@@ -1625,7 +1590,7 @@ export default function AdminDashboard() {
                           },
                         });
                       }}
-                      className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                      className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                     />
                   </div>
 
@@ -1649,7 +1614,7 @@ export default function AdminDashboard() {
                           },
                         });
                       }}
-                      className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                      className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                     />
                   </div>
 
@@ -1673,7 +1638,7 @@ export default function AdminDashboard() {
                           },
                         });
                       }}
-                      className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                      className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                     />
                   </div>
                 </div>
@@ -1699,16 +1664,16 @@ export default function AdminDashboard() {
                       });
                     }}
                     placeholder="+91 98765 43210"
-                    className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                    className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                   />
                 </div>
               </div>
 
               {/* Per-Product Detail Authoring Manager */}
-              <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-6">
-                <div className="pb-3 border-b border-[#EAE5D9] flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div className="p-6 bg-[#F8F4ED] rounded-xl border border-[#D8CBB9] space-y-6">
+                <div className="pb-3 border-b border-[#D8CBB9] flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <div>
-                    <h3 className="font-serif-editorial text-xl text-[#7A1C30]">Author Specific Product Details</h3>
+                    <h3 className="font-serif-editorial text-xl text-[#741F2B]">Author Specific Product Details</h3>
                     <p className="text-xs text-gray-500 font-light mt-0.5">
                       Edit individual fabric measurements, descriptions, price, and craft details for any specific dress material product.
                     </p>
@@ -1719,13 +1684,13 @@ export default function AdminDashboard() {
                     <button
                       type="button"
                       onClick={handleExportCSV}
-                      className="px-3.5 py-1.5 rounded-lg border border-[#C5A059] text-[#7A1C30] hover:bg-[#C5A059]/10 text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-sm"
+                      className="px-3.5 py-1.5 rounded-lg border border-[#8A6427] text-[#741F2B] hover:bg-[#8A6427]/10 text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-sm"
                       title="Export all products to CSV for editing in Excel / Google Sheets"
                     >
                       <Download size={14} /> Export CSV
                     </button>
 
-                    <label className="px-3.5 py-1.5 rounded-lg bg-[#C5A059] text-white hover:bg-[#B38F48] text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-colors shadow-sm">
+                    <label className="px-3.5 py-1.5 rounded-lg bg-[#8A6427] text-white hover:bg-[#B38F48] text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-colors shadow-sm">
                       <Upload size={14} /> Bulk Import CSV
                       <input
                         type="file"
@@ -1751,26 +1716,26 @@ export default function AdminDashboard() {
                           setDraggedIndex(null);
                         }
                       }}
-                      className={`p-5 bg-white rounded-xl border ${draggedIndex === idx ? 'border-2 border-[#7A1C30] opacity-50' : 'border-[#EAE5D9]'} space-y-4 shadow-sm transition-all`}
+                      className={`p-5 bg-white rounded-xl border ${draggedIndex === idx ? 'border-2 border-[#741F2B] opacity-50' : 'border-[#D8CBB9]'} space-y-4 shadow-sm transition-all`}
                     >
-                      <div className="flex items-center justify-between pb-2 border-b border-[#EAE5D9]">
+                      <div className="flex items-center justify-between pb-2 border-b border-[#D8CBB9]">
                         <div className="flex items-center gap-2">
-                          <span className="cursor-grab text-gray-400 hover:text-[#7A1C30]" title="Drag to reorder">
+                          <span className="cursor-grab text-gray-400 hover:text-[#741F2B]" title="Drag to reorder">
                             <GripVertical size={18} />
                           </span>
-                          <h4 className="font-serif-editorial text-base text-[#7A1C30] font-medium">
+                          <h4 className="font-serif-editorial text-base text-[#741F2B] font-medium">
                             Product #{idx + 1}: {prod.name}
                           </h4>
                         </div>
 
                         <div className="flex items-center gap-3">
                           {/* Reorder Buttons */}
-                          <div className="flex items-center gap-1 bg-[#FAF6EE] border border-[#EAE5D9] rounded-lg p-0.5">
+                          <div className="flex items-center gap-1 bg-[#F8F4ED] border border-[#D8CBB9] rounded-lg p-0.5">
                             <button
                               type="button"
                               disabled={idx === 0}
                               onClick={() => moveProduct(idx, idx - 1)}
-                              className="p-1 text-gray-600 hover:text-[#7A1C30] disabled:opacity-30 disabled:hover:text-gray-600"
+                              className="p-1 text-gray-600 hover:text-[#741F2B] disabled:opacity-30 disabled:hover:text-gray-600"
                               title="Move Up"
                             >
                               <ArrowUp size={13} />
@@ -1779,14 +1744,14 @@ export default function AdminDashboard() {
                               type="button"
                               disabled={idx === (formData.products || []).length - 1}
                               onClick={() => moveProduct(idx, idx + 1)}
-                              className="p-1 text-gray-600 hover:text-[#7A1C30] disabled:opacity-30 disabled:hover:text-gray-600"
+                              className="p-1 text-gray-600 hover:text-[#741F2B] disabled:opacity-30 disabled:hover:text-gray-600"
                               title="Move Down"
                             >
                               <ArrowDown size={13} />
                             </button>
                           </div>
 
-                          <span className="text-xs font-sans text-[#C5A059] font-bold">{prod.price}</span>
+                          <span className="text-xs font-sans text-[#8A6427] font-bold">{prod.price}</span>
 
                           <button
                             type="button"
@@ -1812,7 +1777,7 @@ export default function AdminDashboard() {
                               updated[idx].name = e.target.value;
                               setFormData({ ...formData, products: updated });
                             }}
-                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                            className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                           />
                         </div>
 
@@ -1826,7 +1791,7 @@ export default function AdminDashboard() {
                               updated[idx].price = e.target.value;
                               setFormData({ ...formData, products: updated });
                             }}
-                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                            className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                           />
                         </div>
 
@@ -1841,7 +1806,7 @@ export default function AdminDashboard() {
                               setFormData({ ...formData, products: updated });
                             }}
                             placeholder="e.g. Pure Handloom Silk"
-                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                            className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                           />
                         </div>
 
@@ -1854,7 +1819,7 @@ export default function AdminDashboard() {
                               updated[idx].category = e.target.value;
                               setFormData({ ...formData, products: updated });
                             }}
-                            className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none bg-white"
+                            className="w-full px-3 py-2 text-base md:text-xs border border-[#D8CBB9] rounded-lg outline-none bg-white"
                           >
                             <option value="">None</option>
                             {(formData.shopCategories || []).map((cat) => (
@@ -1874,7 +1839,7 @@ export default function AdminDashboard() {
                               setFormData({ ...formData, products: updated });
                             }}
                             placeholder="e.g. 100% Authentic Handloom"
-                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                            className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                           />
                         </div>
 
@@ -1889,7 +1854,7 @@ export default function AdminDashboard() {
                               setFormData({ ...formData, products: updated });
                             }}
                             placeholder="e.g. 2.5 Metres"
-                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                            className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                           />
                         </div>
 
@@ -1904,7 +1869,7 @@ export default function AdminDashboard() {
                               setFormData({ ...formData, products: updated });
                             }}
                             placeholder="e.g. Matching Silk Satin Blend"
-                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                            className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                           />
                         </div>
 
@@ -1919,7 +1884,7 @@ export default function AdminDashboard() {
                               setFormData({ ...formData, products: updated });
                             }}
                             placeholder="e.g. 2.5 Metres"
-                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                            className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                           />
                         </div>
 
@@ -1934,7 +1899,7 @@ export default function AdminDashboard() {
                               setFormData({ ...formData, products: updated });
                             }}
                             placeholder="e.g. Woven Zari Border Drape"
-                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                            className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                           />
                         </div>
 
@@ -1949,7 +1914,7 @@ export default function AdminDashboard() {
                               setFormData({ ...formData, products: updated });
                             }}
                             placeholder="e.g. 2.25 Metres"
-                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                            className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                           />
                         </div>
 
@@ -1964,7 +1929,7 @@ export default function AdminDashboard() {
                               setFormData({ ...formData, products: updated });
                             }}
                             placeholder="e.g. Zari Hand Embroidery"
-                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                            className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                           />
                         </div>
 
@@ -1979,7 +1944,7 @@ export default function AdminDashboard() {
                               setFormData({ ...formData, products: updated });
                             }}
                             placeholder="e.g. Dry Clean Only"
-                            className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                            className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                           />
                         </div>
                       </div>
@@ -2007,7 +1972,7 @@ export default function AdminDashboard() {
                           }}
                           rows={2}
                           placeholder="Describe the weave heritage and details of this product..."
-                          className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                          className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                         />
                       </div>
                     </div>
@@ -2028,7 +1993,7 @@ export default function AdminDashboard() {
                     };
                     setFormData({ ...formData, products: [...(formData.products || []), newItem] });
                   }}
-                  className="bg-[#0A2A54] text-[#FFFBF3] hover:bg-[#C9962F] text-xs px-6 py-2.5 rounded-full flex items-center gap-2 shadow-md"
+                  className="bg-[#241D18] text-[#FFFBF3] hover:bg-[#C9962F] text-xs px-6 py-2.5 rounded-full flex items-center gap-2 shadow-md"
                 >
                   <Plus size={15} /> Add New Product
                 </button>
@@ -2041,9 +2006,9 @@ export default function AdminDashboard() {
           {/* ========================================== */}
           {activePageTab === 'cartPage' && (
             <div className="space-y-8">
-              <div className="flex items-center justify-between pb-4 border-b border-[#EAE5D9]">
+              <div className="flex items-center justify-between pb-4 border-b border-[#D8CBB9]">
                 <div>
-                  <h2 className="font-serif-editorial text-2xl text-[#7A1C30] font-medium">
+                  <h2 className="font-serif-editorial text-2xl text-[#741F2B] font-medium">
                     Cart Page (/cart) Editor
                   </h2>
                   <p className="text-xs text-gray-500 font-light mt-1">
@@ -2053,8 +2018,8 @@ export default function AdminDashboard() {
               </div>
 
               {/* Page Title */}
-              <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
-                <h3 className="font-serif-editorial text-base text-[#7A1C30]">Page Title</h3>
+              <div className="p-6 bg-[#F8F4ED] rounded-xl border border-[#D8CBB9] space-y-4">
+                <h3 className="font-serif-editorial text-base text-[#741F2B]">Page Title</h3>
                 <div>
                   <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Title</label>
                   <input
@@ -2065,14 +2030,14 @@ export default function AdminDashboard() {
                       setFormData({ ...formData, cartPageContent: next });
                     }}
                     placeholder="e.g. Shopping Bag"
-                    className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                    className="w-full px-3 py-2 text-base md:text-xs border border-[#D8CBB9] rounded-lg outline-none"
                   />
                 </div>
               </div>
 
               {/* Empty State */}
-              <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
-                <h3 className="font-serif-editorial text-base text-[#7A1C30]">Empty State</h3>
+              <div className="p-6 bg-[#F8F4ED] rounded-xl border border-[#D8CBB9] space-y-4">
+                <h3 className="font-serif-editorial text-base text-[#741F2B]">Empty State</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Title</label>
@@ -2084,7 +2049,7 @@ export default function AdminDashboard() {
                         setFormData({ ...formData, cartPageContent: next });
                       }}
                       placeholder="e.g. Your bag is empty"
-                      className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                      className="w-full px-3 py-2 text-base md:text-xs border border-[#D8CBB9] rounded-lg outline-none"
                     />
                   </div>
                   <div>
@@ -2097,7 +2062,7 @@ export default function AdminDashboard() {
                         setFormData({ ...formData, cartPageContent: next });
                       }}
                       placeholder="e.g. Looks like you haven't found your piece yet."
-                      className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                      className="w-full px-3 py-2 text-base md:text-xs border border-[#D8CBB9] rounded-lg outline-none"
                     />
                   </div>
                   <div>
@@ -2110,7 +2075,7 @@ export default function AdminDashboard() {
                         setFormData({ ...formData, cartPageContent: next });
                       }}
                       placeholder="e.g. Browse the Shop"
-                      className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                      className="w-full px-3 py-2 text-base md:text-xs border border-[#D8CBB9] rounded-lg outline-none"
                     />
                   </div>
                   <div>
@@ -2123,15 +2088,15 @@ export default function AdminDashboard() {
                         setFormData({ ...formData, cartPageContent: next });
                       }}
                       placeholder="e.g. /shop"
-                      className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                      className="w-full px-3 py-2 text-base md:text-xs border border-[#D8CBB9] rounded-lg outline-none"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Order Summary */}
-              <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
-                <h3 className="font-serif-editorial text-base text-[#7A1C30]">Order Summary</h3>
+              <div className="p-6 bg-[#F8F4ED] rounded-xl border border-[#D8CBB9] space-y-4">
+                <h3 className="font-serif-editorial text-base text-[#741F2B]">Order Summary</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Summary Title</label>
@@ -2143,7 +2108,7 @@ export default function AdminDashboard() {
                         setFormData({ ...formData, cartPageContent: next });
                       }}
                       placeholder="e.g. Order Summary"
-                      className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                      className="w-full px-3 py-2 text-base md:text-xs border border-[#D8CBB9] rounded-lg outline-none"
                     />
                   </div>
                   <div>
@@ -2156,7 +2121,7 @@ export default function AdminDashboard() {
                         setFormData({ ...formData, cartPageContent: next });
                       }}
                       placeholder="e.g. Free shipping across India"
-                      className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                      className="w-full px-3 py-2 text-base md:text-xs border border-[#D8CBB9] rounded-lg outline-none"
                     />
                   </div>
                   <div className="md:col-span-2">
@@ -2169,15 +2134,15 @@ export default function AdminDashboard() {
                         setFormData({ ...formData, cartPageContent: next });
                       }}
                       placeholder="e.g. Order via WhatsApp"
-                      className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                      className="w-full px-3 py-2 text-base md:text-xs border border-[#D8CBB9] rounded-lg outline-none"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Trust Badges */}
-              <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
-                <h3 className="font-serif-editorial text-base text-[#7A1C30]">Trust Badges</h3>
+              <div className="p-6 bg-[#F8F4ED] rounded-xl border border-[#D8CBB9] space-y-4">
+                <h3 className="font-serif-editorial text-base text-[#741F2B]">Trust Badges</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Badge 1</label>
@@ -2189,7 +2154,7 @@ export default function AdminDashboard() {
                         setFormData({ ...formData, cartPageContent: next });
                       }}
                       placeholder="e.g. Hand-cut, not laser-cut"
-                      className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                      className="w-full px-3 py-2 text-base md:text-xs border border-[#D8CBB9] rounded-lg outline-none"
                     />
                   </div>
                   <div>
@@ -2202,7 +2167,7 @@ export default function AdminDashboard() {
                         setFormData({ ...formData, cartPageContent: next });
                       }}
                       placeholder="e.g. Free shipping across India"
-                      className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                      className="w-full px-3 py-2 text-base md:text-xs border border-[#D8CBB9] rounded-lg outline-none"
                     />
                   </div>
                   <div>
@@ -2215,7 +2180,7 @@ export default function AdminDashboard() {
                         setFormData({ ...formData, cartPageContent: next });
                       }}
                       placeholder="e.g. Easy 7-day returns"
-                      className="w-full px-3 py-2 text-base md:text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                      className="w-full px-3 py-2 text-base md:text-xs border border-[#D8CBB9] rounded-lg outline-none"
                     />
                   </div>
                 </div>
@@ -2228,9 +2193,9 @@ export default function AdminDashboard() {
           {/* ========================================== */}
           {activePageTab === 'contactFooter' && (
             <div className="space-y-8">
-              <div className="flex items-center justify-between pb-4 border-b border-[#EAE5D9]">
+              <div className="flex items-center justify-between pb-4 border-b border-[#D8CBB9]">
                 <div>
-                  <h2 className="font-serif-editorial text-2xl text-[#7A1C30] font-medium">
+                  <h2 className="font-serif-editorial text-2xl text-[#741F2B] font-medium">
                     Contact & Footer Editor
                   </h2>
                   <p className="text-xs text-gray-500 font-light mt-1">
@@ -2239,7 +2204,7 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              <div className="p-6 bg-[#FAF6EE] rounded-xl border border-[#EAE5D9] space-y-4">
+              <div className="p-6 bg-[#F8F4ED] rounded-xl border border-[#D8CBB9] space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="text-xs uppercase font-medium text-gray-600 block mb-1">Phone Number</label>
@@ -2253,7 +2218,7 @@ export default function AdminDashboard() {
                         });
                       }}
                       placeholder="e.g. +91 98765 43210"
-                      className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                      className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                     />
                   </div>
 
@@ -2269,7 +2234,7 @@ export default function AdminDashboard() {
                         });
                       }}
                       placeholder="e.g. contact@gaurangifashions.com"
-                      className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                      className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                     />
                   </div>
                 </div>
@@ -2286,7 +2251,7 @@ export default function AdminDashboard() {
                       });
                     }}
                     placeholder="Enter store address..."
-                    className="w-full px-3 py-2 text-xs border border-[#EAE5D9] rounded-lg outline-none"
+                    className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
                   />
                 </div>
               </div>

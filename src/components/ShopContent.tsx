@@ -62,7 +62,7 @@ export const ShopContent: React.FC = () => {
       <div className="wrap">
         {/* Page Header Banner */}
         <div className="mb-10 md:mb-14">
-          <span className="mono text-rose block mb-2.5">Shop</span>
+          <span className="mono text-gold-ink block mb-2.5">Shop</span>
           <h1 className="font-display italic text-[clamp(32px,4.5vw,52px)] leading-tight">
             {banner?.bannerTitle || 'Shop'}
           </h1>
@@ -81,7 +81,7 @@ export const ShopContent: React.FC = () => {
               className={`px-4 py-2 rounded-full text-[11.5px] font-medium transition-colors min-h-[44px] ${
                 category === cat
                   ? 'bg-ink text-paper'
-                  : 'bg-paper border border-border-hair text-ink hover:border-rose'
+                  : 'bg-paper border border-hairline text-ink hover:border-gold'
               }`}
             >
               {cat}
@@ -95,8 +95,8 @@ export const ShopContent: React.FC = () => {
             onClick={() => setTechnique('all')}
             className={`shrink-0 px-4 py-2 rounded-full text-[11.5px] font-medium transition-colors min-h-[44px] ${
               technique === 'all'
-                ? 'bg-rose text-paper'
-                : 'bg-transparent border border-border-hair text-ink hover:border-rose'
+                ? 'bg-burgundy text-paper'
+                : 'bg-transparent border border-hairline text-ink hover:border-gold'
             }`}
           >
             All Techniques
@@ -107,8 +107,8 @@ export const ShopContent: React.FC = () => {
               onClick={() => setTechnique(t.id)}
               className={`shrink-0 px-4 py-2 rounded-full text-[11.5px] font-medium transition-colors min-h-[44px] ${
                 technique === t.id
-                  ? 'bg-rose text-paper'
-                  : 'bg-transparent border border-border-hair text-ink hover:border-rose'
+                  ? 'bg-burgundy text-paper'
+                  : 'bg-transparent border border-hairline text-ink hover:border-gold'
               }`}
             >
               {t.name}

@@ -29,16 +29,16 @@ export default function AuthPage() {
 
   if (loading || user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-canvas">
-        <Loader2 className="h-8 w-8 animate-spin text-rose" />
+      <div className="min-h-screen flex items-center justify-center bg-ivory">
+        <Loader2 className="h-8 w-8 animate-spin text-gold-ink" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-canvas px-4 py-12 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-ivory px-4 py-12 relative overflow-hidden">
       {/* Decorative Background Elements */}
-      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-rose opacity-10 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-gold opacity-10 rounded-full blur-3xl pointer-events-none"></div>
       <div className="absolute bottom-[-10%] right-[-10%] w-[30rem] h-[30rem] bg-ink opacity-5 rounded-full blur-3xl pointer-events-none"></div>
       
       <div className="w-full max-w-md bg-white/70 backdrop-blur-md rounded-2xl shadow-xl border border-white/50 p-8 relative z-10">

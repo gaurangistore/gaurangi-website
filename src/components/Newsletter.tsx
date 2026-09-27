@@ -19,7 +19,7 @@ export const Newsletter: React.FC = () => {
 
   return (
     <div className="wrap">
-      <div className="newsletter bg-rose text-paper text-center py-12 md:py-16">
+      <div className="newsletter bg-burgundy text-paper text-center py-12 md:py-16">
         <div className="max-w-[560px] mx-auto px-6">
           <h2 className="font-display italic text-[clamp(28px,3.6vw,38px)] mb-3">
             Join the Gaurangi circle

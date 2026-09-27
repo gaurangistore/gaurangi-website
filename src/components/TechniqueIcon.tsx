@@ -13,14 +13,14 @@ const PATHS: Record<string, React.ReactNode> = {
         fill="none"
         stroke="currentColor"
         strokeWidth="3"
-        className="text-emerald"
+        className="text-success"
       />
       <path
         d="M24 18 L16 12 M24 26 L32 20 M24 34 L16 28 M24 42 L32 36"
         stroke="currentColor"
         strokeWidth="3"
         strokeLinecap="round"
-        className="text-emerald"
+        className="text-success"
       />
       <circle cx="24" cy="10" r="5" fill="currentColor" className="text-rose" />
     </>
@@ -51,7 +51,7 @@ const PATHS: Record<string, React.ReactNode> = {
   ),
   'beaded-trail': (
     <>
-      <path d="M12 32 Q22 18 32 32 T52 32" fill="none" stroke="currentColor" strokeWidth="3" className="text-emerald" />
+      <path d="M12 32 Q22 18 32 32 T52 32" fill="none" stroke="currentColor" strokeWidth="3" className="text-success" />
       <circle cx="12" cy="32" r="3" fill="currentColor" className="text-gold" />
       <circle cx="22" cy="24" r="3" fill="currentColor" className="text-gold" />
       <circle cx="32" cy="32" r="3" fill="currentColor" className="text-gold" />

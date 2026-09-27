@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useContent } from '@/context/ContentContext';
+import { BrandLogo } from '@/components/BrandLogo';
 
 export const Footer: React.FC = () => {
   const { data } = useContent();
@@ -16,27 +17,27 @@ export const Footer: React.FC = () => {
   return (
     <footer className="pt-12 md:pt-16 pb-8 text-[13px] text-ink-soft font-sans">
       <div className="wrap">
-        <div className="foot-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 pb-10 border-b border-border-hair">
+        <div className="foot-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 pb-10 border-b border-hairline">
           <div>
-            <span className="logotype text-lg text-ink">{contact.storeName}</span>
+            <BrandLogo brand={contact} variant="horizontal" />
             <p className="mt-4 max-w-[280px]">{contact.tagline}</p>
           </div>
 
           <div>
             <h4 className="mono text-ink mb-3.5">Shop</h4>
             <ul className="list-none p-0 m-0 flex flex-col gap-2.5">
-              <li><Link href="/shop" className="hover:text-rose">Shop</Link></li>
-              <li><Link href="/shop?category=Dress+Materials" className="hover:text-rose">Dress Materials</Link></li>
-              <li><Link href="/shop?category=Dupattas" className="hover:text-rose">Dupattas</Link></li>
-              <li><Link href="/shop?category=Sarees" className="hover:text-rose">Sarees</Link></li>
+              <li><Link href="/shop" className="hover:text-gold-ink">Shop</Link></li>
+              <li><Link href="/shop?category=Dress+Materials" className="hover:text-gold-ink">Dress Materials</Link></li>
+              <li><Link href="/shop?category=Dupattas" className="hover:text-gold-ink">Dupattas</Link></li>
+              <li><Link href="/shop?category=Sarees" className="hover:text-gold-ink">Sarees</Link></li>
             </ul>
           </div>
 
           <div>
             <h4 className="mono text-ink mb-3.5">About</h4>
             <ul className="list-none p-0 m-0 flex flex-col gap-2.5">
-              <li><Link href="/shop" className="hover:text-rose">Fit Guide</Link></li>
-              <li><Link href="/shop" className="hover:text-rose">Returns</Link></li>
+              <li><Link href="/shop" className="hover:text-gold-ink">Fit Guide</Link></li>
+              <li><Link href="/shop" className="hover:text-gold-ink">Returns</Link></li>
             </ul>
           </div>
 
@@ -44,7 +45,7 @@ export const Footer: React.FC = () => {
             <h4 className="mono text-ink mb-3.5">Contact</h4>
             <ul className="list-none p-0 m-0 flex flex-col gap-2.5">
               <li>
-                <a href={`mailto:${contact.email}`} className="hover:text-rose">
+                <a href={`mailto:${contact.email}`} className="hover:text-gold-ink">
                   {contact.email}
                 </a>
               </li>

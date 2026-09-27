@@ -61,7 +61,7 @@ export default function AddressesTab() {
       )}
 
       <form onSubmit={handleSave} className="space-y-6">
-        <div className="bg-gray-50 p-6 rounded-xl border border-border-hair">
+        <div className="bg-gray-50 p-6 rounded-xl border border-hairline">
           <h4 className="font-medium text-lg text-ink mb-4">Default Shipping Address</h4>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -73,7 +73,7 @@ export default function AddressesTab() {
                 required
                 value={shipping.fullName}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-border-hair rounded-md focus:outline-none focus:ring-1 focus:ring-rose"
+                className="w-full px-3 py-2 border border-hairline rounded-md focus:outline-none focus:ring-1 focus:ring-gold-ink"
               />
             </div>
             
@@ -85,7 +85,7 @@ export default function AddressesTab() {
                 required
                 value={shipping.street}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-border-hair rounded-md focus:outline-none focus:ring-1 focus:ring-rose"
+                className="w-full px-3 py-2 border border-hairline rounded-md focus:outline-none focus:ring-1 focus:ring-gold-ink"
               />
             </div>
 
@@ -97,7 +97,7 @@ export default function AddressesTab() {
                 required
                 value={shipping.city}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-border-hair rounded-md focus:outline-none focus:ring-1 focus:ring-rose"
+                className="w-full px-3 py-2 border border-hairline rounded-md focus:outline-none focus:ring-1 focus:ring-gold-ink"
               />
             </div>
 
@@ -109,7 +109,7 @@ export default function AddressesTab() {
                 required
                 value={shipping.state}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-border-hair rounded-md focus:outline-none focus:ring-1 focus:ring-rose"
+                className="w-full px-3 py-2 border border-hairline rounded-md focus:outline-none focus:ring-1 focus:ring-gold-ink"
               />
             </div>
 
@@ -121,7 +121,7 @@ export default function AddressesTab() {
                 required
                 value={shipping.postalCode}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-border-hair rounded-md focus:outline-none focus:ring-1 focus:ring-rose"
+                className="w-full px-3 py-2 border border-hairline rounded-md focus:outline-none focus:ring-1 focus:ring-gold-ink"
               />
             </div>
 
@@ -133,7 +133,7 @@ export default function AddressesTab() {
                 required
                 value={shipping.country}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-border-hair rounded-md focus:outline-none focus:ring-1 focus:ring-rose"
+                className="w-full px-3 py-2 border border-hairline rounded-md focus:outline-none focus:ring-1 focus:ring-gold-ink"
               />
             </div>
             
@@ -145,7 +145,7 @@ export default function AddressesTab() {
                 required
                 value={shipping.phone}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-border-hair rounded-md focus:outline-none focus:ring-1 focus:ring-rose"
+                className="w-full px-3 py-2 border border-hairline rounded-md focus:outline-none focus:ring-1 focus:ring-gold-ink"
               />
             </div>
           </div>
@@ -154,7 +154,7 @@ export default function AddressesTab() {
         <button
           type="submit"
           disabled={loading}
-          className="bg-ink text-white px-6 py-2 rounded-md font-medium hover:bg-rose transition-colors flex items-center disabled:opacity-50"
+          className="bg-ink text-white px-6 py-2 rounded-md font-medium hover:bg-burgundy transition-colors flex items-center disabled:opacity-50"
         >
           {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
           Save Address

@@ -22,12 +22,12 @@ export default function AccountPage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-canvas py-12 px-4 md:px-8">
+      <div className="min-h-screen bg-ivory py-12 px-4 md:px-8">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row items-start gap-8">
             
             {/* Sidebar Navigation */}
-            <div className="w-full md:w-64 shrink-0 bg-white border border-border-hair rounded-2xl p-6 shadow-sm">
+            <div className="w-full md:w-64 shrink-0 bg-white border border-hairline rounded-2xl p-6 shadow-sm">
               <div className="mb-8">
                 <h2 className="font-serif text-2xl text-ink">My Account</h2>
                 <p className="text-sm text-ink-soft mt-1">Hello, {profile?.displayName || 'Guest'}</p>
@@ -37,7 +37,7 @@ export default function AccountPage() {
                 <button
                   onClick={() => setActiveTab('profile')}
                   className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                    activeTab === 'profile' ? 'bg-rose/10 text-rose' : 'text-ink hover:bg-gray-50'
+                    activeTab === 'profile' ? 'bg-gold-soft text-gold-ink' : 'text-ink hover:bg-gray-50'
                   }`}
                 >
                   <User size={18} /> Profile Details
@@ -45,7 +45,7 @@ export default function AccountPage() {
                 <button
                   onClick={() => setActiveTab('orders')}
                   className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                    activeTab === 'orders' ? 'bg-rose/10 text-rose' : 'text-ink hover:bg-gray-50'
+                    activeTab === 'orders' ? 'bg-gold-soft text-gold-ink' : 'text-ink hover:bg-gray-50'
                   }`}
                 >
                   <Package size={18} /> Order History
@@ -53,13 +53,13 @@ export default function AccountPage() {
                 <button
                   onClick={() => setActiveTab('addresses')}
                   className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                    activeTab === 'addresses' ? 'bg-rose/10 text-rose' : 'text-ink hover:bg-gray-50'
+                    activeTab === 'addresses' ? 'bg-gold-soft text-gold-ink' : 'text-ink hover:bg-gray-50'
                   }`}
                 >
                   <MapPin size={18} /> Saved Addresses
                 </button>
 
-                <div className="my-4 border-t border-border-hair"></div>
+                <div className="my-4 border-t border-hairline"></div>
 
                 <button
                   onClick={handleSignOut}
@@ -71,7 +71,7 @@ export default function AccountPage() {
             </div>
 
             {/* Main Content Area */}
-            <div className="flex-1 w-full bg-white border border-border-hair rounded-2xl p-6 shadow-sm min-h-[500px]">
+            <div className="flex-1 w-full bg-white border border-hairline rounded-2xl p-6 shadow-sm min-h-[500px]">
               {activeTab === 'profile' && <ProfileTab />}
               {activeTab === 'orders' && <OrdersTab />}
               {activeTab === 'addresses' && <AddressesTab />}

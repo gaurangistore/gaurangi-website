@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
 import { useContent } from '@/context/ContentContext';
+import { compressImage, readFileAsDataUrl } from '@/lib/imageUtils';
 import { Image as ImageIcon, Upload, Trash2, Copy, Check, Loader2 } from 'lucide-react';
 
 interface MediaItem {
@@ -50,61 +51,16 @@ export const MediaLibrary: React.FC<{ onSelect?: (ref: string) => void }> = ({ o
     fetchImages();
   }, []);
 
-  const compressImage = (dataUrl: string, maxDim = 1200, quality = 0.85): Promise<string> => {
-    return new Promise((resolve) => {
-      const img = new Image();
-      img.onload = () => {
-        try {
-          const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
-          const w = Math.max(1, Math.round(img.width * scale));
-          const h = Math.max(1, Math.round(img.height * scale));
-          const canvas = document.createElement('canvas');
-          canvas.width = w;
-          canvas.height = h;
-          const ctx = canvas.getContext('2d');
-          if (!ctx) {
-            resolve(dataUrl);
-            return;
-          }
-          ctx.fillStyle = '#FFFFFF';
-          ctx.fillRect(0, 0, w, h);
-          ctx.drawImage(img, 0, 0, w, h);
-          resolve(canvas.toDataURL('image/jpeg', quality));
-        } catch (err) {
-          console.error('Image compression failed:', err);
-          resolve(dataUrl);
-        }
-      };
-      img.onerror = () => resolve(dataUrl);
-      img.src = dataUrl;
-    });
-  };
-
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
-    
+
     setIsUploading(true);
     try {
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const reader = new FileReader();
-        
-        const uploadPromise = new Promise<void>((resolve, reject) => {
-          reader.onloadend = async () => {
-            try {
-              const base64 = reader.result as string;
-              const compressed = await compressImage(base64);
-              await uploadImage(compressed, file.name);
-              resolve();
-            } catch (err) {
-              reject(err);
-            }
-          };
-          reader.readAsDataURL(file);
-        });
-        
-        await uploadPromise;
+      for (const file of Array.from(files)) {
+        const base64 = await readFileAsDataUrl(file);
+        const compressed = await compressImage(base64);
+        await uploadImage(compressed, file.name);
       }
       await fetchImages();
     } catch (err) {
@@ -137,11 +93,11 @@ export const MediaLibrary: React.FC<{ onSelect?: (ref: string) => void }> = ({ o
   };
 
   return (
-    <div className="bg-white p-6 rounded-2xl border border-[#EAE5D9] shadow-sm">
+    <div className="bg-white p-6 rounded-2xl border border-[#D8CBB9] shadow-sm">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
         <div>
-          <h2 className="text-xl font-serif-editorial text-[#0A2A54] flex items-center gap-2">
-            <ImageIcon className="text-[#C5A059]" /> Media Library
+          <h2 className="text-xl font-serif-editorial text-[#241D18] flex items-center gap-2">
+            <ImageIcon className="text-[#8A6427]" /> Media Library
           </h2>
           <p className="text-sm text-gray-500 mt-1">
             Upload images here once, and use their reference code across the website.
@@ -149,7 +105,7 @@ export const MediaLibrary: React.FC<{ onSelect?: (ref: string) => void }> = ({ o
         </div>
         
         <div>
-          <label className="bg-[#0A2A54] hover:bg-[#0A2A54]/90 text-white px-5 py-2.5 rounded-full text-sm font-medium cursor-pointer inline-flex items-center gap-2 transition-colors">
+          <label className="bg-[#241D18] hover:bg-[#241D18]/90 text-white px-5 py-2.5 rounded-full text-sm font-medium cursor-pointer inline-flex items-center gap-2 transition-colors">
             {isUploading ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
             {isUploading ? 'Uploading...' : 'Upload Images'}
             <input 
@@ -166,7 +122,7 @@ export const MediaLibrary: React.FC<{ onSelect?: (ref: string) => void }> = ({ o
 
       {isLoading ? (
         <div className="py-20 flex justify-center">
-          <Loader2 className="animate-spin text-[#C5A059]" size={32} />
+          <Loader2 className="animate-spin text-[#8A6427]" size={32} />
         </div>
       ) : images.length === 0 ? (
         <div className="py-20 text-center border-2 border-dashed border-gray-200 rounded-xl">
@@ -202,7 +158,7 @@ export const MediaLibrary: React.FC<{ onSelect?: (ref: string) => void }> = ({ o
                   {onSelect ? (
                     <button 
                       onClick={() => onSelect(`img:${img.id}`)}
-                      className="w-full py-1.5 bg-[#C5A059] text-white text-xs font-medium rounded-md hover:bg-[#A9894C] transition-colors"
+                      className="w-full py-1.5 bg-[#8A6427] text-white text-xs font-medium rounded-md hover:bg-[#7A5822] transition-colors"
                     >
                       Select Image
                     </button>

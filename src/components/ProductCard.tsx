@@ -19,7 +19,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       href={`/product?id=${product.id}`}
       className="product-card group bg-paper flex flex-col"
     >
-      <div className="swatch aspect-[4/5] relative flex items-center justify-center overflow-hidden bg-[#EFE3DC]">
+      <div className="swatch aspect-[4/5] relative flex items-center justify-center overflow-hidden bg-taupe-soft">
         <span className="mono absolute top-3 left-3 bg-paper/90 px-2 py-1 rounded-full text-[9.5px] text-ink z-10">
           {techniqueLabel}
         </span>
@@ -44,9 +44,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             <p className="text-xs text-ink-soft mb-3 line-clamp-2">{product.description}</p>
           )}
         </div>
-        <div className="price-row flex items-center justify-between pt-3 border-t border-border-hair">
+        <div className="price-row flex items-center justify-between pt-3 border-t border-hairline">
           <span className="mono text-[13.5px] text-ink">{product.price}</span>
-          <span className="view-link text-[11.5px] font-semibold text-rose border-b border-rose pb-[1px]">
+          <span className="view-link text-[11.5px] font-semibold text-gold-ink border-b border-gold pb-[1px]">
             View
           </span>
         </div>

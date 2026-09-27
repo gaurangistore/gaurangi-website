@@ -20,10 +20,10 @@ export const CartItem: React.FC<CartItemProps> = ({ productId, quantity }) => {
   if (!product) return null;
 
   return (
-    <div className="flex gap-4 py-5 border-b border-border-hair">
+    <div className="flex gap-4 py-5 border-b border-hairline">
       <Link
         href={`/product?id=${product.id}`}
-        className="w-20 h-24 md:w-24 md:h-28 flex-shrink-0 overflow-hidden bg-[#EFE3DC] border border-border-hair"
+        className="w-20 h-24 md:w-24 md:h-28 flex-shrink-0 overflow-hidden bg-taupe-soft border border-hairline"
       >
         <img
           src={getImageUrl(product.image)}
@@ -37,11 +37,11 @@ export const CartItem: React.FC<CartItemProps> = ({ productId, quantity }) => {
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
             {product.category && (
-              <span className="mono text-rose text-[10px] block mb-0.5">{product.category}</span>
+              <span className="mono text-gold-ink text-[10px] block mb-0.5">{product.category}</span>
             )}
             <Link
               href={`/product?id=${product.id}`}
-              className="font-display text-base md:text-lg text-ink leading-tight block truncate hover:text-rose transition-colors"
+              className="font-display text-base md:text-lg text-ink leading-tight block truncate hover:text-gold-ink transition-colors"
             >
               {product.name}
             </Link>
@@ -55,10 +55,10 @@ export const CartItem: React.FC<CartItemProps> = ({ productId, quantity }) => {
         </div>
 
         <div className="flex items-center justify-between mt-3">
-          <div className="flex items-center border border-border-hair rounded-full">
+          <div className="flex items-center border border-hairline rounded-full">
             <button
               onClick={() => updateQuantity(productId, quantity - 1)}
-              className="w-8 h-8 flex items-center justify-center text-ink hover:text-rose transition-colors"
+              className="w-8 h-8 flex items-center justify-center text-ink hover:text-gold-ink transition-colors"
               aria-label="Decrease quantity"
             >
               <Minus size={14} />
@@ -66,7 +66,7 @@ export const CartItem: React.FC<CartItemProps> = ({ productId, quantity }) => {
             <span className="w-8 text-center text-sm font-medium">{quantity}</span>
             <button
               onClick={() => updateQuantity(productId, quantity + 1)}
-              className="w-8 h-8 flex items-center justify-center text-ink hover:text-rose transition-colors"
+              className="w-8 h-8 flex items-center justify-center text-ink hover:text-gold-ink transition-colors"
               aria-label="Increase quantity"
             >
               <Plus size={14} />

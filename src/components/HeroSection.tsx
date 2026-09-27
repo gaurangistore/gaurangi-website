@@ -23,10 +23,11 @@ export const HeroSection: React.FC = () => {
             </div>
           )}
 
+          {/* Display type is >=42px, so the decorative gold clears the 3:1 large-text threshold. */}
           {(active.title || active.italicTitle) && (
             <h1 className="font-display italic text-[clamp(42px,6.4vw,78px)] leading-[1.02] text-ink">
               {active.title}{' '}
-              {active.italicTitle && <em className="not-italic text-rose">{active.italicTitle}</em>}
+              {active.italicTitle && <em className="not-italic text-gold">{active.italicTitle}</em>}
             </h1>
           )}
 

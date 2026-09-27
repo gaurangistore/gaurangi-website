@@ -18,7 +18,7 @@ export const NewArrivals: React.FC = () => {
         <div className="section-head flex flex-wrap items-end justify-between gap-6 mb-10 md:mb-11">
           <div>
             {header.newArrivalsBadge && (
-              <span className="mono text-rose mb-2.5 block">{header.newArrivalsBadge}</span>
+              <span className="mono text-gold-ink mb-2.5 block">{header.newArrivalsBadge}</span>
             )}
             <h2 className="font-display italic text-[clamp(30px,3.6vw,44px)]">
               {header.newArrivalsTitle || 'New arrivals'}

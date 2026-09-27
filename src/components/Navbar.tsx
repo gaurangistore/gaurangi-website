@@ -7,6 +7,7 @@ import { Search, ShoppingBag, Menu, X, Heart, User } from 'lucide-react';
 import { useContent } from '@/context/ContentContext';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
+import { BrandLogo } from '@/components/BrandLogo';
 import { auth } from '@/lib/firebase';
 import { signOut } from 'firebase/auth';
 
@@ -50,7 +51,7 @@ export const Navbar: React.FC = () => {
   return (
     <>
       <header
-        className={`sticky top-0 left-0 w-full z-50 transition-all duration-300 bg-stem/95 backdrop-blur-md border-b border-border-hair ${
+        className={`sticky top-0 left-0 w-full z-50 transition-all duration-300 bg-ivory/90 backdrop-blur-md border-b border-hairline ${
           isScrolled ? 'py-2' : 'py-3'
         }`}
       >
@@ -79,8 +80,8 @@ export const Navbar: React.FC = () => {
                   href={item.href}
                   className={`relative py-1 transition-colors ${
                     active
-                      ? 'text-rose after:absolute after:left-0 after:-bottom-[6px] after:w-full after:h-[1.5px] after:bg-rose'
-                      : 'text-ink hover:text-rose'
+                      ? 'text-gold-ink after:absolute after:left-0 after:-bottom-[6px] after:w-full after:h-[1.5px] after:bg-gold'
+                      : 'text-ink hover:text-gold-ink'
                   }`}
                 >
                   {item.name}
@@ -90,17 +91,15 @@ export const Navbar: React.FC = () => {
           </nav>
 
           {/* Brand Logo */}
-          <Link href="/" className="group text-center">
-            <span className="logotype text-lg md:text-xl block leading-none text-ink">
-              {brand}
-            </span>
+          <Link href="/" className="group flex flex-col items-center" aria-label={`${brand} — home`}>
+            <BrandLogo brand={data.contactInfo} variant="horizontal" />
           </Link>
 
           {/* Right Action Icons */}
           <div className="flex items-center gap-1 md:gap-2">
             <button
               onClick={() => setSearchOpen(!searchOpen)}
-              className="p-2 rounded-full transition-transform hover:scale-105 text-ink hover:text-rose min-w-[44px] min-h-[44px] flex items-center justify-center"
+              className="p-2 rounded-full transition-transform hover:scale-105 text-ink hover:text-gold-ink min-w-[44px] min-h-[44px] flex items-center justify-center"
               title="Search"
               aria-label="Search"
             >
@@ -108,7 +107,7 @@ export const Navbar: React.FC = () => {
             </button>
 
             <button
-              className="hidden md:flex p-2 rounded-full transition-transform hover:scale-105 text-ink hover:text-rose items-center justify-center"
+              className="hidden md:flex p-2 rounded-full transition-transform hover:scale-105 text-ink hover:text-gold-ink items-center justify-center"
               title="Wishlist"
               aria-label="Wishlist"
             >
@@ -118,13 +117,13 @@ export const Navbar: React.FC = () => {
             {user ? (
               <div className="hidden md:flex items-center gap-4">
                 {profile?.role === 'admin' && (
-                  <Link href="/admin" className="text-sm font-medium hover:text-rose">
+                  <Link href="/admin" className="text-sm font-medium hover:text-gold-ink">
                     Admin
                   </Link>
                 )}
                 <Link
                   href="/account"
-                  className="p-2 rounded-full transition-transform hover:scale-105 text-ink hover:text-rose items-center justify-center"
+                  className="p-2 rounded-full transition-transform hover:scale-105 text-ink hover:text-gold-ink items-center justify-center"
                   title="Account"
                   aria-label="Account"
                 >
@@ -134,7 +133,7 @@ export const Navbar: React.FC = () => {
             ) : (
               <Link
                 href="/auth"
-                className="hidden md:flex p-2 rounded-full transition-transform hover:scale-105 text-ink hover:text-rose items-center justify-center"
+                className="hidden md:flex p-2 rounded-full transition-transform hover:scale-105 text-ink hover:text-gold-ink items-center justify-center"
                 title="Sign In"
                 aria-label="Sign In"
               >
@@ -150,7 +149,7 @@ export const Navbar: React.FC = () => {
             >
               <ShoppingBag size={18} strokeWidth={1.8} />
               {itemCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-rose text-white text-[0.65rem] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-burgundy text-white text-[0.65rem] font-bold w-4 h-4 rounded-full flex items-center justify-center">
                   {itemCount > 99 ? '99+' : itemCount}
                 </span>
               )}
@@ -160,9 +159,9 @@ export const Navbar: React.FC = () => {
 
         {/* Search Overlay Input */}
         {searchOpen && (
-          <div className="bg-paper border-b border-border-hair px-6 py-4">
+          <div className="bg-paper border-b border-hairline px-6 py-4">
             <form onSubmit={submitSearch} className="wrap flex items-center gap-3">
-              <Search size={18} className="text-rose shrink-0" />
+              <Search size={18} className="text-gold-ink shrink-0" />
               <input
                 type="text"
                 placeholder="Search products, techniques, categories..."
@@ -174,7 +173,7 @@ export const Navbar: React.FC = () => {
               />
               <button
                 type="submit"
-                className="text-xs font-semibold uppercase tracking-widest text-rose hover:text-ink whitespace-nowrap"
+                className="text-xs font-semibold uppercase tracking-widest text-gold-ink hover:text-ink whitespace-nowrap"
               >
                 Go
               </button>
@@ -205,7 +204,7 @@ export const Navbar: React.FC = () => {
           >
             <div>
               <div className="mb-8">
-                <span className="logotype text-xl text-ink">{brand}</span>
+                <BrandLogo brand={data.contactInfo} variant="stacked" />
               </div>
 
               <nav className="flex flex-col gap-2">
@@ -218,8 +217,8 @@ export const Navbar: React.FC = () => {
                       onClick={() => setMobileMenuOpen(false)}
                       className={`py-3 text-sm tracking-widest uppercase font-medium min-h-[44px] flex items-center border-l-2 pl-3 transition-colors ${
                         active
-                          ? 'text-rose border-rose'
-                          : 'text-ink border-transparent hover:text-rose'
+                          ? 'text-gold-ink border-gold'
+                          : 'text-ink border-transparent hover:text-gold-ink'
                       }`}
                     >
                       {item.name}
@@ -227,12 +226,12 @@ export const Navbar: React.FC = () => {
                   );
                 })}
 
-                <div className="my-4 border-t border-border-hair" />
+                <div className="my-4 border-t border-hairline" />
 
                 <Link
                   href="/shop"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="py-3 text-sm tracking-widest uppercase font-medium min-h-[44px] flex items-center gap-3 text-ink hover:text-rose"
+                  className="py-3 text-sm tracking-widest uppercase font-medium min-h-[44px] flex items-center gap-3 text-ink hover:text-gold-ink"
                 >
                   <Heart size={16} /> Wishlist
                 </Link>
@@ -242,7 +241,7 @@ export const Navbar: React.FC = () => {
                       <Link
                         href="/admin"
                         onClick={() => setMobileMenuOpen(false)}
-                        className="py-3 text-sm tracking-widest uppercase font-medium min-h-[44px] flex items-center gap-3 text-ink hover:text-rose"
+                        className="py-3 text-sm tracking-widest uppercase font-medium min-h-[44px] flex items-center gap-3 text-ink hover:text-gold-ink"
                       >
                         <User size={16} /> Admin Panel
                       </Link>
@@ -250,7 +249,7 @@ export const Navbar: React.FC = () => {
                     <Link
                       href="/account"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="py-3 text-sm tracking-widest uppercase font-medium min-h-[44px] flex items-center gap-3 text-ink hover:text-rose"
+                      className="py-3 text-sm tracking-widest uppercase font-medium min-h-[44px] flex items-center gap-3 text-ink hover:text-gold-ink"
                     >
                       <User size={16} /> My Account
                     </Link>
@@ -259,7 +258,7 @@ export const Navbar: React.FC = () => {
                   <Link
                     href="/auth"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="py-3 text-sm tracking-widest uppercase font-medium min-h-[44px] flex items-center gap-3 text-ink hover:text-rose"
+                    className="py-3 text-sm tracking-widest uppercase font-medium min-h-[44px] flex items-center gap-3 text-ink hover:text-gold-ink"
                   >
                     <User size={16} /> Sign In
                   </Link>
@@ -267,7 +266,7 @@ export const Navbar: React.FC = () => {
               </nav>
             </div>
 
-            <div className="pt-6 border-t border-border-hair text-xs text-ink-soft">
+            <div className="pt-6 border-t border-hairline text-xs text-ink-soft">
               <p>© {new Date().getFullYear()} {brand}. Modern appliqué, worn today.</p>
             </div>
           </div>

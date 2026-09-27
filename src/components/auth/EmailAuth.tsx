@@ -39,7 +39,7 @@ export default function EmailAuth({ isLogin }: { isLogin: boolean }) {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full border border-gray-300 rounded px-3 py-2 bg-transparent focus:outline-none focus:ring-1 focus:ring-rose"
+          className="w-full border border-gray-300 rounded px-3 py-2 bg-transparent focus:outline-none focus:ring-1 focus:ring-gold-ink"
           placeholder="your@email.com"
         />
       </div>
@@ -50,14 +50,14 @@ export default function EmailAuth({ isLogin }: { isLogin: boolean }) {
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full border border-gray-300 rounded px-3 py-2 bg-transparent focus:outline-none focus:ring-1 focus:ring-rose"
+          className="w-full border border-gray-300 rounded px-3 py-2 bg-transparent focus:outline-none focus:ring-1 focus:ring-gold-ink"
           placeholder="••••••••"
         />
       </div>
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-ink text-canvas py-2 rounded font-medium hover:bg-rose hover:text-white transition-colors disabled:opacity-50 flex items-center justify-center"
+        className="w-full bg-ink text-ivory py-2 rounded font-medium hover:bg-burgundy hover:text-white transition-colors disabled:opacity-50 flex items-center justify-center"
       >
         {loading && <Loader2 className="animate-spin mr-2 h-4 w-4" />}
         {isLogin ? 'Sign In with Email' : 'Sign Up with Email'}

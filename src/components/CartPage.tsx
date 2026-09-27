@@ -19,15 +19,15 @@ export const CartPageContent: React.FC = () => {
   const cart = data.cartPageContent;
 
   return (
-    <div className="min-h-screen bg-canvas text-ink flex flex-col overflow-x-hidden">
+    <div className="min-h-screen bg-ivory text-ink flex flex-col overflow-x-hidden">
       <Navbar />
 
       {/* Breadcrumb */}
-      <div className="bg-paper border-b border-border-hair py-3">
+      <div className="bg-paper border-b border-hairline py-3">
         <div className="wrap flex items-center gap-2 text-xs text-ink-soft">
-          <Link href="/" className="hover:text-rose">Home</Link>
+          <Link href="/" className="hover:text-gold-ink">Home</Link>
           <span>/</span>
-          <span className="text-rose font-medium">{cart?.pageTitle || 'Shopping Bag'}</span>
+          <span className="text-gold-ink font-medium">{cart?.pageTitle || 'Shopping Bag'}</span>
         </div>
       </div>
 
@@ -56,7 +56,7 @@ export const CartPageContent: React.FC = () => {
 
                 <button
                   onClick={() => router.back()}
-                  className="mt-6 flex items-center gap-2 text-sm text-ink-soft hover:text-rose transition-colors"
+                  className="mt-6 flex items-center gap-2 text-sm text-ink-soft hover:text-gold-ink transition-colors"
                 >
                   <ArrowLeft size={16} />
                   Continue Shopping

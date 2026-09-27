@@ -21,7 +21,7 @@ export const WhyGaurangi: React.FC = () => {
           <div className="section-head px-6 pt-10 md:px-10 pb-0">
             <div>
               {header.whyGaurangiBadge && (
-                <span className="mono text-rose mb-2.5 block">{header.whyGaurangiBadge}</span>
+                <span className="mono text-gold-ink mb-2.5 block">{header.whyGaurangiBadge}</span>
               )}
               <h2 className="font-display italic text-[clamp(26px,3.2vw,38px)]">
                 {header.whyGaurangiTitle || 'Why It Feels Different in the Hand'}
@@ -33,9 +33,9 @@ export const WhyGaurangi: React.FC = () => {
             {pillars.map((pillar, index) => (
               <div
                 key={pillar.id}
-                className="trust-item p-8 lg:p-9 border-b lg:border-b-0 border-r-0 lg:border-r border-border-hair"
+                className="trust-item p-8 lg:p-9 border-b lg:border-b-0 border-r-0 lg:border-r border-hairline"
               >
-                <span className="mono text-rose mb-2.5 block">
+                <span className="mono text-gold-ink mb-2.5 block">
                   {String(index + 1).padStart(2, '0')}
                 </span>
                 <h3 className="text-base font-sans font-semibold mb-2">{pillar.title}</h3>

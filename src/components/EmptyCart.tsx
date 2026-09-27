@@ -11,7 +11,7 @@ export const EmptyCart: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center py-24 px-6 text-center">
-      <div className="w-20 h-20 rounded-full bg-[#EFE3DC] flex items-center justify-center mb-6">
+      <div className="w-20 h-20 rounded-full bg-taupe-soft flex items-center justify-center mb-6">
         <ShoppingBag size={32} className="text-ink-soft" />
       </div>
       <h2 className="font-display italic text-2xl md:text-3xl text-ink mb-2">

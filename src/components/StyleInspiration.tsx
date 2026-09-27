@@ -41,7 +41,7 @@ export const StyleInspiration: React.FC = () => {
               href={`/shop?category=${encodeURIComponent(occasion.label)}`}
               className="group text-center"
             >
-              <div className="aspect-[3/4] overflow-hidden bg-[#EFE3DC] border border-border-hair mb-3">
+              <div className="aspect-[3/4] overflow-hidden bg-taupe-soft border border-hairline mb-3">
                 <img
                   src={getImageUrl(heroImage || '/images/model-dummy.jpg')}
                   alt={occasion.label}

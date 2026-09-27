@@ -40,7 +40,7 @@ export const ShopByCategory: React.FC = () => {
         <div className="section-head flex flex-wrap items-end justify-between gap-6 mb-10 md:mb-11">
           <div>
             {header.categoriesBadge && (
-              <span className="mono text-rose mb-2.5 block">{header.categoriesBadge}</span>
+              <span className="mono text-gold-ink mb-2.5 block">{header.categoriesBadge}</span>
             )}
             <h2 className="font-display italic text-[clamp(30px,3.6vw,44px)] max-w-[560px]">
               {header.categoriesTitle || 'Find your piece'}
@@ -56,9 +56,9 @@ export const ShopByCategory: React.FC = () => {
             <Link
               key={cat.id}
               href={`/shop?category=${encodeURIComponent(cat.name)}`}
-              className="category-card group bg-paper border border-border-hair overflow-hidden transition-transform duration-200 hover:-translate-y-[3px] hover:shadow-[0_12px_24px_-14px_rgba(36,16,25,0.3)]"
+              className="category-card group bg-paper border border-hairline overflow-hidden transition-transform duration-200 hover:-translate-y-[3px] hover:shadow-[0_12px_24px_-14px_rgba(36,16,25,0.3)]"
             >
-              <div className="aspect-[4/3] overflow-hidden bg-[#EFE3DC]">
+              <div className="aspect-[4/3] overflow-hidden bg-taupe-soft">
                 <img
                   src={getImageUrl(cat.image || DUMMY_IMAGE)}
                   alt={cat.name}

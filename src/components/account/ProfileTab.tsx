@@ -56,7 +56,7 @@ export default function ProfileTab() {
             type="email"
             disabled
             value={profile?.email || 'N/A (Phone Auth)'}
-            className="w-full px-3 py-2 border border-border-hair rounded-md bg-gray-50 text-gray-500 cursor-not-allowed"
+            className="w-full px-3 py-2 border border-hairline rounded-md bg-gray-50 text-gray-500 cursor-not-allowed"
           />
           <p className="text-xs text-ink-soft mt-1">Your email address cannot be changed.</p>
         </div>
@@ -68,7 +68,7 @@ export default function ProfileTab() {
             required
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
-            className="w-full px-3 py-2 border border-border-hair rounded-md focus:outline-none focus:ring-1 focus:ring-rose"
+            className="w-full px-3 py-2 border border-hairline rounded-md focus:outline-none focus:ring-1 focus:ring-gold-ink"
             placeholder="Jane Doe"
           />
         </div>
@@ -79,7 +79,7 @@ export default function ProfileTab() {
             type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="w-full px-3 py-2 border border-border-hair rounded-md focus:outline-none focus:ring-1 focus:ring-rose"
+            className="w-full px-3 py-2 border border-hairline rounded-md focus:outline-none focus:ring-1 focus:ring-gold-ink"
             placeholder="+1 234 567 890"
           />
         </div>
@@ -87,7 +87,7 @@ export default function ProfileTab() {
         <button
           type="submit"
           disabled={loading}
-          className="bg-ink text-white px-6 py-2 rounded-md font-medium hover:bg-rose transition-colors flex items-center disabled:opacity-50"
+          className="bg-ink text-white px-6 py-2 rounded-md font-medium hover:bg-burgundy transition-colors flex items-center disabled:opacity-50"
         >
           {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
           Save Changes
