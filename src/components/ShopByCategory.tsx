@@ -37,18 +37,13 @@ export const ShopByCategory: React.FC = () => {
   return (
     <section id="categories" className="py-16 md:py-20">
       <div className="wrap">
-        <div className="section-head flex flex-wrap items-end justify-between gap-6 mb-10 md:mb-11">
-          <div>
-            {header.categoriesBadge && (
-              <span className="mono text-gold-ink mb-2.5 block">{header.categoriesBadge}</span>
-            )}
-            <h2 className="font-display italic text-[clamp(30px,3.6vw,44px)] max-w-[560px]">
-              {header.categoriesTitle || 'Find your piece'}
-            </h2>
-          </div>
-          <p className="max-w-[380px] text-ink-soft text-[14.5px]">
-            Suit sets, dupattas and home textiles — every piece built on hand-cut Pipili appliqué.
-          </p>
+        <div className="section-head mb-10 md:mb-11">
+          {header.categoriesBadge && (
+            <span className="mono text-gold-ink mb-2.5 block">{header.categoriesBadge}</span>
+          )}
+          <h2 className="font-display italic text-[clamp(30px,3.6vw,44px)] max-w-[560px]">
+            {header.categoriesTitle || 'Find your piece'}
+          </h2>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
