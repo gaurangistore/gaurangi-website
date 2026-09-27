@@ -9,12 +9,15 @@ export const ArtisansSection: React.FC = () => {
   if (data.hiddenSections?.artisansSection) return null;
 
   const craft = data.craftPageContent;
+  const header = data.sectionHeaders || {};
 
   return (
     <section id="artisan" className="py-8 md:py-10">
       <div className="wrap grid grid-cols-1 lg:grid-cols-2 gap-9 lg:gap-14 items-center">
         <div className="artisan-card bg-paper p-8 md:p-9 flex flex-col gap-4">
-          <span className="mono text-success">Artisan Spotlight</span>
+          <span className="mono text-success">
+            {header.artisansBadge || 'Artisan Spotlight'}
+          </span>
           <h3 className="font-display italic text-2xl">
             {craft?.workshopsTitle || 'The workshops of Pipili'}
           </h3>
@@ -28,7 +31,7 @@ export const ArtisansSection: React.FC = () => {
         </div>
 
         <div>
-          <span className="mono text-rose block mb-3.5">Why We Name the Workshop</span>
+          <span className="mono text-gold-ink block mb-3.5">Why We Name the Workshop</span>
           <h2 className="font-display italic text-[clamp(26px,3.2vw,34px)] mb-4">
             {craft?.artisansTitle || 'A name behind every piece'}
           </h2>

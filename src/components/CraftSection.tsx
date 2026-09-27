@@ -10,15 +10,18 @@ export const CraftSection: React.FC = () => {
   if (data.hiddenSections?.craftSection) return null;
 
   const craft = data.craftPageContent;
+  const header = data.sectionHeaders || {};
+
+  if (data.hiddenSections?.craftSection) return null;
 
   return (
     <section id="craft" className="py-16 md:py-20 bg-ink text-paper">
       <div className="wrap text-center">
         <span className="mono text-gold block mb-3">
-          {craft?.heroBadge || 'From Pipili, Odisha'}
+          {header.craftBadge || craft?.heroBadge || 'From Pipili, Odisha'}
         </span>
         <h2 className="font-display italic text-paper text-[clamp(30px,3.8vw,44px)] mb-4">
-          {craft?.heroTitle || 'Applied, not printed. Layered, not flat.'}
+          {header.craftTitle || craft?.heroTitle || 'Applied, not printed. Layered, not flat.'}
         </h2>
         <p className="text-paper/70 text-[15px] max-w-[520px] mx-auto mb-10">
           {craft?.heroSubtitle ||

@@ -89,7 +89,6 @@ export interface SectionVisibility {
   newArrivals?: boolean;
   whyGaurangi?: boolean;
   customerStories?: boolean;
-  newsletter?: boolean;
   craftSection?: boolean;
   artisansSection?: boolean;
   styleInspiration?: boolean;
@@ -182,6 +181,22 @@ export interface SectionHeaderConfig {
   whyGaurangiBadge?: string;
   whyGaurangiTitle?: string;
 
+  featuredCollectionBadge?: string;
+  featuredCollectionTitle?: string;
+  featuredCollectionBody?: string;
+
+  servicesBadge?: string;
+  servicesTitle?: string;
+
+  craftBadge?: string;
+  craftTitle?: string;
+
+  artisansBadge?: string;
+  artisansTitle?: string;
+
+  storiesBadge?: string;
+  storiesTitle?: string;
+  /** Legacy names kept so the orphaned StyleNotes component still compiles. */
   reviewsBadge?: string;
   reviewsTitle?: string;
 }
@@ -193,9 +208,47 @@ export interface TrustPillarItem {
   iconName?: string;
 }
 
+/**
+ * A homepage section, in the order it should render.
+ *
+ * Order is data rather than JSX so the admin can rearrange the page without a
+ * redeploy. `visible` is the inverse of the legacy `hiddenSections` flag and is
+ * the field the renderer trusts; the migration in `normalizeContent` keeps the
+ * two in step for documents that predate this shape.
+ */
+export type SectionKey =
+  | 'hero'
+  | 'categories'
+  | 'newArrivals'
+  | 'featuredCollection'
+  | 'services'
+  | 'whyGaurangi'
+  | 'craft'
+  | 'artisans'
+  | 'stories';
+
+export interface SectionOrderItem {
+  key: SectionKey;
+  visible: boolean;
+  /** Optional scheduled window; see `lib/schedule`. */
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface ServiceItem {
+  id: string;
+  title: string;
+  description: string;
+  iconName?: string;
+}
+
 export interface HomepageData {
+  /** Legacy boolean flags. Still authored by the admin and honoured, but
+   *  `sectionOrder` is the source of truth for what renders. */
   hiddenSections?: SectionVisibility;
+  sectionOrder?: SectionOrderItem[];
   sectionHeaders?: SectionHeaderConfig;
+  services?: ServiceItem[];
   heroSlides: HeroSlide[];
   collections: CollectionItem[];
   products: ProductItem[];
@@ -213,6 +266,24 @@ export interface HomepageData {
   shopTechniques?: { id: string; name: string }[];
 }
 
+/**
+ * Canonical homepage render order.
+ *
+ * Exported separately from `DEFAULT_HOMEPAGE_DATA` because consumers need it as
+ * a guaranteed list, not as an optional field that may be absent.
+ */
+export const DEFAULT_SECTION_ORDER: SectionOrderItem[] = [
+  { key: 'hero', visible: true },
+  { key: 'categories', visible: true },
+  { key: 'newArrivals', visible: true },
+  { key: 'featuredCollection', visible: true },
+  { key: 'whyGaurangi', visible: true },
+  { key: 'services', visible: true },
+  { key: 'craft', visible: true },
+  { key: 'artisans', visible: true },
+  { key: 'stories', visible: true },
+];
+
 // Default Fallback Initial Content
 export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
   hiddenSections: {
@@ -221,7 +292,6 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
     newArrivals: false,
     whyGaurangi: false,
     customerStories: false,
-    newsletter: false,
     craftSection: false,
     artisansSection: false,
     styleInspiration: false,
@@ -252,6 +322,37 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
       iconName: 'RefreshCw',
     },
   ],
+  sectionOrder: DEFAULT_SECTION_ORDER,
+  services: [
+    {
+      id: 's1',
+      title: 'Made in small batches',
+      description:
+        'Pieces are cut in the numbers the workshop can genuinely finish, so nothing sits waiting for a run that never comes.',
+      iconName: 'Sparkles',
+    },
+    {
+      id: 's2',
+      title: 'Colour-tested together',
+      description:
+        'Base cloth and motif cloth are washed as a pair before a style is listed, so a first wash never surprises you.',
+      iconName: 'CheckCircle2',
+    },
+    {
+      id: 's3',
+      title: 'Seven-day returns',
+      description:
+        'If the drape or the shade is not right on you, send it back within a week. We would rather fix it than argue.',
+      iconName: 'RefreshCw',
+    },
+    {
+      id: 's4',
+      title: 'Fit guidance, honestly',
+      description:
+        'Measurements are listed as the garment is actually cut, with the drape in mind — not copied from a size chart.',
+      iconName: 'Ruler',
+    },
+  ],
   sectionHeaders: {
     categoriesBadge: 'Five Techniques, Straight From Our Workshop Floor',
     categoriesTitle: 'Shop by technique',
@@ -266,8 +367,22 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
     whyGaurangiBadge: 'The Gaurangi Promise',
     whyGaurangiTitle: 'Why It Feels Different in the Hand',
 
-    reviewsBadge: 'In Their Words',
-    reviewsTitle: 'Style notes',
+    featuredCollectionBadge: 'The Piece to Start With',
+    featuredCollectionTitle: 'This season’s focus',
+    featuredCollectionBody:
+      'One collection we are putting the most work into. Start here if you are deciding what appliqué is actually like to wear day to day.',
+
+    servicesBadge: 'How We Work',
+    servicesTitle: 'What you can expect',
+
+    craftBadge: 'From Pipili, Odisha',
+    craftTitle: 'Applied, not printed. Layered, not flat.',
+
+    artisansBadge: 'Artisan Spotlight',
+    artisansTitle: 'A name behind every piece',
+
+    storiesBadge: 'In Their Words',
+    storiesTitle: 'Style notes',
   },
   dressMaterialsPageContent: {
     bannerTitle: 'Shop',

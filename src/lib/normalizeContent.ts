@@ -16,7 +16,11 @@ import {
   ProductItem,
   DEFAULT_HOMEPAGE_DATA,
   SectionVisibility,
+  SectionKey,
+  SectionOrderItem,
   SiteContactInfo,
+  ServiceItem,
+  DEFAULT_SECTION_ORDER,
 } from '@/lib/contentDefaults';
 import { parseLegacyPrice } from '@/lib/price';
 
@@ -87,6 +91,87 @@ const normalizeCategories = (input: unknown) => {
     .filter((category) => category.name.length > 0);
 };
 
+/**
+ * Legacy boolean flag per section, keyed the same way as `SectionKey`.
+ * Kept so existing documents keep controlling the same sections.
+ */
+const LEGACY_HIDDEN_TO_KEY: Record<string, SectionKey> = {
+  heroBanner: 'hero',
+  featuredCategories: 'categories',
+  newArrivals: 'newArrivals',
+  whyGaurangi: 'whyGaurangi',
+  customerStories: 'stories',
+  craftSection: 'craft',
+  artisansSection: 'artisans',
+};
+
+const SECTION_KEYS = new Set<string>(DEFAULT_SECTION_ORDER.map((item) => item.key));
+
+const isSectionKey = (value: unknown): value is SectionKey =>
+  typeof value === 'string' && SECTION_KEYS.has(value);
+
+/**
+ * Resolves the render order.
+ *
+ * A document with no `sectionOrder` (every pre-Phase-2 document) is migrated
+ * from its `hiddenSections` flags, so existing visibility choices carry over.
+ * Unknown keys are dropped and missing defaults appended, so a typo in the
+ * admin cannot remove a section from the page.
+ */
+const normalizeSectionOrder = (order: unknown, hidden: SectionVisibility): SectionOrderItem[] => {
+  const defaults = DEFAULT_SECTION_ORDER;
+
+  if (!Array.isArray(order) || order.length === 0) {
+    return defaults.map((item) => {
+      const flag = legacyFlagFor(item.key);
+      const wasHidden = flag !== null && hidden[flag] === true;
+      return { ...item, visible: wasHidden ? false : item.visible };
+    });
+  }
+
+  const seen = new Set<SectionKey>();
+  const resolved: SectionOrderItem[] = [];
+
+  for (const raw of order) {
+    if (!isRecord(raw) || !isSectionKey(raw.key) || seen.has(raw.key)) continue;
+    seen.add(raw.key);
+    resolved.push({
+      key: raw.key,
+      visible: typeof raw.visible === 'boolean' ? raw.visible : true,
+      ...(typeof raw.startDate === 'string' ? { startDate: raw.startDate } : {}),
+      ...(typeof raw.endDate === 'string' ? { endDate: raw.endDate } : {}),
+    });
+  }
+
+  // Append anything the author did not mention, so newly added sections appear
+  // instead of silently never rendering.
+  for (const item of defaults) {
+    if (!seen.has(item.key)) resolved.push({ ...item });
+  }
+
+  return resolved;
+};
+
+/** Reverse lookup used only while migrating legacy flags. */
+const legacyFlagFor = (key: SectionKey): keyof SectionVisibility | null => {
+  for (const [flag, flagKey] of Object.entries(LEGACY_HIDDEN_TO_KEY)) {
+    if (flagKey === key) return flag as keyof SectionVisibility;
+  }
+  return null;
+};
+
+/** Guarantees each service has an id, a title and a body before it renders. */
+const normalizeServices = (input: unknown): ServiceItem[] =>
+  asArray(input)
+    .filter((item): item is Record<string, unknown> => isRecord(item))
+    .map((raw, index) => ({
+      ...raw,
+      id: asString(raw.id, fallbackId(index, 'service')),
+      title: asString(raw.title),
+      description: asString(raw.description),
+      ...(asString(raw.iconName) ? { iconName: asString(raw.iconName) } : {}),
+    })) as ServiceItem[];
+
 /** Fills in every visibility flag so callers can read it without `??`. */
 const normalizeVisibility = (input: unknown): SectionVisibility => {
   const raw = isRecord(input) ? (input as SectionVisibility) : {};
@@ -121,9 +206,13 @@ export const normalizeContent = (input: unknown): HomepageData => {
     ...(asString(contactRaw.logoIcon) ? { logoIcon: asString(contactRaw.logoIcon) } : {}),
   };
 
+  const hiddenSections = normalizeVisibility(raw.hiddenSections);
+
   return {
     ...raw,
-    hiddenSections: normalizeVisibility(raw.hiddenSections),
+    hiddenSections,
+    sectionOrder: normalizeSectionOrder(raw.sectionOrder, hiddenSections),
+    services: normalizeServices(raw.services),
     // The remaining blocks are passthrough: they are either fully optional or
     // already consumed through dedicated editors, and they are cast below
     // because the cast is deliberate — the goal is to guarantee prices, ids and

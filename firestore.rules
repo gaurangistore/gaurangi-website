@@ -14,18 +14,10 @@ service cloud.firestore {
       allow write: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
     
-    // Newsletter signups. Public can create, but only with the fields this form
-    // sends and no extras, so the collection cannot be used to write arbitrary
-    // data. Signups are immutable and not readable: a public list of subscriber
-    // emails must not be exposed. Admins can read and delete.
-    match /newsletter/{email} {
-      allow create: if request.resource.data.keys().hasOnly(['email', 'createdAt', 'source'])
-                    && request.resource.data.email == email
-                    && request.resource.data.createdAt is string
-                    && request.resource.data.createdAt.size() <= 40;
-      allow read, update: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
-      allow delete: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
-    }
+    // Newsletter signups were removed in Phase 2. Any existing documents are
+    // left in place so nothing is destroyed, but they are no longer written to
+    // and are not reachable from the site. Delete the collection manually in the
+    // Firebase console once you are happy the old list is not needed.
     
     // User role documents
     match /users/{userId} {

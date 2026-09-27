@@ -15,11 +15,11 @@ export const StyleNotes: React.FC = () => {
     <section className="py-16 md:py-20">
       <div className="wrap">
         <div className="section-head mb-10 md:mb-11">
-          {header.reviewsBadge && (
-            <span className="mono text-rose mb-2.5 block">{header.reviewsBadge}</span>
+          {header.storiesBadge && (
+            <span className="mono text-gold-ink mb-2.5 block">{header.storiesBadge}</span>
           )}
           <h2 className="font-display italic text-[clamp(30px,3.6vw,44px)]">
-            {header.reviewsTitle || 'Style notes'}
+            {header.storiesTitle || 'Style notes'}
           </h2>
         </div>
 

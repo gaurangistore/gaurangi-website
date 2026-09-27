@@ -2,18 +2,44 @@
 
 import React, { useState } from 'react';
 import { useContent, HomepageData, ProductItem, CraftPageContent } from '@/context/ContentContext';
-import { Sparkles, Save, Plus, Trash2, CheckCircle, AlertTriangle, Loader2, Home, ShoppingBag, PhoneCall, Info, Package, GripVertical, ArrowUp, ArrowDown, Download, Upload, Image as ImageIcon } from 'lucide-react';
+import { Sparkles, Save, Plus, Trash2, CheckCircle, AlertTriangle, Loader2, Home, ShoppingBag, PhoneCall, Info, Package, GripVertical, ArrowUp, ArrowDown, Download, Upload, Image as ImageIcon, ChevronUp, ChevronDown } from 'lucide-react';
 import { MediaLibrary } from '@/components/admin/MediaLibrary';
 import { ImageInput } from '@/components/admin/ImageInput';
 import Link from 'next/link';
 import { DUMMY_IMAGE, getImageUrl } from '@/lib/constants';
 import { compressImage, readFileAsDataUrl } from '@/lib/imageUtils';
+import { DEFAULT_SECTION_ORDER, type SectionKey } from '@/lib/contentDefaults';
+
+/** Human-readable names for the layout editor. */
+const SECTION_LABELS: Record<SectionKey, string> = {
+  hero: 'Hero banner',
+  categories: 'Shop by category',
+  newArrivals: 'New arrivals',
+  featuredCollection: 'Featured collection',
+  whyGaurangi: 'Why Gaurangi',
+  services: 'Services',
+  craft: 'Craft story',
+  artisans: 'Artisan spotlight',
+  stories: 'Customer stories',
+};
+
+/** Keep in sync with the icon map in the Services component. */
+const SERVICE_ICON_OPTIONS = [
+  'Sparkles',
+  'ShieldCheck',
+  'CheckCircle2',
+  'RefreshCw',
+  'Truck',
+  'Ruler',
+];
 
 export default function AdminDashboard() {
   const { rawData, saveData, uploadImage } = useContent();
   const [formData, setFormData] = useState<HomepageData>(rawData);
   const [activePageTab, setActivePageTab] = useState<'homepage' | 'catalogPage' | 'productDetailsPage' | 'cartPage' | 'contactFooter' | 'mediaLibrary'>('homepage');
-  const [activeHomeSubtab, setActiveHomeSubtab] = useState<'hero' | 'categories' | 'products' | 'whyGaurangi'>('hero');
+  const [activeHomeSubtab, setActiveHomeSubtab] = useState<
+    'hero' | 'categories' | 'products' | 'whyGaurangi' | 'layout' | 'services'
+  >('hero');
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -27,6 +53,35 @@ export default function AdminDashboard() {
     setPrevData(rawData);
     setFormData(rawData);
   }
+
+  // Homepage section layout helpers
+  // The list is derived from the stored order, falling back to the shipped
+  // default so a brand-new or partially-migrated document still shows every
+  // section instead of an empty editor.
+  const layoutSections = formData.sectionOrder?.length
+    ? formData.sectionOrder
+    : DEFAULT_SECTION_ORDER;
+
+  const setLayoutSections = (next: typeof DEFAULT_SECTION_ORDER) => {
+    setFormData({ ...formData, sectionOrder: next });
+  };
+
+  const moveSection = (fromIndex: number, toIndex: number) => {
+    if (toIndex < 0 || toIndex >= layoutSections.length) return;
+    const next = [...layoutSections];
+    const [moved] = next.splice(fromIndex, 1);
+    next.splice(toIndex, 0, moved);
+    setLayoutSections(next);
+  };
+
+  const updateSection = (
+    index: number,
+    patch: Partial<(typeof DEFAULT_SECTION_ORDER)[number]>
+  ) => {
+    const next = [...layoutSections];
+    next[index] = { ...next[index], ...patch };
+    setLayoutSections(next);
+  };
 
   // Reorder product helper
   const moveProduct = (fromIndex: number, toIndex: number) => {
@@ -288,7 +343,7 @@ export default function AdminDashboard() {
                     Page 1: Homepage (/) Editor
                   </h2>
                   <p className="text-xs text-gray-500 font-light mt-1">
-                    Author hero, category cards, new arrivals, trust pillars, craft section, style inspiration and newsletter on the main landing page.
+                    Author hero, category cards, new arrivals, trust pillars, craft section and style inspiration on the main landing page.
                   </p>
                 </div>
               </div>
@@ -326,6 +381,22 @@ export default function AdminDashboard() {
                   }`}
                 >
                   🛡️ 4. Why Gaurangi (Trust)
+                </button>
+                <button
+                  onClick={() => setActiveHomeSubtab('layout')}
+                  className={`px-4 py-2 rounded-lg text-xs uppercase font-medium transition-colors min-h-[44px] ${
+                    activeHomeSubtab === 'layout' ? 'bg-[#741F2B] text-white' : 'bg-[#F8F4ED] text-[#241D18]'
+                  }`}
+                >
+                  🧩 5. Layout &amp; Order
+                </button>
+                <button
+                  onClick={() => setActiveHomeSubtab('services')}
+                  className={`px-4 py-2 rounded-lg text-xs uppercase font-medium transition-colors min-h-[44px] ${
+                    activeHomeSubtab === 'services' ? 'bg-[#741F2B] text-white' : 'bg-[#F8F4ED] text-[#241D18]'
+                  }`}
+                >
+                  ✨ 6. Services
                 </button>
               </div>
 
@@ -749,35 +820,6 @@ export default function AdminDashboard() {
               {/* Subtab 4: Why Gaurangi */}
               {activeHomeSubtab === 'whyGaurangi' && (
                 <div className="space-y-6">
-                  <div className="flex flex-wrap items-center justify-between gap-3 bg-[#F8F4ED] p-4 rounded-xl border border-[#D8CBB9]">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-[#741F2B]">
-                      Newsletter Section Control
-                    </span>
-                    <button
-                      onClick={() => {
-                        setFormData({
-                          ...formData,
-                          hiddenSections: {
-                            ...formData.hiddenSections,
-                            newsletter: !formData.hiddenSections?.newsletter,
-                          },
-                        });
-                      }}
-                      className={`px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider border ${
-                        formData.hiddenSections?.newsletter
-                          ? 'bg-red-50 text-red-600 border-red-200'
-                          : 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                      }`}
-                    >
-                      {formData.hiddenSections?.newsletter ? '🔴 Hidden on Homepage' : '🟢 Visible on Homepage'}
-                    </button>
-                  </div>
-
-                  <p className="text-xs text-gray-600">
-                    Signups are written to the <strong>newsletter</strong> Firestore collection. They are not
-                    publicly readable; open the Firebase console to export or review them.
-                  </p>
-
                   <div className="flex items-center justify-between bg-[#F8F4ED] p-4 rounded-xl border border-[#D8CBB9]">
                     <span className="text-xs font-semibold uppercase tracking-wider text-[#741F2B]">
                       Why Gaurangi Trust Section Control
@@ -935,6 +977,293 @@ export default function AdminDashboard() {
                       className="bg-[#241D18] text-[#FFFBF3] hover:bg-[#C9962F] text-xs px-6 py-2.5 rounded-full flex items-center gap-2"
                     >
                       <Plus size={15} /> Add New Trust Pillar
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Subtab 5: Layout & Order */}
+              {activeHomeSubtab === 'layout' && (
+                <div className="space-y-6">
+                  <div className="p-6 bg-[#F8F4ED] rounded-xl border border-[#D8CBB9] space-y-4">
+                    <div>
+                      <h3 className="font-serif-editorial text-base text-[#741F2B]">
+                        Homepage Section Order
+                      </h3>
+                      <p className="text-xs text-gray-600 mt-1.5">
+                        The page renders top to bottom in this order. Use the arrows to move a section, the
+                        toggle to hide it, and the dates to schedule it. The hero always stays first.
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      {layoutSections.map((section, index) => (
+                        <div
+                          key={section.key}
+                          className="p-3 bg-white border border-[#D8CBB9] rounded-lg flex flex-wrap items-center gap-3"
+                        >
+                          <span className="mono text-[11px] text-[#8A6427] w-6 text-center">
+                            {index + 1}
+                          </span>
+                          <span className="text-xs font-semibold uppercase tracking-wider text-[#241D18] flex-1 min-w-[140px]">
+                            {SECTION_LABELS[section.key]}
+                          </span>
+
+                          <div className="flex items-center gap-1">
+                            <button
+                              type="button"
+                              disabled={index === 0}
+                              onClick={() => moveSection(index, index - 1)}
+                              aria-label={`Move ${SECTION_LABELS[section.key]} up`}
+                              className="w-9 h-9 border border-[#D8CBB9] rounded disabled:opacity-30 hover:bg-[#F8F4ED] flex items-center justify-center"
+                            >
+                              <ChevronUp size={15} />
+                            </button>
+                            <button
+                              type="button"
+                              disabled={index === layoutSections.length - 1}
+                              onClick={() => moveSection(index, index + 1)}
+                              aria-label={`Move ${SECTION_LABELS[section.key]} down`}
+                              className="w-9 h-9 border border-[#D8CBB9] rounded disabled:opacity-30 hover:bg-[#F8F4ED] flex items-center justify-center"
+                            >
+                              <ChevronDown size={15} />
+                            </button>
+                          </div>
+
+                          <input
+                            type="date"
+                            value={section.startDate || ''}
+                            onChange={(e) => updateSection(index, { startDate: e.target.value })}
+                            aria-label={`${SECTION_LABELS[section.key]} start date`}
+                            className="px-2 py-1.5 text-xs border border-[#D8CBB9] rounded"
+                          />
+                          <span className="text-xs text-gray-500">to</span>
+                          <input
+                            type="date"
+                            value={section.endDate || ''}
+                            onChange={(e) => updateSection(index, { endDate: e.target.value })}
+                            aria-label={`${SECTION_LABELS[section.key]} end date`}
+                            className="px-2 py-1.5 text-xs border border-[#D8CBB9] rounded"
+                          />
+
+                          <button
+                            type="button"
+                            onClick={() => updateSection(index, { visible: !section.visible })}
+                            aria-pressed={!section.visible}
+                            className={`px-3 py-2 rounded-full text-xs font-semibold uppercase tracking-wider border ${
+                              section.visible
+                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                : 'bg-red-50 text-red-600 border-red-200'
+                            }`}
+                          >
+                            {section.visible ? '🟢 Visible' : '🔴 Hidden'}
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="p-6 bg-[#F8F4ED] rounded-xl border border-[#D8CBB9] space-y-4">
+                    <h3 className="font-serif-editorial text-base text-[#741F2B]">Featured Collection</h3>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-xs uppercase font-medium text-gray-600 block mb-1">
+                          Badge
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sectionHeaders?.featuredCollectionBadge || ''}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              sectionHeaders: {
+                                ...formData.sectionHeaders,
+                                featuredCollectionBadge: e.target.value,
+                              },
+                            })
+                          }
+                          className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs uppercase font-medium text-gray-600 block mb-1">
+                          Title
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sectionHeaders?.featuredCollectionTitle || ''}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              sectionHeaders: {
+                                ...formData.sectionHeaders,
+                                featuredCollectionTitle: e.target.value,
+                              },
+                            })
+                          }
+                          className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs uppercase font-medium text-gray-600 block mb-1">
+                          Body
+                        </label>
+                        <textarea
+                          value={formData.sectionHeaders?.featuredCollectionBody || ''}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              sectionHeaders: {
+                                ...formData.sectionHeaders,
+                                featuredCollectionBody: e.target.value,
+                              },
+                            })
+                          }
+                          className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none min-h-[90px]"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Subtab 6: Services */}
+              {activeHomeSubtab === 'services' && (
+                <div className="space-y-6">
+                  <div className="p-6 bg-[#F8F4ED] rounded-xl border border-[#D8CBB9] space-y-4">
+                    <h3 className="font-serif-editorial text-base text-[#741F2B]">Section Header</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs uppercase font-medium text-gray-600 block mb-1">
+                          Badge
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sectionHeaders?.servicesBadge || ''}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              sectionHeaders: { ...formData.sectionHeaders, servicesBadge: e.target.value },
+                            })
+                          }
+                          className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs uppercase font-medium text-gray-600 block mb-1">
+                          Title
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sectionHeaders?.servicesTitle || ''}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              sectionHeaders: { ...formData.sectionHeaders, servicesTitle: e.target.value },
+                            })
+                          }
+                          className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    {(formData.services || []).map((service, idx) => (
+                      <div
+                        key={service.id}
+                        className="p-6 bg-[#F8F4ED] rounded-xl border border-[#D8CBB9] space-y-4"
+                      >
+                        <div className="flex items-center justify-between">
+                          <h3 className="font-serif-editorial text-base text-[#741F2B]">
+                            Service #{idx + 1}
+                          </h3>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setFormData({
+                                ...formData,
+                                services: (formData.services || []).filter((s) => s.id !== service.id),
+                              })
+                            }
+                            className="text-xs font-semibold text-red-600 hover:underline"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label className="text-xs uppercase font-medium text-gray-600 block mb-1">
+                              Title
+                            </label>
+                            <input
+                              type="text"
+                              value={service.title || ''}
+                              onChange={(e) => {
+                                const updated = [...(formData.services || [])];
+                                updated[idx] = { ...updated[idx], title: e.target.value };
+                                setFormData({ ...formData, services: updated });
+                              }}
+                              className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-xs uppercase font-medium text-gray-600 block mb-1">
+                              Icon
+                            </label>
+                            <select
+                              value={service.iconName || 'CheckCircle2'}
+                              onChange={(e) => {
+                                const updated = [...(formData.services || [])];
+                                updated[idx] = { ...updated[idx], iconName: e.target.value };
+                                setFormData({ ...formData, services: updated });
+                              }}
+                              className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none bg-white"
+                            >
+                              {SERVICE_ICON_OPTIONS.map((icon) => (
+                                <option key={icon} value={icon}>
+                                  {icon}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                        <div>
+                          <label className="text-xs uppercase font-medium text-gray-600 block mb-1">
+                            Description
+                          </label>
+                          <textarea
+                            value={service.description || ''}
+                            onChange={(e) => {
+                              const updated = [...(formData.services || [])];
+                              updated[idx] = { ...updated[idx], description: e.target.value };
+                              setFormData({ ...formData, services: updated });
+                            }}
+                            className="w-full px-3 py-2 text-xs border border-[#D8CBB9] rounded-lg outline-none min-h-[80px]"
+                          />
+                        </div>
+                      </div>
+                    ))}
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFormData({
+                          ...formData,
+                          services: [
+                            ...(formData.services || []),
+                            {
+                              id: `svc-${Date.now()}`,
+                              title: 'New promise',
+                              description: '',
+                              iconName: 'CheckCircle2',
+                            },
+                          ],
+                        })
+                      }
+                      className="bg-[#241D18] text-[#FFFBF3] hover:bg-[#C9962F] text-xs px-6 py-2.5 rounded-full flex items-center gap-2"
+                    >
+                      <Plus size={15} /> Add Service
                     </button>
                   </div>
                 </div>
